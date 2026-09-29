@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
+import java.util.*;
+
 
 @Entity
 @Table(name = "pelicula", schema = "cine")
@@ -35,4 +37,13 @@ public class Pelicula {
 
     @Column(nullable = false)
     private Boolean activo = true;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "pelicula_genero",
+            schema = "cine",
+            joinColumns = @JoinColumn(name = "pelicula_id"),
+            inverseJoinColumns = @JoinColumn(name = "genero_id")
+    )
+    private Set<Genero> generos = new HashSet<>();
 }
