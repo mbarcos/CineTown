@@ -16,21 +16,21 @@ public class Pelicula {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(nullable = false, length = 255)
+    @Column(nullable = false, columnDefinition = "titulo")
     private String titulo;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition = "sinopsis")
     private String sinopsis;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "duracion")
     private Integer duracion;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "anio")
     private Integer anio;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, columnDefinition = "cine.clasificacion_edad")
     @JdbcTypeCode(SqlTypes.NAMED_ENUM)
+    @Column(nullable = false, columnDefinition = "clasificacion_edad")
     private ClasificacionEdad clasificacion;
 
     @Column(nullable = false)
