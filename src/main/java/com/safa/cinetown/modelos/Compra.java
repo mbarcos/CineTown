@@ -8,7 +8,6 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
-
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -53,7 +52,6 @@ public class Compra {
 
     @Column(name = "parking_usado", nullable = false)
     private Boolean parkingUsado = false;
-
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "sesion_id", nullable = false)
