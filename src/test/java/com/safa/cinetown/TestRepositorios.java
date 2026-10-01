@@ -1,7 +1,10 @@
 package com.safa.cinetown;
 
 import com.safa.cinetown.modelos.Pelicula;
+import com.safa.cinetown.modelos.Sala;
+import com.safa.cinetown.repositorios.IGeneroRepository;
 import com.safa.cinetown.repositorios.IPeliculaRepository;
+import com.safa.cinetown.repositorios.ISalaRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
@@ -18,6 +21,12 @@ public class TestRepositorios {
     @Autowired
     private IPeliculaRepository peliculaRepository;
 
+    @Autowired
+    private IGeneroRepository generoRepository;
+
+    @Autowired
+    private ISalaRepository salaRepository;
+
     @Test
     void encuentraLasPeliculasPorTitulo() {
         List<Pelicula> resultado = peliculaRepository.findByTituloContainingIgnoreCase("interstellar");
@@ -28,9 +37,27 @@ public class TestRepositorios {
     @Test
     void encuentraLasPeliculasActivasOrdenadas() {
         List<Pelicula> resultado = peliculaRepository.findByActivoTrueOrderByTituloAsc();
-
         assertThat(resultado).isNotEmpty();
         assertThat(resultado).allMatch(Pelicula::getActivo);
-        resultado.forEach(p -> System.out.println(p.getTitulo()));
+        resultado.forEach(p -> System.out.println(p.getTitulo() + " - " + p.getSinopsis()));
     }
+
+    @Test
+    void cuentaPeliculasEnCarteleraPorGenero() {
+        List<Object[]> resultado = generoRepository.contarPeliculasEnCarteleraPorGenero();
+        assertThat(resultado).isNotEmpty();
+        resultado.forEach(fila ->
+                System.out.println(fila[0] + ": " + fila[1]));
+    }
+
+    @Test
+    void encontrarSalasConCapacidades() {
+        List<Sala> salas = salaRepository.findAllByOrderByNumeroAsc();
+
+        assertThat(salas).isNotEmpty();
+        salas.forEach(s ->
+                System.out.println("Sala " + s.getNumero() + ": " + s.getCapacidad() + " asientos"));
+    }
+
+
 }
