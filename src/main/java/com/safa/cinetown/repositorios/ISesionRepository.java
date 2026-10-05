@@ -1,7 +1,9 @@
 package com.safa.cinetown.repositorios;
 
+import com.safa.cinetown.modelos.Pelicula;
 import com.safa.cinetown.modelos.Sesion;
 import com.safa.cinetown.dtos.SesionConAsientos;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -25,4 +27,7 @@ public interface ISesionRepository extends JpaRepository<Sesion, Integer> {
             ORDER BY s.fechaHoraInicio
             """)
      List<SesionConAsientos> encuentraSesionesActivasConAsientosLibres();
+
+    @EntityGraph(attributePaths = "pelicula")
+    List<Sesion> findByPeliculaIdOrderByFechaHoraInicioAsc(Integer peliculaId);
 }

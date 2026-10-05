@@ -2,18 +2,18 @@ package com.safa.cinetown;
 
 import com.safa.cinetown.dtos.CuentaPeliculasPorGenero;
 import com.safa.cinetown.dtos.SesionConAsientos;
+import com.safa.cinetown.modelos.Compra;
 import com.safa.cinetown.modelos.Pelicula;
 import com.safa.cinetown.modelos.Sala;
-import com.safa.cinetown.repositorios.IGeneroRepository;
-import com.safa.cinetown.repositorios.IPeliculaRepository;
-import com.safa.cinetown.repositorios.ISalaRepository;
-import com.safa.cinetown.repositorios.ISesionRepository;
+import com.safa.cinetown.modelos.Sesion;
+import com.safa.cinetown.repositorios.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
 import org.springframework.boot.jdbc.test.autoconfigure.AutoConfigureTestDatabase;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -32,6 +32,9 @@ public class TestRepositorios {
 
     @Autowired
     private ISesionRepository sesionRepository;
+
+    @Autowired
+    private ICompraRepository compraRepository;
 
     @Test
     void encuentraLasPeliculasPorTitulo() {
@@ -76,4 +79,27 @@ public class TestRepositorios {
                         + " | Libres: " + s.asientosLibres() + "/" + s.capacidad()));
     }
 
+    @Test
+    void encuentraLasSesionesDeUnaPelicula() {
+        List<Sesion> sesiones = sesionRepository.findByPeliculaIdOrderByFechaHoraInicioAsc(1);
+
+        assertThat(sesiones).isNotEmpty();
+        sesiones.forEach(s -> System.out.println(
+                s.getPelicula().getTitulo()
+                        + " | Inicio: " + s.getFechaHoraInicio()
+                        + " | Fin: " + s.getFechaHoraFin()
+                        + " | Precio: " + s.getPrecioBase()));
+    }
+
+    @Test
+    void encuentraLosDetallesDeUnaCompra() {
+        Optional<Compra> compra = compraRepository.findByCodCompra("ABC12345");
+
+        assertThat(compra).isPresent();
+        compra.ifPresent(c -> System.out.println(
+                "Código: " + c.getCodCompra()
+                        + " | Película: " + c.getSesion().getPelicula().getTitulo()
+                        + " | Sala " + c.getSesion().getSala().getNumero()
+                        + " | Inicio: " + c.getSesion().getFechaHoraInicio()));
+    }
 }
