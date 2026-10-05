@@ -1,10 +1,13 @@
 package com.safa.cinetown;
 
+import com.safa.cinetown.dtos.CuentaPeliculasPorGenero;
+import com.safa.cinetown.dtos.SesionConAsientos;
 import com.safa.cinetown.modelos.Pelicula;
 import com.safa.cinetown.modelos.Sala;
 import com.safa.cinetown.repositorios.IGeneroRepository;
 import com.safa.cinetown.repositorios.IPeliculaRepository;
 import com.safa.cinetown.repositorios.ISalaRepository;
+import com.safa.cinetown.repositorios.ISesionRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
@@ -27,6 +30,9 @@ public class TestRepositorios {
     @Autowired
     private ISalaRepository salaRepository;
 
+    @Autowired
+    private ISesionRepository sesionRepository;
+
     @Test
     void encuentraLasPeliculasPorTitulo() {
         List<Pelicula> resultado = peliculaRepository.findByTituloContainingIgnoreCase("interstellar");
@@ -44,10 +50,10 @@ public class TestRepositorios {
 
     @Test
     void cuentaPeliculasEnCarteleraPorGenero() {
-        List<Object[]> resultado = generoRepository.contarPeliculasEnCarteleraPorGenero();
+        List<CuentaPeliculasPorGenero> resultado = generoRepository.contarPeliculasEnCarteleraPorGenero();
         assertThat(resultado).isNotEmpty();
-        resultado.forEach(fila ->
-                System.out.println(fila[0] + ": " + fila[1]));
+        resultado.forEach(g ->
+                System.out.println(g.nombre() + ": " + g.peliculasEnCartelera()));
     }
 
     @Test
@@ -59,6 +65,15 @@ public class TestRepositorios {
                 System.out.println("Sala " + s.getNumero() + ": " + s.getCapacidad() + " asientos"));
     }
 
+    @Test
+    void encuentraSesionesActivasConAsientosLibres() {
+        List<SesionConAsientos> resultado = sesionRepository.encuentraSesionesActivasConAsientosLibres();
 
+        assertThat(resultado).isNotEmpty();
+        resultado.forEach(s ->
+                System.out.println(s.titulo() + " | Sala " + s.numeroSala()
+                        + " | " + s.fechaHoraInicio()
+                        + " | Libres: " + s.asientosLibres() + "/" + s.capacidad()));
+    }
 
 }
