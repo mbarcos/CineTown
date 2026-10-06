@@ -1,8 +1,8 @@
 package com.safa.cinetown;
 
 import com.safa.cinetown.dtos.CuentaPeliculasPorGenero;
+import com.safa.cinetown.dtos.DetalleCompra;
 import com.safa.cinetown.dtos.SesionConAsientos;
-import com.safa.cinetown.modelos.Compra;
 import com.safa.cinetown.modelos.Pelicula;
 import com.safa.cinetown.modelos.Sala;
 import com.safa.cinetown.modelos.Sesion;
@@ -11,10 +11,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
 import org.springframework.boot.jdbc.test.autoconfigure.AutoConfigureTestDatabase;
-
 import java.util.List;
 import java.util.Optional;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
@@ -93,13 +91,13 @@ public class TestRepositorios {
 
     @Test
     void encuentraLosDetallesDeUnaCompra() {
-        Optional<Compra> compra = compraRepository.findByCodCompra("ABC12345");
+        Optional<DetalleCompra> detalle = compraRepository.encuentraDetalleCompraPorCodigo("ABC12345");
 
-        assertThat(compra).isPresent();
-        compra.ifPresent(c -> System.out.println(
-                "Código: " + c.getCodCompra()
-                        + " | Película: " + c.getSesion().getPelicula().getTitulo()
-                        + " | Sala " + c.getSesion().getSala().getNumero()
-                        + " | Inicio: " + c.getSesion().getFechaHoraInicio()));
+        assertThat(detalle).isPresent();
+        detalle.ifPresent(d -> System.out.println(
+                "Código: " + d.codCompra()
+                        + " | Película: " + d.titulo()
+                        + " | Sala " + d.numeroSala()
+                        + " | Inicio: " + d.fechaHoraInicio()));
     }
 }
