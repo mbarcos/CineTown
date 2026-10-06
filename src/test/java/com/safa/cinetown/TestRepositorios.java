@@ -1,5 +1,6 @@
 package com.safa.cinetown;
 
+import com.safa.cinetown.dtos.CompraResumen;
 import com.safa.cinetown.dtos.CuentaPeliculasPorGenero;
 import com.safa.cinetown.dtos.DetalleCompra;
 import com.safa.cinetown.dtos.SesionConAsientos;
@@ -11,6 +12,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
 import org.springframework.boot.jdbc.test.autoconfigure.AutoConfigureTestDatabase;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+
 import java.util.List;
 import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -69,7 +73,6 @@ public class TestRepositorios {
     @Test
     void encuentraSesionesActivasConAsientosLibres() {
         List<SesionConAsientos> resultado = sesionRepository.encuentraSesionesActivasConAsientosLibres();
-
         assertThat(resultado).isNotEmpty();
         resultado.forEach(s ->
                 System.out.println(s.titulo() + " | Sala " + s.numeroSala()
@@ -80,7 +83,6 @@ public class TestRepositorios {
     @Test
     void encuentraLasSesionesDeUnaPelicula() {
         List<Sesion> sesiones = sesionRepository.findByPeliculaIdOrderByFechaHoraInicioAsc(1);
-
         assertThat(sesiones).isNotEmpty();
         sesiones.forEach(s -> System.out.println(
                 s.getPelicula().getTitulo()
@@ -92,12 +94,27 @@ public class TestRepositorios {
     @Test
     void encuentraLosDetallesDeUnaCompra() {
         Optional<DetalleCompra> detalle = compraRepository.encuentraDetalleCompraPorCodigo("ABC12345");
-
         assertThat(detalle).isPresent();
         detalle.ifPresent(d -> System.out.println(
                 "Código: " + d.codCompra()
                         + " | Película: " + d.titulo()
                         + " | Sala " + d.numeroSala()
                         + " | Inicio: " + d.fechaHoraInicio()));
+    }
+
+    @Test
+    void encuentraTodasLasComprasPaginadas() {
+        Page<CompraResumen> pagina = compraRepository.encuentraTodasLasCompras(PageRequest.of(0, 3));
+        assertThat(pagina.getContent()).isNotEmpty();
+        pagina.forEach(c -> System.out.println(
+                c.codCompra() + " | " + c.titulo() + " | Sala " + c.numeroSala()));
+    }
+
+    @Test
+    void encuentraLasComprasDeUnUsuario() {
+        Page<CompraResumen> pagina = compraRepository.encuentraComprasDeUsuario(4, PageRequest.of(0, 5));
+        assertThat(pagina.getContent()).isNotEmpty();
+        pagina.forEach(c -> System.out.println(
+                c.codCompra() + " | " + c.titulo() + " | Sala " + c.numeroSala()));
     }
 }
