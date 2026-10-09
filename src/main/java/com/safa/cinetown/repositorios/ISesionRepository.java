@@ -15,7 +15,9 @@ public interface ISesionRepository extends JpaRepository<Sesion, Integer> {
             SELECT new com.safa.cinetown.dtos.SesionConAsientos(
                    s.id, p.titulo, sa.numero, s.fechaHoraInicio, s.fechaHoraFin,
                    s.precioBase, sa.capacidad,
-                   sa.capacidad - COALESCE(SUM(c.numEntradas), 0L))
+                   CAST(
+                   sa.capacidad - COALESCE(SUM(c.numEntradas), 0L) AS Integer)
+                   )
             FROM Sesion s
             JOIN s.pelicula p
             JOIN s.sala sa
