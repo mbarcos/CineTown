@@ -1,6 +1,5 @@
 package com.safa.cinetown.repositorios;
 
-import com.safa.cinetown.modelos.Pelicula;
 import com.safa.cinetown.modelos.Sesion;
 import com.safa.cinetown.dtos.SesionConAsientos;
 import org.springframework.data.jpa.repository.EntityGraph;
