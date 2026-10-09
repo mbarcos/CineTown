@@ -1,9 +1,6 @@
 package com.safa.cinetown;
 
-import com.safa.cinetown.dtos.CompraResumen;
-import com.safa.cinetown.dtos.CuentaPeliculasPorGenero;
-import com.safa.cinetown.dtos.DetalleCompra;
-import com.safa.cinetown.dtos.SesionConAsientos;
+import com.safa.cinetown.dtos.*;
 import com.safa.cinetown.modelos.Pelicula;
 import com.safa.cinetown.modelos.Sala;
 import com.safa.cinetown.modelos.Sesion;
@@ -116,5 +113,14 @@ public class TestRepositorios {
         assertThat(pagina.getContent()).isNotEmpty();
         pagina.forEach(c -> System.out.println(
                 c.codCompra() + " | " + c.titulo() + " | Sala " + c.numeroSala()));
+    }
+
+    @Test
+    void calculaLaRecaudacionDeUnaPelicula() {
+        Optional<RecaudacionPelicula> recaudacion = peliculaRepository.calcularRecaudacionPorPelicula(1);
+
+        assertThat(recaudacion).isPresent();
+        recaudacion.ifPresent(r -> System.out.println(
+                r.titulo() + " | Entradas: " + r.entradasVendidas() + " | Total: " + r.recaudacionTotal()));
     }
 }
