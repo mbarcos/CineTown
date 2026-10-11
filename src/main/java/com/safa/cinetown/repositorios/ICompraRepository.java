@@ -47,7 +47,9 @@ public interface ICompraRepository extends JpaRepository <Compra, Integer>{
         JOIN s.sala sa
         WHERE c.usuario.id = :usuarioId
         ORDER BY c.fechaCompra DESC
-        """,
+        """, //La consulta del COUNT va aparte para que no le afecte el LIMIT de la paginación
             countQuery = "SELECT COUNT(c) FROM Compra c WHERE c.usuario.id = :usuarioId")
     Page<CompraResumen> encuentraComprasDeUsuario(@Param("usuarioId") Integer usuarioId, Pageable pageable);
+
+
 }

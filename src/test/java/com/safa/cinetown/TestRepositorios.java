@@ -12,6 +12,7 @@ import org.springframework.boot.jdbc.test.autoconfigure.AutoConfigureTestDatabas
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -90,7 +91,7 @@ public class TestRepositorios {
 
     @Test
     void encuentraLosDetallesDeUnaCompra() {
-        Optional<DetalleCompra> detalle = compraRepository.encuentraDetalleCompraPorCodigo("ABC12345");
+        Optional<DetalleCompra> detalle = compraRepository.encuentraDetalleCompraPorCodigo("CIN00001");
         assertThat(detalle).isPresent();
         detalle.ifPresent(d -> System.out.println(
                 "Código: " + d.codCompra()
@@ -123,4 +124,23 @@ public class TestRepositorios {
         recaudacion.ifPresent(r -> System.out.println(
                 r.titulo() + " | Entradas: " + r.entradasVendidas() + " | Total: " + r.recaudacionTotal()));
     }
+
+    @Test
+    void calculaLaOcupacionDeLasSesionesDeUnDia() {
+        LocalDate fecha = LocalDate.now().plusDays(1);
+
+        List<OcupacionPorSesion> ocupacion = sesionRepository.calcularOcupacionPorSesion(
+                fecha.atStartOfDay(), fecha.plusDays(1).atStartOfDay());
+
+        assertThat(ocupacion).isNotEmpty();
+        assertThat(ocupacion).allMatch(o -> o.fechaHoraInicio().toLocalDate().equals(fecha));
+        assertThat(ocupacion).allMatch(o -> o.porcentajeOcupacion() >= 0 && o.porcentajeOcupacion() <= 100);
+        ocupacion.forEach(o -> System.out.println(
+                o.titulo() + " | Sala " + o.numeroSala()
+                        + " | " + o.entradasVendidas() + "/" + o.capacidad()
+                        + " | " + o.porcentajeOcupacion() + "%"));
+    }
+
+
+
 }
