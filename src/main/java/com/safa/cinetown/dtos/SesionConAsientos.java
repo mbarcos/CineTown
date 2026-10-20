@@ -11,6 +11,6 @@ public record SesionConAsientos(
         LocalDateTime fechaHoraFin,
         BigDecimal precioBase,
         Integer capacidad,
-        Long asientosLibres
+        Integer asientosLibres
 ) {
 }

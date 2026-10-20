@@ -8,7 +8,7 @@ import java.util.*;
 
 
 @Entity
-@Table(name = "pelicula", schema = "cine")
+@Table(name = "pelicula")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -41,7 +41,6 @@ public class Pelicula {
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "pelicula_genero",
-            schema = "cine",
             joinColumns = @JoinColumn(name = "pelicula_id"),
             inverseJoinColumns = @JoinColumn(name = "genero_id")
     )

@@ -1,20 +1,20 @@
 package com.safa.cinetown;
 
-import com.safa.cinetown.dtos.CuentaPeliculasPorGenero;
-import com.safa.cinetown.dtos.SesionConAsientos;
+import com.safa.cinetown.dtos.*;
 import com.safa.cinetown.modelos.Pelicula;
 import com.safa.cinetown.modelos.Sala;
-import com.safa.cinetown.repositorios.IGeneroRepository;
-import com.safa.cinetown.repositorios.IPeliculaRepository;
-import com.safa.cinetown.repositorios.ISalaRepository;
-import com.safa.cinetown.repositorios.ISesionRepository;
+import com.safa.cinetown.modelos.Sesion;
+import com.safa.cinetown.repositorios.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
 import org.springframework.boot.jdbc.test.autoconfigure.AutoConfigureTestDatabase;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 
+import java.time.LocalDate;
 import java.util.List;
-
+import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
@@ -32,6 +32,9 @@ public class TestRepositorios {
 
     @Autowired
     private ISesionRepository sesionRepository;
+
+    @Autowired
+    private ICompraRepository compraRepository;
 
     @Test
     void encuentraLasPeliculasPorTitulo() {
@@ -68,12 +71,76 @@ public class TestRepositorios {
     @Test
     void encuentraSesionesActivasConAsientosLibres() {
         List<SesionConAsientos> resultado = sesionRepository.encuentraSesionesActivasConAsientosLibres();
-
         assertThat(resultado).isNotEmpty();
         resultado.forEach(s ->
                 System.out.println(s.titulo() + " | Sala " + s.numeroSala()
                         + " | " + s.fechaHoraInicio()
                         + " | Libres: " + s.asientosLibres() + "/" + s.capacidad()));
     }
+
+    @Test
+    void encuentraLasSesionesDeUnaPelicula() {
+        List<Sesion> sesiones = sesionRepository.findByPeliculaIdOrderByFechaHoraInicioAsc(1);
+        assertThat(sesiones).isNotEmpty();
+        sesiones.forEach(s -> System.out.println(
+                s.getPelicula().getTitulo()
+                        + " | Inicio: " + s.getFechaHoraInicio()
+                        + " | Fin: " + s.getFechaHoraFin()
+                        + " | Precio: " + s.getPrecioBase()));
+    }
+
+    @Test
+    void encuentraLosDetallesDeUnaCompra() {
+        Optional<DetalleCompra> detalle = compraRepository.encuentraDetalleCompraPorCodigo("CIN00001");
+        assertThat(detalle).isPresent();
+        detalle.ifPresent(d -> System.out.println(
+                "Código: " + d.codCompra()
+                        + " | Película: " + d.titulo()
+                        + " | Sala " + d.numeroSala()
+                        + " | Inicio: " + d.fechaHoraInicio()));
+    }
+
+    @Test
+    void encuentraTodasLasComprasPaginadas() {
+        Page<CompraResumen> pagina = compraRepository.encuentraTodasLasCompras(PageRequest.of(0, 3));
+        assertThat(pagina.getContent()).isNotEmpty();
+        pagina.forEach(c -> System.out.println(
+                c.codCompra() + " | " + c.titulo() + " | Sala " + c.numeroSala()));
+    }
+
+    @Test
+    void encuentraLasComprasDeUnUsuario() {
+        Page<CompraResumen> pagina = compraRepository.encuentraComprasDeUsuario(4, PageRequest.of(0, 5));
+        assertThat(pagina.getContent()).isNotEmpty();
+        pagina.forEach(c -> System.out.println(
+                c.codCompra() + " | " + c.titulo() + " | Sala " + c.numeroSala()));
+    }
+
+    @Test
+    void calculaLaRecaudacionDeUnaPelicula() {
+        Optional<RecaudacionPelicula> recaudacion = peliculaRepository.calcularRecaudacionPorPelicula(1);
+
+        assertThat(recaudacion).isPresent();
+        recaudacion.ifPresent(r -> System.out.println(
+                r.titulo() + " | Entradas: " + r.entradasVendidas() + " | Total: " + r.recaudacionTotal()));
+    }
+
+    @Test
+    void calculaLaOcupacionDeLasSesionesDeUnDia() {
+        LocalDate fecha = LocalDate.now().plusDays(1);
+
+        List<OcupacionPorSesion> ocupacion = sesionRepository.calcularOcupacionPorSesion(
+                fecha.atStartOfDay(), fecha.plusDays(1).atStartOfDay());
+
+        assertThat(ocupacion).isNotEmpty();
+        assertThat(ocupacion).allMatch(o -> o.fechaHoraInicio().toLocalDate().equals(fecha));
+        assertThat(ocupacion).allMatch(o -> o.porcentajeOcupacion() >= 0 && o.porcentajeOcupacion() <= 100);
+        ocupacion.forEach(o -> System.out.println(
+                o.titulo() + " | Sala " + o.numeroSala()
+                        + " | " + o.entradasVendidas() + "/" + o.capacidad()
+                        + " | " + o.porcentajeOcupacion() + "%"));
+    }
+
+
 
 }
