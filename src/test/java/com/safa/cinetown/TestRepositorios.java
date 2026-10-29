@@ -127,7 +127,7 @@ public class TestRepositorios {
 
     @Test
     void calculaLaOcupacionDeLasSesionesDeUnDia() {
-        LocalDate fecha = LocalDate.now().plusDays(1);
+        LocalDate fecha = LocalDate.of(2026, 10, 10);;
 
         List<OcupacionPorSesion> ocupacion = sesionRepository.calcularOcupacionPorSesion(
                 fecha.atStartOfDay(), fecha.plusDays(1).atStartOfDay());
