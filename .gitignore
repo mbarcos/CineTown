@@ -30,5 +30,8 @@ build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 
+# Node.js
+node_modules/
+
 ### VS Code ###
 .vscode/
