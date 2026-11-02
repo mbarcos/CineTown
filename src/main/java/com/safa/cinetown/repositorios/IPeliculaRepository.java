@@ -15,6 +15,9 @@ public interface IPeliculaRepository extends JpaRepository <Pelicula, String> {
 
     List<Pelicula> findByActivoTrueOrderByTituloAsc();
 
+    @Query("SELECT DISTINCT p FROM Pelicula p LEFT JOIN FETCH p.generos")
+    List<Pelicula> findAllConGeneros();
+
     @Query("""
         SELECT new com.safa.cinetown.dtos.RecaudacionPelicula(
                p.id, p.titulo,
