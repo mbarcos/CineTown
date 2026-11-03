@@ -4,23 +4,7 @@ import { obtienePeliculasDto } from '../../models/dto/peliculaDTO';
 @Component({
   selector: 'app-pelicula-card',
   standalone: true,
-  template: `
-    <article class="movie-card">
-      <div class="poster" [style.background]="posterBackground" role="img" [attr.aria-label]="'Póster de ' + pelicula.titulo">
-        <span class="poster-mark">CINETOWN</span>
-        <div class="movie-info">
-          <h3>{{ pelicula.titulo }}</h3>
-          <span class="release-badge">ESTRENO · {{ pelicula.anio }}</span>
-          <div class="genres">
-            @for (genero of pelicula.generos; track genero) {
-              <span class="genre">{{ genero }}</span>
-            }
-          </div>
-        </div>
-      </div>
-    </article>
-  `,
-  styleUrl: './pelicula-card.scss',
+  templateUrl: './pelicula-card.html',
 })
 export class PeliculaCardComponent {
   @Input({ required: true }) pelicula!: obtienePeliculasDto;
