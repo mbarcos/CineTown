@@ -1,0 +1,16 @@
+<div class="peliculas">
+  @for (pelicula of peliculas(); track pelicula.id) {
+    <div class="pelicula">
+      <h2>{{ pelicula.titulo }}</h2>
+      <p>{{ pelicula.sinopsis }}</p>
+      <span>{{ pelicula.anio }}</span>
+      <span>{{ pelicula.duracion }} minutos</span>
+
+      <div>
+        @for (genero of pelicula.generos; track genero) {
+          <span>{{ genero }}</span>
+        }
+      </div>
+    </div>
+  }
+</div>
