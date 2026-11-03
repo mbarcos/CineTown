@@ -1,9 +1,0 @@
-/* Fondos decorativos del hero; el layout se resuelve con Tailwind. */
-.hero-backdrop { position:absolute; z-index:-2; inset:-70px -25px; display:flex; align-items:center; justify-content:space-around; gap:18px; transform:rotate(-8deg) scale(1.12); opacity:.56; filter:saturate(.8); }
-.poster { flex:1 0 170px; height:250px; display:grid; place-items:center; border:1px solid rgba(255,255,255,.1); border-radius:5px; color:rgba(255,255,255,.24); font-size:24px; font-weight:900; letter-spacing:2px; }
-.poster-one { background:linear-gradient(145deg,#263b54,#10131c); }
-.poster-two { background:linear-gradient(145deg,#713d3c,#1d1720); }
-.poster-three { background:linear-gradient(145deg,#244d4a,#101c23); }
-.poster-four { background:linear-gradient(145deg,#56344e,#211520); }
-.poster-five { background:linear-gradient(145deg,#3b466d,#141925); }
-.hero-shade { position:absolute; z-index:-1; inset:0; background:linear-gradient(90deg,rgba(8,8,12,.92) 0%,rgba(8,8,12,.67) 48%,rgba(8,8,12,.55) 100%),linear-gradient(0deg,#0b0b0f 0%,transparent 55%,rgba(0,0,0,.12) 100%); }
