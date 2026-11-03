@@ -1,0 +1,65 @@
+.tarjeta-pelicula {
+  height: 100%;
+  min-width: 0;
+}
+
+.tarjeta-pelicula_cartel {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  height: 100%;
+  min-height: 310px;
+  align-items: flex-end;
+  overflow: hidden;
+  border-radius: 8px;
+  padding: 20px;
+}
+
+.tarjeta-pelicula_marca-agua {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  color: rgb(255 255 255 / 15%);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 2px;
+}
+
+.tarjeta-pelicula_detalles {
+  width: 100%;
+}
+
+.tarjeta-pelicula_titulo {
+  margin: 0 0 8px;
+  color: var(--color-texto);
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.tarjeta-pelicula_anio {
+  color: rgb(255 255 255 / 75%);
+  font-size: 10px;
+  letter-spacing: 0.025em;
+}
+
+.tarjeta-pelicula_generos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.tarjeta-pelicula_genero {
+  border-radius: 9999px;
+  background: rgb(0 0 0 / 20%);
+  padding: 4px 8px;
+  color: rgb(255 255 255 / 80%);
+  font-size: 10px;
+}
+
+@media (max-width: 39.99rem) {
+  .tarjeta-pelicula_cartel {
+    min-height: 260px;
+  }
+}

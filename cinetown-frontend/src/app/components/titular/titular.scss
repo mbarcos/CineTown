@@ -1,0 +1,100 @@
+.titular {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  min-height: 330px;
+  align-items: center;
+  overflow: hidden;
+  background: #17171d;
+  padding: 42px 5.8% 52px;
+}
+
+.titular_contenido {
+  position: relative;
+  width: 100%;
+  max-width: 850px;
+}
+
+.titular_titulo {
+  margin: 0 0 10px;
+  color: var(--color-texto);
+  font-size: clamp(27px, 3vw, 38px);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1.15;
+}
+
+.titular_descripcion {
+  margin: 0;
+  color: #c0c0c8;
+  font-size: 15px;
+}
+
+.titular_acciones {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 28px;
+}
+
+.titular_boton {
+  display: inline-flex;
+  min-height: 42px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  background: var(--color-primario);
+  padding: 0 24px;
+  color: white;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background-color 150ms;
+
+  &:hover {
+    background: var(--color-primario-hover);
+  }
+}
+
+.titular_insignia {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 9999px;
+  padding: 8px 16px;
+  font-size: 11px;
+}
+
+.titular_insignia--clasificacion {
+  background: var(--color-primario);
+  color: white;
+}
+
+.titular_insignia--estreno {
+  background: var(--color-superficie-2);
+  color: var(--color-texto);
+}
+
+.titular_cartelera {
+  display: block;
+  margin-top: 14px;
+  color: #aaaab4;
+  font-size: 11px;
+  letter-spacing: 0.025em;
+}
+
+@media (max-width: 39.99rem) {
+  .titular {
+    min-height: 300px;
+    padding: 38px 22px;
+  }
+
+  .titular__acciones {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .titular__boton {
+    min-height: 40px;
+    padding: 0 16px;
+  }
+}

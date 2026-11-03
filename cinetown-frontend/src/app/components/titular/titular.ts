@@ -4,5 +4,6 @@ import { Component } from '@angular/core';
   selector: 'app-titular',
   standalone: true,
   templateUrl: './titular.html',
+  styleUrl: './titular.scss',
 })
 export class TitularComponent {}

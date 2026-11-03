@@ -5,6 +5,7 @@ import { obtienePeliculasDto } from '../../models/dto/peliculaDTO';
   selector: 'app-pelicula-card',
   standalone: true,
   templateUrl: './pelicula-card.html',
+  styleUrl: './pelicula-card.scss',
 })
 export class PeliculaCardComponent {
   @Input({ required: true }) pelicula!: obtienePeliculasDto;
