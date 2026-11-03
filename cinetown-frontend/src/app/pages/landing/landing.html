@@ -1,16 +1,29 @@
-<div class="peliculas">
-  @for (pelicula of peliculas(); track pelicula.id) {
-    <div class="pelicula">
-      <h2>{{ pelicula.titulo }}</h2>
-      <p>{{ pelicula.sinopsis }}</p>
-      <span>{{ pelicula.anio }}</span>
-      <span>{{ pelicula.duracion }} minutos</span>
+<app-titular />
 
-      <div>
-        @for (genero of pelicula.generos; track genero) {
-          <span>{{ genero }}</span>
-        }
-      </div>
+<main id="cartelera" class="catalogue">
+  <div class="section-heading">
+    <div>
+      <h2>Cartelera</h2>
+      <p>Películas disponibles actualmente</p>
+    </div>
+  </div>
+
+  <div class="filters" aria-label="Filtrar películas por género">
+    <button class="filter active" type="button">Todas</button>
+    <button class="filter" type="button">Acción</button>
+    <button class="filter" type="button">Comedia</button>
+    <button class="filter" type="button">Drama</button>
+  </div>
+
+  @if (peliculas().length > 0) {
+    <div class="movie-grid">
+      @for (pelicula of peliculas(); track pelicula.id) {
+        <app-pelicula-card [pelicula]="pelicula" />
+      }
+    </div>
+  } @else {
+    <div class="empty-state">
+      <p>Ahora mismo no hay películas disponibles en cartelera.</p>
     </div>
   }
-</div>
+</main>
