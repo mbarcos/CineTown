@@ -1,6 +1,7 @@
 package com.safa.cinetown.controladores;
 
 import com.safa.cinetown.dtos.PeliculaResponse;
+import com.safa.cinetown.dtos.PeliculaDetalleResponse;
 import com.safa.cinetown.servicios.PeliculaService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,7 +22,7 @@ public class PeliculaController {
     }
 
     @GetMapping("/{id}")
-    public PeliculaResponse consultarPelicula(@PathVariable Integer id) {
+    public PeliculaDetalleResponse consultarPelicula(@PathVariable Integer id) {
         return service.consultarPelicula(id);
     }
 }
