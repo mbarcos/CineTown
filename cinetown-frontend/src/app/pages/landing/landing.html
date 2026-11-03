@@ -6,22 +6,32 @@
     <p class="mt-1.5 text-xs text-texto-secundario">Películas disponibles actualmente</p>
   </div>
 
-  <div class="my-[22px] flex flex-wrap gap-2.5" aria-label="Filtrar películas por género">
-    <button class="min-w-[88px] rounded-full bg-primario px-[17px] py-2 text-xs text-white transition-colors hover:bg-primario-hover max-sm:min-w-0 max-sm:px-3.5" type="button">Todas</button>
-    <button class="min-w-[88px] rounded-full bg-superficie-2 px-[17px] py-2 text-xs text-texto-secundario transition-colors hover:bg-primario hover:text-white max-sm:min-w-0 max-sm:px-3.5" type="button">Acción</button>
-    <button class="min-w-[88px] rounded-full bg-superficie-2 px-[17px] py-2 text-xs text-texto-secundario transition-colors hover:bg-primario hover:text-white max-sm:min-w-0 max-sm:px-3.5" type="button">Comedia</button>
-    <button class="min-w-[88px] rounded-full bg-superficie-2 px-[17px] py-2 text-xs text-texto-secundario transition-colors hover:bg-primario hover:text-white max-sm:min-w-0 max-sm:px-3.5" type="button">Drama</button>
-  </div>
+  <app-filtro-genero
+    [generos]="generosDisponibles()"
+    [(generoSeleccionado)]="generoSeleccionado"
+  />
 
-  @if (peliculas().length > 0) {
+  @if (estadoCarga() === 'cargando') {
+    <div class="rounded-lg bg-superficie px-5 py-12 text-center text-sm text-texto-secundario">
+      <p>Cargando películas...</p>
+    </div>
+  } @else if (estadoCarga() === 'error') {
+    <div class="rounded-lg bg-superficie px-5 py-12 text-center text-sm text-texto-secundario" role="alert">
+      <p>No se pudo cargar la cartelera. Comprueba que el servidor esté disponible e inténtalo de nuevo.</p>
+    </div>
+  } @else if (peliculasFiltradas().length > 0) {
     <div class="grid grid-cols-2 gap-[13px] md:grid-cols-3 md:gap-[22px] xl:grid-cols-5">
-      @for (pelicula of peliculas(); track pelicula.id) {
+      @for (pelicula of peliculasFiltradas(); track pelicula.id) {
         <app-pelicula-card [pelicula]="pelicula" />
       }
     </div>
   } @else {
     <div class="rounded-lg bg-superficie px-5 py-12 text-center text-sm text-texto-secundario">
-      <p>Ahora mismo no hay películas disponibles en cartelera.</p>
+      @if (generoSeleccionado()) {
+        <p>No hay películas disponibles del género seleccionado.</p>
+      } @else {
+        <p>Ahora mismo no hay películas disponibles en cartelera.</p>
+      }
     </div>
   }
 </main>

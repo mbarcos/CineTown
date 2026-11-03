@@ -1,6 +1,12 @@
 .tarjeta-pelicula {
   height: 100%;
   min-width: 0;
+  cursor: pointer;
+  &:hover {
+    .tarjeta-pelicula_cartel {
+      transform: scale(1.05);
+    }
+  }
 }
 
 .tarjeta-pelicula_cartel {
@@ -13,6 +19,7 @@
   overflow: hidden;
   border-radius: 8px;
   padding: 20px;
+  transition: transform 0.3s ease-in-out;
 }
 
 .tarjeta-pelicula_marca-agua {

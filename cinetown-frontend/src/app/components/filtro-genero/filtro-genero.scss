@@ -1,0 +1,46 @@
+.filtro-genero {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.625rem;
+  margin-block: 1.5rem;
+}
+
+.filtro-genero_opcion {
+  min-width: 5.5rem;
+  border: 0;
+  border-radius: 9999px;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  cursor: pointer;
+  transition:
+    background-color 150ms,
+    color 150ms;
+
+  &:hover {
+    background-color: var(--color-primario);
+    color: white;
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-info);
+    outline-offset: 2px;
+  }
+}
+
+.filtro-genero_opcion--seleccionada {
+  background-color: var(--color-primario);
+  color: white;
+}
+
+.filtro-genero_opcion--disponible {
+  background-color: var(--color-superficie-2);
+  color: var(--color-texto-secundario);
+}
+
+@media (max-width: 39.99rem) {
+  .filtro-genero_opcion {
+    min-width: 0;
+    padding-inline: 0.875rem;
+  }
+}

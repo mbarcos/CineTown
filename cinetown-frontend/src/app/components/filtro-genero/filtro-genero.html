@@ -1,0 +1,16 @@
+<div class="filtro-genero" role="group" aria-label="Filtrar películas por género">
+  @for (genero of opciones(); track $index) {
+    <button
+      type="button"
+      class="filtro-genero_opcion"
+      [ngClass]="{
+        'filtro-genero_opcion--seleccionada': generoSeleccionado() === genero,
+        'filtro-genero_opcion--disponible': generoSeleccionado() !== genero,
+      }"
+      [attr.aria-pressed]="generoSeleccionado() === genero"
+      (click)="generoSeleccionado.set(genero)"
+    >
+      {{ genero ?? 'Todas' }}
+    </button>
+  }
+</div>
