@@ -1,5 +1,97 @@
 /* You can add global styles to this file, and also import other style files */
-body {
-  margin: 0;
-  padding: 0;
+/* ==========================================================================
+   CineTown · Design tokens (Guía de estilo)
+   Este fichero es la ÚNICA fuente de verdad de color/tipografía.
+   Los componentes nunca deben usar hex sueltos: siempre las clases
+   generadas por estos tokens (bg-primario, text-texto-secundario, etc.)
+   ========================================================================== */
+
+@import "tailwindcss";
+
+@theme {
+  /* --- Color · roles semánticos -------------------------------------- */
+  --color-fondo: #0B0B0F;
+  --color-superficie: #15151B;
+  --color-superficie-2: #202028;
+
+  --color-primario: #8A0009;
+  --color-primario-hover: #A5000B; /* ligeramente más claro para :hover */
+
+  --color-texto: #F5F5F7;
+  --color-texto-secundario: #A5A5B0;
+
+  --color-exito: #35C759;
+  --color-aviso: #F5C451;
+  --color-error: #D9363E;
+  --color-info: #4C8DFF;
+
+  /* --- Tipografía ------------------------------------------------------ */
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+
+  /* Escala 14/16/18/24/32/48. Nombradas por tamaño para que coincidan
+     con la guía; los pesos 400/500/600/700 ya existen en Tailwind
+     como font-normal/medium/semibold/bold, no hace falta redefinirlos. */
+  --text-14: 0.875rem;
+  --text-16: 1rem;
+  --text-18: 1.125rem;
+  --text-24: 1.5rem;
+  --text-32: 2rem;
+  --text-48: 3rem;
 }
+
+/* --- Base: lo que hereda toda la app --------------------------------- */
+@layer base {
+  body {
+    @apply bg-fondo text-texto font-sans antialiased;
+  }
+}
+
+/* --- Componentes reutilizables (de la guía de estilo) ----------------- */
+@layer components {
+  /* Botón primario — "Comprar entradas" */
+  .btn-primary {
+    @apply bg-primario text-texto font-medium text-16 px-5 py-2.5 rounded-lg
+    transition-colors
+    hover:bg-primario-hover
+    focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-info
+    disabled:opacity-40 disabled:cursor-not-allowed;
+  }
+
+  /* Botón secundario — "Ver sesiones" */
+  .btn-secondary {
+    @apply bg-superficie-2 text-texto font-medium text-16 px-5 py-2.5 rounded-lg
+    transition-colors
+    hover:bg-superficie
+    focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-info
+    disabled:opacity-40 disabled:cursor-not-allowed;
+  }
+
+  /* Badge — "+16", "Miércoles" */
+  .badge {
+    @apply inline-flex items-center bg-superficie-2 text-texto-secundario
+    text-14 font-medium px-3 py-1 rounded-full;
+  }
+
+  /* Caja de estado de error */
+  .alert-error {
+    @apply bg-superficie border-l-4 border-error text-texto rounded-md p-4;
+
+    .alert-error-title {
+      @apply font-semibold text-16;
+    }
+    .alert-error-message {
+      @apply text-texto-secundario text-14 mt-1;
+    }
+  }
+
+  /* Estado "seleccionado" reutilizable sobre cualquier botón/badge */
+  .is-selected {
+    @apply bg-error text-texto;
+  }
+
+  /* Estado "loading" — deja el contenido en opacidad reducida */
+  .is-loading {
+    @apply opacity-60 pointer-events-none animate-pulse;
+  }
+}
+
