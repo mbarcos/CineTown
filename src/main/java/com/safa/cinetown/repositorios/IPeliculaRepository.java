@@ -10,13 +10,16 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface IPeliculaRepository extends JpaRepository <Pelicula, String> {
+public interface IPeliculaRepository extends JpaRepository <Pelicula, Integer> {
     List<Pelicula> findByTituloContainingIgnoreCase(String titulo);
 
     List<Pelicula> findByActivoTrueOrderByTituloAsc();
 
     @Query("SELECT DISTINCT p FROM Pelicula p LEFT JOIN FETCH p.generos")
     List<Pelicula> findAllConGeneros();
+
+    @Query("SELECT DISTINCT p FROM Pelicula p LEFT JOIN FETCH p.generos WHERE p.id = :id")
+    Optional<Pelicula> findByIdConGeneros(@Param("id") Integer id);
 
     @Query("""
         SELECT new com.safa.cinetown.dtos.RecaudacionPelicula(
