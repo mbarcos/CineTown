@@ -12,7 +12,7 @@ import { FiltroGeneroComponent } from '../../components/filtro-genero/filtro-gen
   templateUrl: './landing.html',
 })
 export class Landing implements OnInit {
-  private peliculaService = inject(PeliculaService);
+  private readonly peliculaService = inject(PeliculaService);
   peliculas = signal<obtienePeliculasDto[]>([]);
   estadoCarga = signal<'cargando' | 'error' | 'listo'>('cargando');
   generoSeleccionado = signal<string | null>(null);
@@ -29,15 +29,23 @@ export class Landing implements OnInit {
   });
 
   ngOnInit(): void {
+    this.cargarPeliculas();
+  }
+
+  private cargarPeliculas(): void {
     this.peliculaService.getPeliculas().subscribe({
-      next: (data) => {
-        this.peliculas.set(data);
-        this.estadoCarga.set('listo');
-      },
-      error: (error) => {
-        console.error('Error al obtener las películas:', error);
-        this.estadoCarga.set('error');
-      },
+      next: (peliculas) => this.mostrarPeliculas(peliculas),
+      error: (error: unknown) => this.manejarErrorCarga(error),
     });
+  }
+
+  private mostrarPeliculas(peliculas: obtienePeliculasDto[]): void {
+    this.peliculas.set(peliculas);
+    this.estadoCarga.set('listo');
+  }
+
+  private manejarErrorCarga(error: unknown): void {
+    console.error('Error al obtener las películas:', error);
+    this.estadoCarga.set('error');
   }
 }
