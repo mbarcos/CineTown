@@ -8,7 +8,6 @@ import { PeliculaCardComponent } from '../../components/pelicula-card/pelicula-c
   selector: 'app-landing',
   standalone: true,
   imports: [TitularComponent, PeliculaCardComponent],
-  styleUrl: './landing.scss',
   templateUrl: './landing.html',
 })
 export class Landing implements OnInit {
