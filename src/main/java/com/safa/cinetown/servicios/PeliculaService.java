@@ -4,6 +4,8 @@ import com.safa.cinetown.conversores.PeliculaMapper;
 import com.safa.cinetown.dtos.PeliculaDetalleResponse;
 import com.safa.cinetown.dtos.PeliculaResponse;
 import com.safa.cinetown.excepciones.RecursoNoEncontradoException;
+import com.safa.cinetown.modelos.Pelicula;
+import com.safa.cinetown.modelos.Sesion;
 import com.safa.cinetown.repositorios.IPeliculaRepository;
 import com.safa.cinetown.repositorios.ISesionRepository;
 import lombok.AllArgsConstructor;
@@ -26,10 +28,10 @@ public class PeliculaService {
 
     @Transactional(readOnly = true)
     public PeliculaDetalleResponse consultarPelicula(Integer id) {
-        var pelicula = repository.findByIdConGeneros(id)
+        Pelicula pelicula = repository.findByIdConGeneros(id)
                 .orElseThrow(() -> new RecursoNoEncontradoException(
-                        "No se encontró la película con id " + id));
-        var sesiones = sesionRepository.findByPeliculaIdOrderByFechaHoraInicioAsc(id);
+                        "No se encontró la película"));
+        List<Sesion> sesiones = sesionRepository.findByPeliculaIdOrderByFechaHoraInicioAsc(id);
         return mapper.toDetalleResponse(pelicula, sesiones);
     }
 }
