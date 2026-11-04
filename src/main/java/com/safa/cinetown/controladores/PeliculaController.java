@@ -2,12 +2,11 @@ package com.safa.cinetown.controladores;
 
 import com.safa.cinetown.dtos.PeliculaResponse;
 import com.safa.cinetown.dtos.PeliculaDetalleResponse;
+import com.safa.cinetown.dtos.request.PeliculaRequest;
 import com.safa.cinetown.servicios.PeliculaService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -24,5 +23,10 @@ public class PeliculaController {
     @GetMapping("/{id}")
     public PeliculaDetalleResponse consultarPelicula(@PathVariable Integer id) {
         return service.consultarPelicula(id);
+    }
+
+    @PostMapping("/crear")
+    public void crearEspecie(@Valid @RequestBody PeliculaRequest json){
+        service.crearEspeciePez(json);
     }
 }
