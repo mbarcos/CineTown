@@ -1,4 +1,10 @@
 package com.safa.cinetown.dtos;
 
-public class AuthResponse {
-}
+import java.util.List;
+
+public record AuthResponse (
+        String token,
+        String tokenType,
+        String nombreUsuario,
+        List<String> roles
+){}
