@@ -27,6 +27,6 @@ public class PeliculaController {
 
     @PostMapping("/crear")
     public void crearEspecie(@Valid @RequestBody PeliculaRequest json){
-        service.crearEspeciePez(json);
+        service.crearPelicula(json);
     }
 }

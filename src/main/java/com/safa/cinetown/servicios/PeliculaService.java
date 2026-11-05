@@ -36,6 +36,6 @@ public class PeliculaService {
         return mapper.toDetalleResponse(pelicula, sesiones);
     }
     public void crearPelicula(PeliculaRequest dto) {
-        
+
     }
 }
