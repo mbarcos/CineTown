@@ -17,16 +17,16 @@ public class PeliculaController {
     private PeliculaService service;
     @GetMapping
     public List<PeliculaResponse> consultarPeliculas(){
-        return service.consultarTodasPeliculas();
+        return service.consultarTodasPeliculasActivas();
     }
 
     @GetMapping("/{id}")
-    public PeliculaDetalleResponse consultarPelicula(@PathVariable Integer id) {
-        return service.consultarPelicula(id);
+    public PeliculaDetalleResponse consultarPeliculaId(@PathVariable Integer id) {
+        return service.consultarPeliculaPorId(id);
     }
 
     @PostMapping("/crear")
-    public void crearEspecie(@Valid @RequestBody PeliculaRequest json){
+    public void crearPelicula(@Valid @RequestBody PeliculaRequest json){
         service.crearPelicula(json);
     }
 }

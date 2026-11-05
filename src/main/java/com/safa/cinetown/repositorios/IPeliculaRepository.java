@@ -13,6 +13,7 @@ import java.util.Optional;
 public interface IPeliculaRepository extends JpaRepository <Pelicula, Integer> {
     List<Pelicula> findByTituloContainingIgnoreCase(String titulo);
 
+    @Query("SELECT DISTINCT p FROM Pelicula p LEFT JOIN FETCH p.generos WHERE p.activo = true ORDER BY p.titulo ASC")
     List<Pelicula> findByActivoTrueOrderByTituloAsc();
 
     @Query("SELECT DISTINCT p FROM Pelicula p LEFT JOIN FETCH p.generos")
