@@ -5,6 +5,8 @@ import { Observable, tap } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { LoginRequestDTO } from '../models/dto/loginRequestDTO';
 import { AuthResponseDTO } from '../models/dto/authResponseDTO';
+import { RegistroRequestDTO } from '../models/dto/registroRequestDTO';
+
 
 @Injectable({
   providedIn: 'root'
@@ -77,6 +79,15 @@ export class AuthService {
 
   tieneAlgunRol(roles: string[]): boolean {
     return roles.some(rol => this.roles().includes(rol));
+  }
+
+  registrar(datos: RegistroRequestDTO): Observable<AuthResponseDTO> {
+    return this.http.post<AuthResponseDTO>(
+      `${this.apiUrl}/auth/registro`,
+      datos
+    ).pipe(
+      tap(respuesta => this.guardarSesion(respuesta))
+    );
   }
 
   cerrarSesion(): void {

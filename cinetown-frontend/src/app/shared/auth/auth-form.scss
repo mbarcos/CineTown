@@ -1,0 +1,61 @@
+@reference "../../../styles.scss";
+
+/* --- Página: centra la tarjeta en pantalla ----------------------------- */
+:host {
+  @apply flex min-h-screen items-center justify-center bg-fondo p-4;
+}
+
+/* --- Tarjeta ----------------------------------------------------------- */
+.auth-card {
+  @apply w-full max-w-sm bg-superficie rounded-xl p-8 shadow-xl;
+}
+
+.auth-card h1 {
+  @apply text-24 font-semibold text-texto text-center mb-8;
+}
+
+/* --- Campos ------------------------------------------------------------ */
+.form-group {
+  @apply flex flex-col gap-1.5 mb-5;
+}
+
+.form-group label {
+  @apply text-14 font-medium text-texto-secundario;
+}
+
+.form-group input {
+  @apply w-full bg-superficie-2 text-texto text-16 px-4 py-2.5 rounded-lg
+  border border-superficie-2 placeholder:text-texto-secundario/60
+  transition-colors
+  hover:border-texto-secundario/40
+  focus:outline-none focus:border-info focus:ring-2 focus:ring-info/30;
+}
+
+/* Campo inválido y tocado: Angular añade ng-invalid y ng-touched */
+.form-group input.ng-invalid.ng-touched {
+  @apply border-error;
+}
+
+.form-group small {
+  @apply text-14 text-error;
+}
+
+/* --- Error del servidor o de autenticación ---------------------------- */
+.error {
+  @apply bg-superficie-2 border-l-4 border-error text-texto text-14 rounded-md p-4 mb-5;
+}
+
+/* --- Enlaces de pie de tarjeta ("¿Ya tienes cuenta?") ------------------ */
+.auth-links {
+  @apply mt-6 text-center text-14 text-texto-secundario;
+}
+
+.auth-links a {
+  @apply text-info font-medium transition-colors hover:underline
+  focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-info;
+}
+
+/* --- Estado de carga del formulario ----------------------------------- */
+.auth-card form.is-loading {
+  @apply opacity-60 pointer-events-none;
+}

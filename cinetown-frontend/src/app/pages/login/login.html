@@ -5,13 +5,11 @@
   <title>Login</title>
 </head>
 <body>
-<div class="login-container">
+<div class="auth-card">
   <h1>Iniciar sesión</h1>
 
-  <form
-    [formGroup]="formulario"
-    (ngSubmit)="iniciarSesion()"
-  >
+  <form [formGroup]="formulario" (ngSubmit)="iniciarSesion()"
+        [class.is-loading]="enviando()">
 
     <div class="form-group">
       <label for="nombreUsuario">
@@ -39,7 +37,6 @@
       </div>
     </div>
 
-
     <!-- Contraseña -->
     <div class="form-group">
 
@@ -65,22 +62,20 @@
 
     </div>
 
-
     <!-- Error de autenticación -->
     <div *ngIf="mensajeError()" class="error">
       {{ mensajeError() }}
     </div>
 
     <!-- Botón -->
-    <button
-      type="submit"
-      [disabled]="formulario.invalid || enviando()"
-    >
+    <button type="submit" class="btn-primary w-full mt-2"
+            [disabled]="formulario.invalid || enviando()">
       {{ enviando() ? 'Iniciando sesión...' : 'Iniciar sesión' }}
     </button>
-
   </form>
-
+  <p class="auth-links">
+    ¿No tienes cuenta? <a routerLink="/registro">Crear cuenta</a>
+  </p>
 </div>
 </body>
 </html>

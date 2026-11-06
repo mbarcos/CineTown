@@ -5,7 +5,7 @@ import {
   ReactiveFormsModule
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { Router, ActivatedRoute } from '@angular/router';
+import {Router, ActivatedRoute, RouterLink} from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { AuthService } from '../../services/authService';
 
@@ -14,9 +14,11 @@ import { AuthService } from '../../services/authService';
   standalone: true,
   imports: [
     CommonModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    RouterLink
   ],
-  templateUrl: './login.html'
+  templateUrl: './login.html',
+  styleUrl: '../../shared/auth/auth-form.scss'
 })
 export class Login {
 
