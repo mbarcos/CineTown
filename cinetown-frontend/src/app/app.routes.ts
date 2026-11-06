@@ -7,5 +7,8 @@ export const routes: Routes = [
   {path: "", component: Landing},
   { path: 'registro', component: RegistroComponent },
   {path: 'login', component: Login},
-  {path: '**', redirectTo: ''}
+  {path: '**', redirectTo: ''},
+  {path: 'peliculas/:id', loadComponent: () =>
+      import('./models/pelicula-detalle.model')
+        .then(m => m.PeliculaDetalleComponent) },
 ];
