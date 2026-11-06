@@ -1,33 +1,40 @@
 <header class="encabezado">
-  <a class="encabezado_marca" href="/" aria-label="CineTown, inicio">CINETOWN</a>
+
+  <a class="encabezado_marca" routerLink="/" aria-label="CineTown, inicio">
+    CINETOWN
+  </a>
+
   <nav class="encabezado_navegacion" aria-label="Navegación principal">
-    <a class="encabezado_enlace encabezado_enlace--activo" href="#cartelera">Cartelera</a>
-    <a class="encabezado_enlace" href="#mis-compras">Mis compras</a>
-  </nav>
-  <a class="encabezado_cuenta" href="#iniciar-sesion">Iniciar Sesión</a>
-  <nav>
 
-    <a routerLink="/">
-      CineTown
-    </a>
+    <div class="encabezado_enlaces">
 
-    @if (!authService.estaAutenticado()) {
-
-      <a routerLink="/login">
-        Iniciar sesión
+      <a class="encabezado_enlace encabezado_enlace--activo" href="#cartelera">
+        Cartelera
       </a>
 
-    } @else {
+      @if (authService.estaAutenticado()) {
+        <a class="encabezado_enlace" href="#mis-compras">
+          Mis compras
+        </a>
+      }
 
-      <span>
-                Hola, {{ authService.usuarioActual()?.nombreUsuario }}
-            </span>
+    </div>
 
-      <button (click)="authService.cerrarSesion()">
-        Cerrar sesión
-      </button>
-
-    }
+    <div class="encabezado_sesion">
+      @if (!authService.estaAutenticado()) {
+        <a class="encabezado_cuenta" routerLink="/login">
+          Iniciar Sesión
+        </a>
+      } @else {
+        <span class="encabezado_usuario">
+          Hola, {{ authService.usuarioActual()?.nombreUsuario }}
+        </span>
+        <button class="encabezado_boton" (click)="authService.cerrarSesion()">
+          Cerrar sesión
+        </button>
+      }
+    </div>
 
   </nav>
+
 </header>
