@@ -5,6 +5,82 @@
   <title>Login</title>
 </head>
 <body>
+<div class="login-container">
+  <h1>Iniciar sesión</h1>
 
+  <form
+    [formGroup]="formulario"
+    (ngSubmit)="iniciarSesion()"
+  >
+
+    <div class="form-group">
+      <label for="nombreUsuario">
+        Nombre de usuario
+      </label>
+
+      <input
+        id="nombreUsuario"
+        type="text"
+        formControlName="nombreUsuario"
+        placeholder="Introduce tu nombre de usuario"
+      />
+
+      <div
+        *ngIf="
+          formulario.controls.nombreUsuario.touched &&
+          formulario.controls.nombreUsuario.invalid
+        ">
+        <small *ngIf="formulario.controls.nombreUsuario.errors?.['required']">
+          El nombre de usuario es obligatorio.
+        </small>
+        <small *ngIf="formulario.controls.nombreUsuario.errors?.['maxlength']">
+          El nombre de usuario no puede superar los 50 caracteres.
+        </small>
+      </div>
+    </div>
+
+
+    <!-- Contraseña -->
+    <div class="form-group">
+
+      <label for="password">
+        Contraseña
+      </label>
+
+      <input
+        id="password"
+        type="password"
+        formControlName="password"
+        placeholder="Introduce tu contraseña"
+      />
+
+      <small
+        *ngIf="
+          formulario.controls.password.touched &&
+          formulario.controls.password.hasError('required')
+        "
+      >
+        La contraseña es obligatoria.
+      </small>
+
+    </div>
+
+
+    <!-- Error de autenticación -->
+    <div *ngIf="mensajeError()" class="error">
+      {{ mensajeError() }}
+    </div>
+
+    <!-- Botón -->
+    <button
+      type="submit"
+      [disabled]="formulario.invalid || enviando()"
+    >
+      {{ enviando() ? 'Iniciando sesión...' : 'Iniciar sesión' }}
+    </button>
+
+  </form>
+
+</div>
 </body>
 </html>

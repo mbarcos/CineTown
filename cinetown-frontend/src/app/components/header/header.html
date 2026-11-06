@@ -3,7 +3,31 @@
   <nav class="encabezado_navegacion" aria-label="Navegación principal">
     <a class="encabezado_enlace encabezado_enlace--activo" href="#cartelera">Cartelera</a>
     <a class="encabezado_enlace" href="#mis-compras">Mis compras</a>
-    <a class="encabezado_enlace" href="#ayuda">Ayuda</a>
   </nav>
   <a class="encabezado_cuenta" href="#iniciar-sesion">Iniciar Sesión</a>
+  <nav>
+
+    <a routerLink="/">
+      CineTown
+    </a>
+
+    @if (!authService.estaAutenticado()) {
+
+      <a routerLink="/login">
+        Iniciar sesión
+      </a>
+
+    } @else {
+
+      <span>
+                Hola, {{ authService.usuarioActual()?.nombreUsuario }}
+            </span>
+
+      <button (click)="authService.cerrarSesion()">
+        Cerrar sesión
+      </button>
+
+    }
+
+  </nav>
 </header>

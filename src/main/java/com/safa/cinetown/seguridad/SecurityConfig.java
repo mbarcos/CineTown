@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -55,13 +56,14 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(
+
             HttpSecurity http,
             JwtAuthenticationConverter jwtAuthenticationConverter)
             throws Exception {
 
         http
                 .csrf(csrf -> csrf.disable())
-
+                .cors(Customizer.withDefaults())
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(
                                 SessionCreationPolicy.STATELESS
@@ -91,7 +93,7 @@ public class SecurityConfig {
 
                         // Alta de película: solo ADMIN
                         .requestMatchers(HttpMethod.POST,
-                                "/peliculas")
+                                "/peliculas/crear")
                         .hasRole("ADMIN")
 
                         // Modificación de película: solo ADMIN

@@ -2,9 +2,7 @@ import { Injectable, inject, signal, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable, tap } from 'rxjs';
-
 import { environment } from '../../environments/environment';
-
 import { LoginRequestDTO } from '../models/dto/loginRequestDTO';
 import { AuthResponseDTO } from '../models/dto/authResponseDTO';
 
@@ -12,12 +10,9 @@ import { AuthResponseDTO } from '../models/dto/authResponseDTO';
   providedIn: 'root'
 })
 export class AuthService {
-
   private http = inject(HttpClient);
   private router = inject(Router);
-
   private apiUrl = environment.apiUrl;
-
   private readonly storageKey = 'cinetown_auth';
 
   private sesion = signal<AuthResponseDTO | null>(
@@ -72,9 +67,7 @@ export class AuthService {
       ) {
         return null;
       }
-
       return sesion;
-
     } catch {
       return null;
     }
