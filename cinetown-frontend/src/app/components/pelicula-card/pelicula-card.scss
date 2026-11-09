@@ -9,6 +9,12 @@
   }
 }
 
+.tarjeta-pelicula_enlace {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+}
+
 .tarjeta-pelicula_cartel {
   position: relative;
   isolation: isolate;

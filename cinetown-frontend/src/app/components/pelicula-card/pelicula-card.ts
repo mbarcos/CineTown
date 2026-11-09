@@ -1,11 +1,15 @@
 import { Component, Input } from '@angular/core';
 import { obtienePeliculasDto } from '../../models/dto/peliculaDTO';
+import {RouterLink} from '@angular/router';
 
 @Component({
   selector: 'app-pelicula-card',
   standalone: true,
   templateUrl: './pelicula-card.html',
   styleUrl: './pelicula-card.scss',
+  imports: [
+    RouterLink
+  ]
 })
 export class PeliculaCardComponent {
   @Input({ required: true }) pelicula!: obtienePeliculasDto;
