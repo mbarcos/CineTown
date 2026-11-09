@@ -6,7 +6,7 @@ export interface SesionPelicula {
   precioBase: number;
 }
 
-export interface PeliculaDetalle {
+export interface PeliculaDetalleResponse {
   id: number;
   titulo: string;
   sinopsis: string | null;

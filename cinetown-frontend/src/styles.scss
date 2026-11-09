@@ -45,33 +45,29 @@
     @apply bg-fondo text-texto font-sans antialiased;
   }
 }
+@utility btn-primary {
+  @apply bg-primario text-texto font-medium text-16 px-5 py-2.5 rounded-lg
+  transition-colors
+  hover:bg-primario-hover
+  focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-info
+  disabled:opacity-40 disabled:cursor-not-allowed;
+}
 
+@utility btn-secondary {
+  @apply bg-superficie-2 text-texto font-medium text-16 px-5 py-2.5 rounded-lg
+  transition-colors
+  hover:bg-superficie
+  focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-info
+  disabled:opacity-40 disabled:cursor-not-allowed;
+}
+
+/* Badge — "+16", "Miércoles" */
+@utility badge {
+  @apply inline-flex items-center bg-superficie-2 text-texto-secundario
+  text-14 font-medium px-3 py-1 rounded-full;
+}
 /* --- Componentes reutilizables (de la guía de estilo) ----------------- */
 @layer components {
-  /* Botón primario — "Comprar entradas" */
-  .btn-primary {
-    @apply bg-primario text-texto font-medium text-16 px-5 py-2.5 rounded-lg
-    transition-colors
-    hover:bg-primario-hover
-    focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-info
-    disabled:opacity-40 disabled:cursor-not-allowed;
-  }
-
-  /* Botón secundario — "Ver sesiones" */
-  .btn-secondary {
-    @apply bg-superficie-2 text-texto font-medium text-16 px-5 py-2.5 rounded-lg
-    transition-colors
-    hover:bg-superficie
-    focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-info
-    disabled:opacity-40 disabled:cursor-not-allowed;
-  }
-
-  /* Badge — "+16", "Miércoles" */
-  .badge {
-    @apply inline-flex items-center bg-superficie-2 text-texto-secundario
-    text-14 font-medium px-3 py-1 rounded-full;
-  }
-
   /* Caja de estado de error */
   .alert-error {
     @apply bg-superficie border-l-4 border-error text-texto rounded-md p-4;
