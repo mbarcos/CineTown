@@ -17,14 +17,22 @@ public class SesionService {
 
     @Transactional(readOnly = true)
     public List<SesionConAsientos> consultarSesiones(LocalDate fecha, Integer peliculaId) {
-        LocalDateTime inicio = null;
-        LocalDateTime fin = null;
+        LocalDateTime ahora = LocalDateTime.now();
+        LocalDateTime inicio = ahora;
+        LocalDateTime fin = ahora;
 
         if (fecha != null) {
             inicio = fecha.atStartOfDay();
             fin = fecha.plusDays(1).atStartOfDay();
         }
 
-        return repository.encuentraSesionesActivasConAsientosLibres(inicio, fin, peliculaId);
+        int idPelicula = peliculaId == null ? -1 : peliculaId;
+
+        return repository.encuentraSesionesActivasConAsientosLibres(
+                inicio,
+                fin,
+                idPelicula,
+                fecha != null,
+                peliculaId != null);
     }
 }

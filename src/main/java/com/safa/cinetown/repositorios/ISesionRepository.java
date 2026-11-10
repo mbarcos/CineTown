@@ -26,9 +26,9 @@ public interface ISesionRepository extends JpaRepository<Sesion, Integer> {
             JOIN s.sala sa
             LEFT JOIN Compra c ON c.sesion = s AND c.estado = true
             WHERE s.fechaHoraInicio > CURRENT_TIMESTAMP
-                AND (:inicio IS NULL OR s.fechaHoraInicio >= :inicio)
-                AND (:fin IS NULL OR s.fechaHoraInicio < :fin)
-                AND (:peliculaId IS NULL OR p.id = :peliculaId)
+                AND (:filtrarFecha = false OR s.fechaHoraInicio >= :inicio)
+                AND (:filtrarFecha = false OR s.fechaHoraInicio < :fin)
+                AND (:filtrarPelicula = false OR p.id = :peliculaId)
             GROUP BY s.id, p.titulo, sa.numero, s.fechaHoraInicio,
                     s.fechaHoraFin, s.precioBase, sa.capacidad
             ORDER BY s.fechaHoraInicio
@@ -36,10 +36,13 @@ public interface ISesionRepository extends JpaRepository<Sesion, Integer> {
     List<SesionConAsientos> encuentraSesionesActivasConAsientosLibres(
             @Param("inicio") LocalDateTime inicio,
             @Param("fin") LocalDateTime fin,
-            @Param("peliculaId") Integer peliculaId);
+            @Param("peliculaId") Integer peliculaId,
+            @Param("filtrarFecha") boolean filtrarFecha,
+            @Param("filtrarPelicula") boolean filtrarPelicula);
 
     default List<SesionConAsientos> encuentraSesionesActivasConAsientosLibres() {
-        return encuentraSesionesActivasConAsientosLibres(null, null, null);
+        LocalDateTime ahora = LocalDateTime.now();
+        return encuentraSesionesActivasConAsientosLibres(ahora, ahora, -1, false, false);
     }
 
     @EntityGraph(attributePaths = "pelicula")
