@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -27,5 +28,17 @@ public class CompraController {
 
         return service.consultarCompras(
                 authentication.getName(), consultarTodas, pageable);
+    }
+
+    @GetMapping("/{codigo}")
+    public com.safa.cinetown.dtos.DetalleCompra consultarCompra(
+            @PathVariable String codigo,
+            Authentication authentication) {
+        boolean consultarTodas = authentication.getAuthorities().stream()
+                .anyMatch(authority -> authority.getAuthority().equals("ROLE_ADMIN")
+                        || authority.getAuthority().equals("ROLE_TAQUILLA"));
+
+        return service.consultarCompra(
+                codigo, authentication.getName(), consultarTodas);
     }
 }

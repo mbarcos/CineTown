@@ -1,6 +1,7 @@
 package com.safa.cinetown.servicios;
 
 import com.safa.cinetown.dtos.CompraResumen;
+import com.safa.cinetown.dtos.DetalleCompra;
 import com.safa.cinetown.excepciones.RecursoNoEncontradoException;
 import com.safa.cinetown.repositorios.ICompraRepository;
 import com.safa.cinetown.repositorios.IUsuarioRepository;
@@ -31,5 +32,26 @@ public class CompraService {
                 .getId();
 
         return compraRepository.encuentraComprasDeUsuario(usuarioId, pageable);
+    }
+
+    @Transactional(readOnly = true)
+    public DetalleCompra consultarCompra(
+            String codigo,
+            String nombreUsuario,
+            boolean consultarTodas) {
+        if (!consultarTodas) {
+            Integer usuarioId = usuarioRepository.findByNombreUsuario(nombreUsuario)
+                    .orElseThrow(() -> new RecursoNoEncontradoException(
+                            "No se encontró el usuario autenticado"))
+                    .getId();
+
+            if (!compraRepository.existsByCodCompraAndUsuario_Id(codigo, usuarioId)) {
+                throw new RecursoNoEncontradoException("No se encontró la compra");
+            }
+        }
+
+        return compraRepository.encuentraDetalleCompraPorCodigo(codigo)
+                .orElseThrow(() -> new RecursoNoEncontradoException(
+                        "No se encontró la compra"));
     }
 }

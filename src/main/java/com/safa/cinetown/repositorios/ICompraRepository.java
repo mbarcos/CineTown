@@ -24,6 +24,8 @@ public interface ICompraRepository extends JpaRepository <Compra, Integer>{
             """)
     Optional<DetalleCompra> encuentraDetalleCompraPorCodigo(@Param("codCompra") String codCompra);
 
+    boolean existsByCodCompraAndUsuario_Id(String codCompra, Integer usuarioId);
+
     @Query(value = """
         SELECT new com.safa.cinetown.dtos.CompraResumen(
                c.codCompra, p.titulo, sa.numero, s.fechaHoraInicio,
