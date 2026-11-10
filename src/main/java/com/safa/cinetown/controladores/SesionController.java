@@ -2,13 +2,12 @@ package com.safa.cinetown.controladores;
 
 import com.safa.cinetown.dtos.SesionConAsientos;
 import com.safa.cinetown.dtos.OcupacionPorSesion;
+import com.safa.cinetown.dtos.request.SesionRequest;
 import com.safa.cinetown.servicios.SesionService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -17,6 +16,11 @@ import java.util.List;
 @AllArgsConstructor
 public class SesionController {
     private final SesionService service;
+
+    @PostMapping("/sesiones")
+    public void programarSesion(@Valid @RequestBody SesionRequest request) {
+        service.programarSesion(request);
+    }
 
     @GetMapping("/sesiones")
     public List<SesionConAsientos> consultarSesiones(

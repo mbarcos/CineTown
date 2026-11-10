@@ -15,6 +15,18 @@ import java.util.*;
 @Repository
 public interface ISesionRepository extends JpaRepository<Sesion, Integer> {
     @Query("""
+            SELECT CASE WHEN COUNT(s) > 0 THEN true ELSE false END
+            FROM Sesion s
+            WHERE s.sala.id = :salaId
+              AND s.fechaHoraInicio < :finConMargen
+              AND s.fechaHoraFin > :inicioConMargen
+            """)
+    boolean existeSolapamientoEnSala(
+            @Param("salaId") Integer salaId,
+            @Param("inicioConMargen") LocalDateTime inicioConMargen,
+            @Param("finConMargen") LocalDateTime finConMargen);
+
+    @Query("""
             SELECT new com.safa.cinetown.dtos.SesionConAsientos(
                     s.id, p.titulo, sa.numero,
                     s.fechaHoraInicio, s.fechaHoraFin, s.precioBase,

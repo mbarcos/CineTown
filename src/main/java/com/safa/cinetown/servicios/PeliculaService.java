@@ -59,7 +59,6 @@ public class PeliculaService {
 
     @Transactional
     public PeliculaResponse crearPelicula(PeliculaRequest dto) {
-        //Comprobar que existen los generos
         List<Genero> generos = generoRepository.findByNombreIn(dto.generos());
         if (generos.size() != dto.generos().size()) {
             Set<String> encontrados = generos.stream()

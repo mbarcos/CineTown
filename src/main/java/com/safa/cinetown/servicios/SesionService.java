@@ -1,8 +1,17 @@
 package com.safa.cinetown.servicios;
 
-import com.safa.cinetown.dtos.SesionConAsientos;
+import com.safa.cinetown.conversores.SesionMapper;
 import com.safa.cinetown.dtos.OcupacionPorSesion;
+import com.safa.cinetown.dtos.SesionConAsientos;
+import com.safa.cinetown.dtos.request.SesionRequest;
+import com.safa.cinetown.excepciones.ConflictoException;
+import com.safa.cinetown.excepciones.ReglaNegocioException;
 import com.safa.cinetown.excepciones.RecursoNoEncontradoException;
+import com.safa.cinetown.modelos.Pelicula;
+import com.safa.cinetown.modelos.Sala;
+import com.safa.cinetown.modelos.Sesion;
+import com.safa.cinetown.repositorios.IPeliculaRepository;
+import com.safa.cinetown.repositorios.ISalaRepository;
 import com.safa.cinetown.repositorios.ISesionRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,24 +25,72 @@ import java.util.List;
 @AllArgsConstructor
 public class SesionService {
     private final ISesionRepository repository;
+    private final IPeliculaRepository peliculaRepository;
+    private final ISalaRepository salaRepository;
+    private final SesionMapper mapper;
+
+    @Transactional
+    public void programarSesion(SesionRequest request) {
+        validarFechaFutura(request.fechaHoraInicio());
+        Pelicula pelicula = obtenerPeliculaActiva(request.peliculaId());
+        Sala sala = obtenerSala(request.salaId());
+        LocalDateTime fin = calcularFin(request.fechaHoraInicio(), pelicula);
+        validarDisponibilidadSala(sala, request.fechaHoraInicio(), fin);
+
+        Sesion sesion = mapper.aEntidad(request, pelicula, sala, fin);
+        repository.save(sesion);
+    }
+
+    private void validarFechaFutura(LocalDateTime inicio) {
+        if (!inicio.isAfter(LocalDateTime.now())) {
+            throw new ReglaNegocioException("La sesión debe tener una fecha futura");
+        }
+    }
+
+    private Pelicula obtenerPeliculaActiva(Integer peliculaId) {
+        Pelicula pelicula = peliculaRepository.findById(peliculaId)
+                .orElseThrow(() -> new RecursoNoEncontradoException(
+                        "No se encontró la película"));
+        if (!Boolean.TRUE.equals(pelicula.getActivo())) {
+            throw new ReglaNegocioException(
+                    "Solo se pueden programar sesiones de películas activas");
+        }
+        return pelicula;
+    }
+
+    private Sala obtenerSala(Integer salaId) {
+        return salaRepository.findById(salaId)
+                .orElseThrow(() -> new RecursoNoEncontradoException(
+                        "No se encontró la sala"));
+    }
+
+    private LocalDateTime calcularFin(LocalDateTime inicio, Pelicula pelicula) {
+        return inicio.plusMinutes(pelicula.getDuracion());
+    }
+
+    private void validarDisponibilidadSala(
+            Sala sala, LocalDateTime inicio, LocalDateTime fin) {
+        LocalDateTime inicioConMargen = inicio.minusMinutes(20);
+        LocalDateTime finConMargen = fin.plusMinutes(20);
+        if (repository.existeSolapamientoEnSala(
+                sala.getId(), inicioConMargen, finConMargen)) {
+            throw new ConflictoException(
+                    "La sala ya tiene una sesión solapada, incluyendo los 20 minutos de limpieza");
+        }
+    }
 
     @Transactional(readOnly = true)
     public List<SesionConAsientos> consultarSesiones(LocalDate fecha, Integer peliculaId) {
         LocalDateTime ahora = LocalDateTime.now();
-        LocalDateTime inicio = ahora;
-        LocalDateTime fin = ahora;
-
-        if (fecha != null) {
-            inicio = fecha.atStartOfDay();
-            fin = fecha.plusDays(1).atStartOfDay();
-        }
-
-        int idPelicula = peliculaId == null ? -1 : peliculaId;
+        LocalDateTime inicio = fecha == null ? ahora : fecha.atStartOfDay();
+        LocalDateTime fin = fecha == null
+                ? ahora
+                : fecha.plusDays(1).atStartOfDay();
 
         return repository.encuentraSesionesActivasConAsientosLibres(
                 inicio,
                 fin,
-                idPelicula,
+                peliculaId == null ? -1 : peliculaId,
                 fecha != null,
                 peliculaId != null);
     }
