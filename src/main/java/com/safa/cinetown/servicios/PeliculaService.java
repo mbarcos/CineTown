@@ -3,6 +3,7 @@ package com.safa.cinetown.servicios;
 import com.safa.cinetown.conversores.PeliculaMapper;
 import com.safa.cinetown.dtos.PeliculaDetalleResponse;
 import com.safa.cinetown.dtos.PeliculaResponse;
+import com.safa.cinetown.dtos.RecaudacionPelicula;
 import com.safa.cinetown.dtos.request.PeliculaRequest;
 import com.safa.cinetown.excepciones.RecursoNoEncontradoException;
 import com.safa.cinetown.modelos.Genero;
@@ -47,6 +48,13 @@ public class PeliculaService {
                         "No se encontró la película"));
         List<Sesion> sesiones = sesionRepository.findByPeliculaIdOrderByFechaHoraInicioAsc(id);
         return mapper.toDetalleResponse(pelicula, sesiones);
+    }
+
+    @Transactional(readOnly = true)
+    public RecaudacionPelicula consultarRecaudacionPorPelicula(Integer id) {
+        return repository.calcularRecaudacionPorPelicula(id)
+                .orElseThrow(() -> new RecursoNoEncontradoException(
+                        "No se encontró la película"));
     }
 
     @Transactional
