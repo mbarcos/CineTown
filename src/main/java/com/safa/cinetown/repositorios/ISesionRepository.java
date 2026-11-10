@@ -16,21 +16,31 @@ import java.util.*;
 public interface ISesionRepository extends JpaRepository<Sesion, Integer> {
     @Query("""
             SELECT new com.safa.cinetown.dtos.SesionConAsientos(
-                   s.id, p.titulo, sa.numero, s.fechaHoraInicio, s.fechaHoraFin,
-                   s.precioBase, sa.capacidad,
-                   CAST(
-                   sa.capacidad - COALESCE(SUM(c.numEntradas), 0L) AS Integer)
-                   )
+                    s.id, p.titulo, sa.numero,
+                    s.fechaHoraInicio, s.fechaHoraFin, s.precioBase,
+                    sa.capacidad,
+                    CAST(sa.capacidad - COALESCE(SUM(c.numEntradas), 0L) AS Integer)
+            )
             FROM Sesion s
             JOIN s.pelicula p
             JOIN s.sala sa
             LEFT JOIN Compra c ON c.sesion = s AND c.estado = true
             WHERE s.fechaHoraInicio > CURRENT_TIMESTAMP
+                AND (:inicio IS NULL OR s.fechaHoraInicio >= :inicio)
+                AND (:fin IS NULL OR s.fechaHoraInicio < :fin)
+                AND (:peliculaId IS NULL OR p.id = :peliculaId)
             GROUP BY s.id, p.titulo, sa.numero, s.fechaHoraInicio,
-                     s.fechaHoraFin, s.precioBase, sa.capacidad
+                    s.fechaHoraFin, s.precioBase, sa.capacidad
             ORDER BY s.fechaHoraInicio
             """)
-     List<SesionConAsientos> encuentraSesionesActivasConAsientosLibres();
+    List<SesionConAsientos> encuentraSesionesActivasConAsientosLibres(
+            @Param("inicio") LocalDateTime inicio,
+            @Param("fin") LocalDateTime fin,
+            @Param("peliculaId") Integer peliculaId);
+
+    default List<SesionConAsientos> encuentraSesionesActivasConAsientosLibres() {
+        return encuentraSesionesActivasConAsientosLibres(null, null, null);
+    }
 
     @EntityGraph(attributePaths = "pelicula")
     List<Sesion> findByPeliculaIdOrderByFechaHoraInicioAsc(Integer peliculaId);
