@@ -1,13 +1,18 @@
 package com.safa.cinetown.controladores;
 
 import com.safa.cinetown.dtos.CompraResumen;
+import com.safa.cinetown.dtos.CompraResponse;
+import com.safa.cinetown.dtos.request.CompraRequest;
 import com.safa.cinetown.servicios.CompraService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,6 +22,16 @@ import org.springframework.web.bind.annotation.RestController;
 @AllArgsConstructor
 public class CompraController {
     private final CompraService service;
+
+    @PostMapping
+    public CompraResponse comprarEntradas(
+            @Valid @RequestBody CompraRequest request,
+            Authentication authentication) {
+        boolean esCliente = authentication != null && authentication.getAuthorities().stream()
+                .anyMatch(authority -> authority.getAuthority().equals("ROLE_CLIENTE"));
+        String nombreUsuario = authentication == null ? null : authentication.getName();
+        return service.comprarEntradas(request, nombreUsuario, esCliente);
+    }
 
     @GetMapping
     public Page<CompraResumen> consultarCompras(

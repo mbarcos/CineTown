@@ -1,6 +1,7 @@
 package com.safa.cinetown.controladores;
 
 import com.safa.cinetown.excepciones.ConflictoException;
+import com.safa.cinetown.excepciones.AsientosInsuficientesException;
 import com.safa.cinetown.excepciones.ReglaNegocioException;
 import com.safa.cinetown.excepciones.RecursoNoEncontradoException;
 import org.springframework.http.HttpStatus;
@@ -17,6 +18,14 @@ import java.util.Map;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    @ExceptionHandler(AsientosInsuficientesException.class)
+    public ResponseEntity<?> handleAsientosInsuficientes(
+            AsientosInsuficientesException ex) {
+        return ResponseEntity
+                .status(HttpStatus.UNPROCESSABLE_ENTITY)
+                .body(Map.of("error", ex.getMessage()));
+    }
 
     @ExceptionHandler(RecursoNoEncontradoException.class)
     public ResponseEntity<?> handleRecursoNoEncontrado(

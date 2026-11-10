@@ -13,6 +13,11 @@ import java.util.Optional;
 
 @Repository
 public interface ICompraRepository extends JpaRepository <Compra, Integer>{
+    @Query("SELECT COALESCE(SUM(c.numEntradas), 0) FROM Compra c WHERE c.sesion.id = :sesionId AND c.estado = true")
+    long cuentaEntradasActivasPorSesion(@Param("sesionId") Integer sesionId);
+
+    boolean existsByCodCompra(String codCompra);
+
     @Query("""
             SELECT new com.safa.cinetown.dtos.DetalleCompra(
                    c.codCompra, sa.numero, s.fechaHoraInicio, p.titulo)

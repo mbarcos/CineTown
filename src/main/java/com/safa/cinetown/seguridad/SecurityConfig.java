@@ -147,10 +147,10 @@ public class SecurityConfig {
                         // COMPRAS
                         // =====================================
 
-                        // Realizar compra: CLIENTE y TAQUILLA
+                        // Realizar compra: también se permite como invitado.
                         .requestMatchers(HttpMethod.POST,
                                 "/compras")
-                        .hasAnyRole("CLIENTE", "TAQUILLA")
+                        .permitAll()
 
                         // Consultar listado de compras:
                         // ADMIN, TAQUILLA y CLIENTE

@@ -3,8 +3,10 @@ package com.safa.cinetown.repositorios;
 import com.safa.cinetown.dtos.OcupacionPorSesion;
 import com.safa.cinetown.modelos.Sesion;
 import com.safa.cinetown.dtos.SesionConAsientos;
+import jakarta.persistence.LockModeType;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -14,6 +16,10 @@ import java.util.*;
 
 @Repository
 public interface ISesionRepository extends JpaRepository<Sesion, Integer> {
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("SELECT s FROM Sesion s WHERE s.id = :id")
+    Optional<Sesion> encuentraPorIdParaActualizar(@Param("id") Integer id);
+
     @Query("""
             SELECT CASE WHEN COUNT(s) > 0 THEN true ELSE false END
             FROM Sesion s
