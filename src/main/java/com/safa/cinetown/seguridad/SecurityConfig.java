@@ -93,7 +93,7 @@ public class SecurityConfig {
 
                         // Alta de película: solo ADMIN
                         .requestMatchers(HttpMethod.POST,
-                                "/peliculas/crear")
+                                "/peliculas")
                         .hasRole("ADMIN")
 
                         // Modificación de película: solo ADMIN

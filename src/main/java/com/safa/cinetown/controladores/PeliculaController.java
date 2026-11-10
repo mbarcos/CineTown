@@ -31,7 +31,7 @@ public class PeliculaController {
         return service.consultarRecaudacionPorPelicula(id);
     }
 
-    @PostMapping("/crear")
+    @PostMapping
     public void crearPelicula(@Valid @RequestBody PeliculaRequest json){
         service.crearPelicula(json);
     }
