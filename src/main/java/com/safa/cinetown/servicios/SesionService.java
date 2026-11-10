@@ -1,6 +1,7 @@
 package com.safa.cinetown.servicios;
 
 import com.safa.cinetown.dtos.SesionConAsientos;
+import com.safa.cinetown.excepciones.RecursoNoEncontradoException;
 import com.safa.cinetown.repositorios.ISesionRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -34,5 +35,12 @@ public class SesionService {
                 idPelicula,
                 fecha != null,
                 peliculaId != null);
+    }
+
+    @Transactional(readOnly = true)
+    public SesionConAsientos consultarSesionPorId(Integer id) {
+        return repository.encuentraDetallePorId(id)
+                .orElseThrow(() -> new RecursoNoEncontradoException(
+                        "No se encontró la sesión"));
     }
 }

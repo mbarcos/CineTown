@@ -40,6 +40,23 @@ public interface ISesionRepository extends JpaRepository<Sesion, Integer> {
             @Param("filtrarFecha") boolean filtrarFecha,
             @Param("filtrarPelicula") boolean filtrarPelicula);
 
+    @Query("""
+            SELECT new com.safa.cinetown.dtos.SesionConAsientos(
+                    s.id, p.titulo, sa.numero,
+                    s.fechaHoraInicio, s.fechaHoraFin, s.precioBase,
+                    sa.capacidad,
+                    CAST(sa.capacidad - COALESCE(SUM(c.numEntradas), 0L) AS Integer)
+            )
+            FROM Sesion s
+            JOIN s.pelicula p
+            JOIN s.sala sa
+            LEFT JOIN Compra c ON c.sesion = s AND c.estado = true
+            WHERE s.id = :id
+            GROUP BY s.id, p.titulo, sa.numero, s.fechaHoraInicio,
+                    s.fechaHoraFin, s.precioBase, sa.capacidad
+            """)
+    Optional<SesionConAsientos> encuentraDetallePorId(@Param("id") Integer id);
+
     default List<SesionConAsientos> encuentraSesionesActivasConAsientosLibres() {
         LocalDateTime ahora = LocalDateTime.now();
         return encuentraSesionesActivasConAsientosLibres(ahora, ahora, -1, false, false);
