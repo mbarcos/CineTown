@@ -1,0 +1,60 @@
+@if (pelicula(); as p) {
+  <main class="detalle">
+    <aside
+      class="poster"
+      [style.background]="fondoPoster(p.id)"
+      role="img"
+      [attr.aria-label]="'Cartel de ' + p.titulo"
+    >
+      <span class="poster_marca">CINETOWN</span>
+      <div class="poster_detalles">
+        <span class="poster_titulo">{{ p.titulo }}</span>
+        <span>ESTRENO · {{ p.anio }}</span>
+      </div>
+    </aside>
+
+    <section class="contenido" [attr.aria-labelledby]="'titulo-pelicula-' + p.id">
+      <header class="pelicula_cabecera">
+        <h1 [id]="'titulo-pelicula-' + p.id">{{ p.titulo }}</h1>
+        <p class="pelicula_metadatos">
+          @if (p.generos.length) {
+            <span>{{ p.generos.join(' · ') }}</span>
+            <span aria-hidden="true"> · </span>
+          }
+          <span>{{ duracionTexto(p.duracion) }}</span>
+          <span aria-hidden="true"> · </span>
+          <span>{{ etiquetaClasificacion(p.clasificacion) }}</span>
+        </p>
+      </header>
+
+      @if (p.sinopsis) {
+        <p class="sinopsis">{{ p.sinopsis }}</p>
+      }
+
+      <section class="sesiones" aria-labelledby="titulo-sesiones">
+        <h2 id="titulo-sesiones">Próximas sesiones</h2>
+
+        @if (sesionesProximas().length) {
+          <div class="sesiones_lista">
+            @for (sesion of sesionesProximas(); track sesion.id) {
+              <article class="sesion">
+                <div class="sesion_fecha">
+                  <time [attr.datetime]="sesion.fechaHoraInicio">{{ sesion.fechaLegible }}</time>
+                  <span>{{ sesion.horaLegible }}</span>
+                </div>
+                <span class="sesion_precio">{{ sesion.precioLegible }}</span>
+              </article>
+            }
+          </div>
+
+          <p class="precio_desde">Desde {{ precioDesde() }}</p>
+          <button class="boton_elegir" type="button">Elegir sesión</button>
+        } @else {
+          <p class="sesiones_vacias">No hay sesiones próximas disponibles.</p>
+        }
+      </section>
+    </section>
+  </main>
+} @else {
+  <p class="estado_carga">Cargando película…</p>
+}

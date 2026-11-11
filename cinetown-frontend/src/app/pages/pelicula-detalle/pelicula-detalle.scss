@@ -1,0 +1,238 @@
+@reference "../../../styles.scss";
+
+:host {
+  @apply block bg-fondo;
+  min-height: calc(100vh - 68px);
+}
+
+.detalle {
+  display: grid;
+  grid-template-columns: minmax(260px, 0.5fr) minmax(0, 1fr);
+  align-items: start;
+  gap: clamp(36px, 5vw, 64px);
+  width: min(92%, 1450px);
+  margin-inline: auto;
+  padding-block: 14px 64px;
+  color: var(--color-texto);
+}
+
+.poster {
+  position: relative;
+  display: flex;
+  aspect-ratio: 2 / 3;
+  flex-direction: column;
+  justify-content: flex-end;
+  overflow: hidden;
+  border-radius: 8px;
+  padding: 24px;
+  box-shadow: 0 18px 48px rgb(0 0 0 / 20%);
+}
+
+.poster_marca {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  color: rgb(255 255 255 / 16%);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+}
+
+.poster_detalles {
+  display: grid;
+  gap: 10px;
+
+  .poster_titulo {
+    color: var(--color-texto);
+    font-size: 18px;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+
+  span {
+    color: rgb(255 255 255 / 78%);
+    font-size: 11px;
+    letter-spacing: 0.025em;
+  }
+}
+
+.contenido {
+  min-width: 0;
+  padding-top: 0;
+}
+
+.pelicula_cabecera h1 {
+  margin: 0;
+  color: var(--color-texto);
+  font-size: clamp(28px, 2.5vw, 32px);
+  font-weight: 700;
+  line-height: 1.15;
+}
+
+.pelicula_metadatos {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 26px 0 0;
+  color: var(--color-texto-secundario);
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.sinopsis {
+  max-width: 66ch;
+  margin: 22px 0 0;
+  color: var(--color-texto);
+  font-size: 15px;
+  line-height: 1.75;
+}
+
+.sesiones {
+  margin-top: clamp(44px, 6vw, 76px);
+
+  h2 {
+    margin: 0 0 18px;
+    color: var(--color-texto);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+}
+
+.sesiones_lista {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.sesion {
+  display: flex;
+  min-width: 0;
+  min-height: 68px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: var(--color-superficie-2);
+  padding: 14px 16px;
+  transition: border-color 150ms ease;
+
+  &:hover {
+    border-color: rgb(255 255 255 / 18%);
+  }
+}
+
+.sesion_fecha {
+  display: grid;
+  min-width: 0;
+  gap: 5px;
+
+  time {
+    color: var(--color-texto);
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.35;
+  }
+
+  span {
+    color: var(--color-texto-secundario);
+    font-size: 12px;
+  }
+}
+
+.sesion_precio {
+  flex-shrink: 0;
+  color: var(--color-texto);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.precio_desde {
+  display: inline-flex;
+  margin: 36px 0 0;
+  border-radius: 9999px;
+  background: var(--color-superficie-2);
+  padding: 8px 16px;
+  color: var(--color-texto);
+  font-size: 12px;
+}
+
+.boton_elegir {
+  display: block;
+  width: min(100%, 170px);
+  min-height: 50px;
+  margin-top: 30px;
+  border: 0;
+  border-radius: 8px;
+  background: var(--color-primario);
+  color: var(--color-texto);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 150ms ease;
+
+  &:hover {
+    background: var(--color-primario-hover);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-info);
+    outline-offset: 2px;
+  }
+}
+
+.sesiones_vacias,
+.estado_carga {
+  color: var(--color-texto-secundario);
+  font-size: 14px;
+}
+
+.estado_carga {
+  margin: 0;
+  padding: 48px 20px;
+  text-align: center;
+}
+
+@media (max-width: 55rem) {
+  .detalle {
+    grid-template-columns: minmax(0, 1fr);
+    width: min(88.4%, 760px);
+    gap: 36px;
+    padding-block: 24px 52px;
+  }
+
+  .poster {
+    width: min(68%, 340px);
+    justify-self: center;
+  }
+
+  .sesiones {
+    margin-top: 44px;
+  }
+}
+
+@media (max-width: 34rem) {
+  .detalle {
+    width: calc(100% - 40px);
+  }
+
+  .poster {
+    width: min(76%, 300px);
+    padding: 18px;
+  }
+
+  .sesiones_lista {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .precio_desde,
+  .boton_elegir {
+    margin-top: 20px;
+  }
+
+  .boton_elegir {
+    width: 100%;
+  }
+}
