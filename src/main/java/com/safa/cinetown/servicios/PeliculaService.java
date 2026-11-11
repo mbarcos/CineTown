@@ -8,10 +8,8 @@ import com.safa.cinetown.dtos.request.PeliculaRequest;
 import com.safa.cinetown.excepciones.RecursoNoEncontradoException;
 import com.safa.cinetown.modelos.Genero;
 import com.safa.cinetown.modelos.Pelicula;
-import com.safa.cinetown.modelos.Sesion;
 import com.safa.cinetown.repositorios.IGeneroRepository;
 import com.safa.cinetown.repositorios.IPeliculaRepository;
-import com.safa.cinetown.repositorios.ISesionRepository;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,7 +30,6 @@ public class PeliculaService {
     private static final String PELICULA_NO_ENCONTRADA = "No se encontró la película";
 
     private final IPeliculaRepository repository;
-    private final ISesionRepository sesionRepository;
     private final PeliculaMapper mapper;
     private final IGeneroRepository generoRepository;
 
@@ -50,8 +47,7 @@ public class PeliculaService {
     public PeliculaDetalleResponse consultarPeliculaPorId(Integer id) {
         Pelicula pelicula = repository.findByIdConGeneros(id)
                 .orElseThrow(() -> new RecursoNoEncontradoException(PELICULA_NO_ENCONTRADA));
-        List<Sesion> sesiones = sesionRepository.findByPeliculaIdOrderByFechaHoraInicioAsc(id);
-        return mapper.toDetalleResponse(pelicula, sesiones);
+        return mapper.toDetalleResponse(pelicula);
     }
 
     @Transactional(readOnly = true)

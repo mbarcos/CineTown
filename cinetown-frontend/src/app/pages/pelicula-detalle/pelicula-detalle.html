@@ -49,6 +49,8 @@
 
           <p class="precio_desde">Desde {{ precioDesde() }}</p>
           <button class="boton_elegir" type="button">Elegir sesión</button>
+        } @else if (sesiones() === undefined) {
+          <p class="estado_carga">Cargando sesiones…</p>
         } @else {
           <p class="sesiones_vacias">No hay sesiones próximas disponibles.</p>
         }

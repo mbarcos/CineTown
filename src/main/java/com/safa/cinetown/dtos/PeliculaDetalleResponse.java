@@ -2,7 +2,6 @@ package com.safa.cinetown.dtos;
 
 import com.safa.cinetown.modelos.ClasificacionEdad;
 
-import java.util.List;
 import java.util.Set;
 
 public record PeliculaDetalleResponse(
@@ -13,7 +12,6 @@ public record PeliculaDetalleResponse(
         Integer anio,
         ClasificacionEdad clasificacion,
         Boolean activo,
-        Set<String> generos,
-        List<SesionPeliculaResponse> sesiones
+        Set<String> generos
 ) {
 }

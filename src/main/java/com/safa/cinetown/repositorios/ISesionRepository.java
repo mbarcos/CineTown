@@ -49,6 +49,7 @@ public interface ISesionRepository extends JpaRepository<Sesion, Integer> {
                 AND (:filtrarPelicula = false OR p.id = :peliculaId)
             GROUP BY s.id, p.titulo, sa.numero, s.fechaHoraInicio,
                     s.fechaHoraFin, s.precioBase, sa.capacidad
+            HAVING sa.capacidad - COALESCE(SUM(c.numEntradas), 0L) > 0
             ORDER BY s.fechaHoraInicio
             """)
     List<SesionConAsientos> encuentraSesionesActivasConAsientosLibres(

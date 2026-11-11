@@ -2,11 +2,13 @@ import { Component, computed, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
 import { map, switchMap } from 'rxjs';
-import { Clasificacion, SesionPelicula } from '../../models/pelicula-detalle.model';
+import { Clasificacion } from '../../models/pelicula-detalle.model';
 import { PeliculaService } from '../../services/peliculaService';
+import { SesionService } from '../../services/sesionService';
+import { SesionConAsientos } from '../../models/sesion.model';
 import { obtenerFondoPoster } from '../../shared/utils/pelicula-poster';
 
-interface SesionPresentacion extends SesionPelicula {
+interface SesionPresentacion extends SesionConAsientos {
   fechaLegible: string;
   horaLegible: string;
   precioLegible: string;
@@ -29,6 +31,7 @@ export class PeliculaDetalle {
 
   private readonly route = inject(ActivatedRoute);
   private readonly peliculaService = inject(PeliculaService);
+  private readonly sesionService = inject(SesionService);
 
   private readonly fechaHoraActualMadrid = new Intl.DateTimeFormat('en-GB', {
     timeZone: 'Europe/Madrid',
@@ -65,9 +68,16 @@ export class PeliculaDetalle {
     ),
   );
 
+  readonly sesiones = toSignal(
+    this.route.paramMap.pipe(
+      map((params) => Number(params.get('id'))),
+      switchMap((id) => this.sesionService.consultarSesionesActivasPorPelicula(id)),
+    ),
+  );
+
   readonly sesionesProximas = computed<SesionPresentacion[]>(() => {
     const ahora = this.obtenerAhoraLocalMadrid();
-    const sesiones = this.pelicula()?.sesiones ?? [];
+    const sesiones = this.sesiones() ?? [];
 
     return sesiones
       .map((sesion) => ({ sesion, instanteLocal: this.convertirFechaLocal(sesion.fechaHoraInicio) }))
