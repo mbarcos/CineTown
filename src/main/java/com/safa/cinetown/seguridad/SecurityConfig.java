@@ -1,13 +1,9 @@
 package com.safa.cinetown.seguridad;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -22,12 +18,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
-import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.access.AccessDeniedHandler;
-
-import java.io.IOException;
-import java.util.Map;
 
 @Configuration
 @EnableWebSecurity
@@ -67,21 +58,8 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(
 
             HttpSecurity http,
-            JwtAuthenticationConverter jwtAuthenticationConverter,
-            ObjectMapper objectMapper)
+            JwtAuthenticationConverter jwtAuthenticationConverter)
             throws Exception {
-        AuthenticationEntryPoint authenticationEntryPoint =
-                (request, response, exception) -> escribirError(
-                        response,
-                        HttpStatus.UNAUTHORIZED,
-                        "Se requiere autenticación para acceder a este recurso",
-                        objectMapper);
-        AccessDeniedHandler accessDeniedHandler =
-                (request, response, exception) -> escribirError(
-                        response,
-                        HttpStatus.FORBIDDEN,
-                        "No tienes permisos para acceder a este recurso",
-                        objectMapper);
 
         http
                 .csrf(csrf -> csrf.disable())
@@ -91,9 +69,6 @@ public class SecurityConfig {
                                 SessionCreationPolicy.STATELESS
                         )
                 )
-                .exceptionHandling(exceptions -> exceptions
-                        .authenticationEntryPoint(authenticationEntryPoint)
-                        .accessDeniedHandler(accessDeniedHandler))
 
                 .authorizeHttpRequests(auth -> auth
                         // =====================================
@@ -208,23 +183,14 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
                 )
                 .oauth2ResourceServer(oauth2 ->
-                        oauth2
-                                .authenticationEntryPoint(authenticationEntryPoint)
-                                .jwt(jwt -> jwt.jwtAuthenticationConverter(
-                                        jwtAuthenticationConverter))
+                        oauth2.jwt(jwt ->
+                                jwt.jwtAuthenticationConverter(
+                                        jwtAuthenticationConverter
+                                )
+                        )
                 );
 
         return http.build();
-    }
-
-    private void escribirError(
-            HttpServletResponse response,
-            HttpStatus status,
-            String mensaje,
-            ObjectMapper objectMapper) throws IOException {
-        response.setStatus(status.value());
-        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        objectMapper.writeValue(response.getOutputStream(), Map.of("error", mensaje));
     }
 
 }

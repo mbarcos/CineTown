@@ -161,7 +161,10 @@ public class CompraService {
     }
 
     @Transactional
-    public void cancelarCompra(String codigo, String nombreUsuario, boolean consultarTodas) {
+    public void cancelarCompra(
+            String codigo,
+            String nombreUsuario,
+            boolean consultarTodas) {
         Compra compra = compraRepository.encuentraPorCodigoParaActualizar(codigo)
                 .orElseThrow(() -> new RecursoNoEncontradoException(COMPRA_NO_ENCONTRADA));
 

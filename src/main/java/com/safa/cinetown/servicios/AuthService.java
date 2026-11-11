@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import com.safa.cinetown.dtos.AuthResponse;
 import com.safa.cinetown.dtos.request.LoginRequest;
 import com.safa.cinetown.dtos.request.RegistroRequest;
-import com.safa.cinetown.excepciones.ConflictoException;
 
 import com.safa.cinetown.modelos.Usuario;
 import com.safa.cinetown.modelos.RolUsuario;
@@ -40,7 +39,7 @@ public class AuthService {
         String nombreUsuario = request.nombreUsuario().trim();
 
         if (usuarioRepository.existsByNombreUsuario(nombreUsuario)) {
-            throw new ConflictoException(
+            throw new IllegalArgumentException(
                     "El nombre de usuario ya está registrado"
             );
         }
