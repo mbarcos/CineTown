@@ -4,6 +4,7 @@ import com.safa.cinetown.excepciones.ConflictoException;
 import com.safa.cinetown.excepciones.AsientosInsuficientesException;
 import com.safa.cinetown.excepciones.ReglaNegocioException;
 import com.safa.cinetown.excepciones.RecursoNoEncontradoException;
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
@@ -97,6 +98,29 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(problema);
     }
 
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<?> handleConstraintViolation(
+            ConstraintViolationException ex) {
+        Map<String, String> errores = new LinkedHashMap<>();
+        ex.getConstraintViolations().forEach(violacion -> {
+            String ruta = violacion.getPropertyPath().toString();
+            int ultimoSeparador = ruta.lastIndexOf('.');
+            String campo = ruta;
+            if (ultimoSeparador >= 0) {
+                campo = ruta.substring(ultimoSeparador + 1);
+            }
+            errores.put(campo, "El campo '" + campo + "' es incorrecto: "
+                    + violacion.getMessage());
+        });
+
+        ProblemDetail problema = construirProblema(
+                HttpStatus.BAD_REQUEST,
+                "Datos no válidos",
+                "Revisa los campos indicados");
+        problema.setProperty("errores", errores);
+        return ResponseEntity.badRequest().body(problema);
+    }
+
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<ProblemDetail> handleJsonNoLegible(
             HttpMessageNotReadableException ex) {
@@ -125,7 +149,10 @@ public class GlobalExceptionHandler {
         while (matcher.find()) {
             campoEncontrado = matcher.group(1);
         }
-        return campoEncontrado == null ? "body" : campoEncontrado;
+        if (campoEncontrado == null) {
+            return "body";
+        }
+        return campoEncontrado;
     }
 
     private ProblemDetail construirProblema(

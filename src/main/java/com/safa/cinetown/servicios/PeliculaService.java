@@ -4,7 +4,6 @@ import com.safa.cinetown.conversores.PeliculaMapper;
 import com.safa.cinetown.dtos.PeliculaDetalleResponse;
 import com.safa.cinetown.dtos.PeliculaResponse;
 import com.safa.cinetown.dtos.RecaudacionPelicula;
-import com.safa.cinetown.dtos.request.EditarPeliculaRequest;
 import com.safa.cinetown.dtos.request.PeliculaRequest;
 import com.safa.cinetown.excepciones.RecursoNoEncontradoException;
 import com.safa.cinetown.modelos.Genero;
@@ -13,10 +12,12 @@ import com.safa.cinetown.modelos.Sesion;
 import com.safa.cinetown.repositorios.IGeneroRepository;
 import com.safa.cinetown.repositorios.IPeliculaRepository;
 import com.safa.cinetown.repositorios.ISesionRepository;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 
 import java.util.HashSet;
 import java.util.List;
@@ -26,6 +27,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@Validated
 public class PeliculaService {
     private static final String PELICULA_NO_ENCONTRADA = "No se encontró la película";
 
@@ -59,7 +61,7 @@ public class PeliculaService {
     }
 
     @Transactional
-    public PeliculaResponse crearPelicula(PeliculaRequest dto) {
+    public PeliculaResponse crearPelicula(@Valid PeliculaRequest dto) {
         List<Genero> generos = buscarGeneros(dto.generos());
         Pelicula pelicula = mapper.aEntidad(dto);
         pelicula.setActivo(dto.activo() == null || dto.activo());
@@ -71,7 +73,7 @@ public class PeliculaService {
     }
 
     @Transactional
-    public PeliculaResponse editarPelicula(Integer id, EditarPeliculaRequest dto) {
+    public PeliculaResponse editarPelicula(Integer id, @Valid PeliculaRequest dto) {
         Pelicula pelicula = repository.findByIdConGeneros(id)
                 .orElseThrow(() -> new RecursoNoEncontradoException(PELICULA_NO_ENCONTRADA));
         List<Genero> generos = buscarGeneros(dto.generos());

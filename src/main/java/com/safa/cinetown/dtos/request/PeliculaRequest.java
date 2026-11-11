@@ -1,14 +1,11 @@
 package com.safa.cinetown.dtos.request;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.safa.cinetown.modelos.ClasificacionEdad;
 import jakarta.validation.constraints.*;
 
 import java.util.Set;
 
 public record PeliculaRequest(
-        Integer id,
-
         @NotBlank(message = "El título es obligatorio")
         @Size(max = 255, message = "El título no puede superar los 255 caracteres")
         String titulo,
@@ -26,7 +23,6 @@ public record PeliculaRequest(
         @NotNull(message = "La clasificación es obligatoria")
         ClasificacionEdad clasificacion,
 
-        @JsonProperty(defaultValue = "false")
         Boolean activo,
 
         @NotEmpty(message = "La película debe tener al menos un género")
