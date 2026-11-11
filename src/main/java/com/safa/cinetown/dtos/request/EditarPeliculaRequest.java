@@ -1,0 +1,36 @@
+package com.safa.cinetown.dtos.request;
+
+import com.safa.cinetown.modelos.ClasificacionEdad;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+
+import java.util.Set;
+
+public record EditarPeliculaRequest(
+        @NotBlank(message = "El título es obligatorio")
+        @Size(max = 255, message = "El título no puede superar los 255 caracteres")
+        String titulo,
+
+        String sinopsis,
+
+        @NotNull(message = "La duración es obligatoria")
+        @Min(value = 1, message = "La duración mínima es de 1 minuto")
+        @Max(value = 300, message = "La duración máxima es de 300 minutos")
+        Integer duracion,
+
+        @NotNull(message = "El año es obligatorio")
+        Integer anio,
+
+        @NotNull(message = "La clasificación es obligatoria")
+        ClasificacionEdad clasificacion,
+
+        Boolean activo,
+
+        @NotEmpty(message = "La película debe tener al menos un género")
+        Set<String> generos
+) {
+}

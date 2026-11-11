@@ -4,6 +4,7 @@ import com.safa.cinetown.dtos.PeliculaResponse;
 import com.safa.cinetown.dtos.PeliculaDetalleResponse;
 import com.safa.cinetown.dtos.RecaudacionPelicula;
 import com.safa.cinetown.dtos.request.PeliculaRequest;
+import com.safa.cinetown.dtos.request.EditarPeliculaRequest;
 import com.safa.cinetown.servicios.PeliculaService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -34,5 +35,11 @@ public class PeliculaController {
     @PostMapping
     public void crearPelicula(@Valid @RequestBody PeliculaRequest json){
         service.crearPelicula(json);
+    }
+
+    @PutMapping("/{id}")
+    public PeliculaResponse editarPelicula(@PathVariable Integer id,
+                                           @Valid @RequestBody EditarPeliculaRequest json) {
+        return service.editarPelicula(id, json);
     }
 }
