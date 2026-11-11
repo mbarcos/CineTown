@@ -91,7 +91,7 @@ public class PeliculaService {
         return mapper.toResponse(guardada);
     }
 
-    private List<Genero> buscarGeneros(List<String> nombresGeneros) {
+    private List<Genero> buscarGeneros(Set<String> nombresGeneros) {
         List<Genero> generos = generoRepository.findByNombreIn(nombresGeneros);
         if (generos.size() == nombresGeneros.size()) {
             return generos;
