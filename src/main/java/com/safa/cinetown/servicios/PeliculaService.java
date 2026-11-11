@@ -91,6 +91,16 @@ public class PeliculaService {
         return mapper.toResponse(guardada);
     }
 
+    @Transactional
+    public void cambiarEstadoCartelera(Integer id) {
+        Pelicula pelicula = repository.findById(id)
+                .orElseThrow(() -> new RecursoNoEncontradoException(PELICULA_NO_ENCONTRADA));
+
+        pelicula.setActivo(!Boolean.TRUE.equals(pelicula.getActivo()));
+        repository.save(pelicula);
+        log.info("Estado de cartelera modificado: id={} activo={}", id, pelicula.getActivo());
+    }
+
     private List<Genero> buscarGeneros(Set<String> nombresGeneros) {
         List<Genero> generos = generoRepository.findByNombreIn(nombresGeneros);
         if (generos.size() == nombresGeneros.size()) {

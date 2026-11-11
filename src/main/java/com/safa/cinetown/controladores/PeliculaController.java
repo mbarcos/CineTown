@@ -42,4 +42,9 @@ public class PeliculaController {
                                            @Valid @RequestBody EditarPeliculaRequest json) {
         return service.editarPelicula(id, json);
     }
+
+    @PatchMapping("/{id}/cartelera")
+    public void cambiarEstadoCartelera(@PathVariable Integer id) {
+        service.cambiarEstadoCartelera(id);
+    }
 }
