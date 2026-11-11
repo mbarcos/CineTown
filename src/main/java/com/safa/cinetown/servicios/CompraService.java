@@ -21,6 +21,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.security.SecureRandom;
 import java.util.Objects;
@@ -78,7 +80,13 @@ public class CompraService {
             boolean asociarUsuario) {
         Compra compra = mapper.aEntidad(request);
         compra.setSesion(sesion);
-        compra.setPrecioTotal(sesion.getPrecioBase()
+        BigDecimal precioUnitario = sesion.getPrecioBase();
+        if (sesion.getFechaHoraInicio().getDayOfWeek() == DayOfWeek.WEDNESDAY) {
+            precioUnitario = precioUnitario
+                    .multiply(new BigDecimal("0.70"))
+                    .setScale(2, RoundingMode.HALF_UP);
+        }
+        compra.setPrecioTotal(precioUnitario
                 .multiply(BigDecimal.valueOf(request.numEntradas())));
         compra.setCodCompra(generarCodigoUnico());
         if (asociarUsuario) {
