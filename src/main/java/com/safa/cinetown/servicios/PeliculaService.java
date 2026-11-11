@@ -1,7 +1,6 @@
 package com.safa.cinetown.servicios;
 
 import com.safa.cinetown.conversores.PeliculaMapper;
-import com.safa.cinetown.dtos.PeliculaDetalleResponse;
 import com.safa.cinetown.dtos.PeliculaResponse;
 import com.safa.cinetown.dtos.RecaudacionPelicula;
 import com.safa.cinetown.dtos.request.PeliculaRequest;
@@ -44,10 +43,10 @@ public class PeliculaService {
     }
 
     @Transactional(readOnly = true)
-    public PeliculaDetalleResponse consultarPeliculaPorId(Integer id) {
+    public PeliculaResponse consultarPeliculaPorId(Integer id) {
         Pelicula pelicula = repository.findByIdConGeneros(id)
                 .orElseThrow(() -> new RecursoNoEncontradoException(PELICULA_NO_ENCONTRADA));
-        return mapper.toDetalleResponse(pelicula);
+        return mapper.toResponse(pelicula);
     }
 
     @Transactional(readOnly = true)

@@ -1,7 +1,6 @@
 package com.safa.cinetown.controladores;
 
 import com.safa.cinetown.dtos.PeliculaResponse;
-import com.safa.cinetown.dtos.PeliculaDetalleResponse;
 import com.safa.cinetown.dtos.RecaudacionPelicula;
 import com.safa.cinetown.dtos.request.PeliculaRequest;
 import com.safa.cinetown.servicios.PeliculaService;
@@ -22,7 +21,7 @@ public class PeliculaController {
     }
 
     @GetMapping("/{id}")
-    public PeliculaDetalleResponse consultarPeliculaId(@PathVariable Integer id) {
+    public PeliculaResponse consultarPeliculaId(@PathVariable Integer id) {
         return service.consultarPeliculaPorId(id);
     }
 

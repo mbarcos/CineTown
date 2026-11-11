@@ -1,6 +1,6 @@
 export type Clasificacion = 'TP' | 'P7' | 'P12' | 'P16' | 'P18';
 
-export interface PeliculaDetalleResponse {
+export interface PeliculaResponse {
   id: number;
   titulo: string;
   sinopsis: string | null;

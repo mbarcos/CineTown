@@ -1,7 +1,6 @@
 package com.safa.cinetown;
 
 import com.safa.cinetown.controladores.PeliculaController;
-import com.safa.cinetown.dtos.PeliculaDetalleResponse;
 import com.safa.cinetown.dtos.PeliculaResponse;
 import com.safa.cinetown.excepciones.RecursoNoEncontradoException;
 import com.safa.cinetown.modelos.ClasificacionEdad;
@@ -49,7 +48,7 @@ class PeliculaControllerTest {
 
     @Test
     void consultaUnaPeliculaPorId() throws Exception {
-        when(service.consultarPeliculaPorId(1)).thenReturn(new PeliculaDetalleResponse(
+        when(service.consultarPeliculaPorId(1)).thenReturn(new PeliculaResponse(
                 1, "Película de prueba", "Sinopsis", 120, 2025,
                 ClasificacionEdad.P12, true, Set.of("Drama")));
 

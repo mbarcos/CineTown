@@ -3,7 +3,7 @@ import { obtienePeliculasDto } from '../models/dto/peliculaDTO';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
-import {PeliculaDetalleResponse} from '../models/pelicula-detalle.model';
+import {PeliculaResponse} from '../models/pelicula-detalle.model';
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +16,7 @@ export class PeliculaService {
   getPeliculas(): Observable<obtienePeliculasDto[]> {
     return this.http.get<obtienePeliculasDto[]>(`${this.apiUrl}/peliculas`);
   }
-  obtenerDetalle(id: number): Observable<PeliculaDetalleResponse> {
-    return this.http.get<PeliculaDetalleResponse>(`${this.apiUrl}/peliculas/${id}`);
+  obtenerDetalle(id: number): Observable<PeliculaResponse> {
+    return this.http.get<PeliculaResponse>(`${this.apiUrl}/peliculas/${id}`);
   }
 }
