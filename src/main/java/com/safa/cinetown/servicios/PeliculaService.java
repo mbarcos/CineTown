@@ -4,8 +4,8 @@ import com.safa.cinetown.conversores.PeliculaMapper;
 import com.safa.cinetown.dtos.PeliculaDetalleResponse;
 import com.safa.cinetown.dtos.PeliculaResponse;
 import com.safa.cinetown.dtos.RecaudacionPelicula;
-import com.safa.cinetown.dtos.request.PeliculaRequest;
 import com.safa.cinetown.dtos.request.EditarPeliculaRequest;
+import com.safa.cinetown.dtos.request.PeliculaRequest;
 import com.safa.cinetown.excepciones.RecursoNoEncontradoException;
 import com.safa.cinetown.modelos.Genero;
 import com.safa.cinetown.modelos.Pelicula;
@@ -13,7 +13,7 @@ import com.safa.cinetown.modelos.Sesion;
 import com.safa.cinetown.repositorios.IGeneroRepository;
 import com.safa.cinetown.repositorios.IPeliculaRepository;
 import com.safa.cinetown.repositorios.ISesionRepository;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,13 +24,15 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Slf4j
 public class PeliculaService {
-    private IPeliculaRepository repository;
-    private ISesionRepository sesionRepository;
-    private PeliculaMapper mapper;
-    private IGeneroRepository generoRepository;
+    private static final String PELICULA_NO_ENCONTRADA = "No se encontró la película";
+
+    private final IPeliculaRepository repository;
+    private final ISesionRepository sesionRepository;
+    private final PeliculaMapper mapper;
+    private final IGeneroRepository generoRepository;
 
     @Transactional(readOnly = true)
     public List<PeliculaResponse> consultarTodasPeliculas() {
@@ -45,8 +47,7 @@ public class PeliculaService {
     @Transactional(readOnly = true)
     public PeliculaDetalleResponse consultarPeliculaPorId(Integer id) {
         Pelicula pelicula = repository.findByIdConGeneros(id)
-                .orElseThrow(() -> new RecursoNoEncontradoException(
-                        "No se encontró la película"));
+                .orElseThrow(() -> new RecursoNoEncontradoException(PELICULA_NO_ENCONTRADA));
         List<Sesion> sesiones = sesionRepository.findByPeliculaIdOrderByFechaHoraInicioAsc(id);
         return mapper.toDetalleResponse(pelicula, sesiones);
     }
@@ -54,23 +55,12 @@ public class PeliculaService {
     @Transactional(readOnly = true)
     public RecaudacionPelicula consultarRecaudacionPorPelicula(Integer id) {
         return repository.calcularRecaudacionPorPelicula(id)
-                .orElseThrow(() -> new RecursoNoEncontradoException(
-                        "No se encontró la película"));
+                .orElseThrow(() -> new RecursoNoEncontradoException(PELICULA_NO_ENCONTRADA));
     }
 
     @Transactional
     public PeliculaResponse crearPelicula(PeliculaRequest dto) {
-        List<Genero> generos = generoRepository.findByNombreIn(dto.generos());
-        if (generos.size() != dto.generos().size()) {
-            Set<String> encontrados = generos.stream()
-                    .map(Genero::getNombre)
-                    .collect(Collectors.toSet());
-            Set<String> noEncontrados = new HashSet<>(dto.generos());
-            noEncontrados.removeAll(encontrados);
-            throw new RecursoNoEncontradoException(
-                    "No existen los géneros: " + String.join(", ", noEncontrados));
-        }
-
+        List<Genero> generos = buscarGeneros(dto.generos());
         Pelicula pelicula = mapper.aEntidad(dto);
         pelicula.setActivo(dto.activo() == null || dto.activo());
         pelicula.setGeneros(new HashSet<>(generos));
@@ -78,26 +68,13 @@ public class PeliculaService {
         Pelicula guardada = repository.save(pelicula);
         log.info("Película creada: id={} titulo={}", guardada.getId(), guardada.getTitulo());
         return mapper.toResponse(guardada);
-
-
     }
 
     @Transactional
     public PeliculaResponse editarPelicula(Integer id, EditarPeliculaRequest dto) {
         Pelicula pelicula = repository.findByIdConGeneros(id)
-                .orElseThrow(() -> new RecursoNoEncontradoException(
-                        "No se encontró la película"));
-
-        List<Genero> generos = generoRepository.findByNombreIn(dto.generos());
-        if (generos.size() != dto.generos().size()) {
-            Set<String> encontrados = generos.stream()
-                    .map(Genero::getNombre)
-                    .collect(Collectors.toSet());
-            Set<String> noEncontrados = new HashSet<>(dto.generos());
-            noEncontrados.removeAll(encontrados);
-            throw new RecursoNoEncontradoException(
-                    "No existen los géneros: " + String.join(", ", noEncontrados));
-        }
+                .orElseThrow(() -> new RecursoNoEncontradoException(PELICULA_NO_ENCONTRADA));
+        List<Genero> generos = buscarGeneros(dto.generos());
 
         pelicula.setTitulo(dto.titulo());
         pelicula.setSinopsis(dto.sinopsis());
@@ -112,5 +89,21 @@ public class PeliculaService {
         Pelicula guardada = repository.save(pelicula);
         log.info("Película modificada: id={} titulo={}", guardada.getId(), guardada.getTitulo());
         return mapper.toResponse(guardada);
+    }
+
+    private List<Genero> buscarGeneros(List<String> nombresGeneros) {
+        List<Genero> generos = generoRepository.findByNombreIn(nombresGeneros);
+        if (generos.size() == nombresGeneros.size()) {
+            return generos;
+        }
+
+        Set<String> nombresEncontrados = generos.stream()
+                .map(Genero::getNombre)
+                .collect(Collectors.toSet());
+        Set<String> nombresNoEncontrados = new HashSet<>(nombresGeneros);
+        nombresNoEncontrados.removeAll(nombresEncontrados);
+
+        throw new RecursoNoEncontradoException(
+                "No existen los géneros: " + String.join(", ", nombresNoEncontrados));
     }
 }
