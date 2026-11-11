@@ -3,8 +3,10 @@ package com.safa.cinetown.repositorios;
 import com.safa.cinetown.dtos.CompraResumen;
 import com.safa.cinetown.dtos.DetalleCompra;
 import com.safa.cinetown.modelos.Compra;
+import jakarta.persistence.LockModeType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -13,6 +15,10 @@ import java.util.Optional;
 
 @Repository
 public interface ICompraRepository extends JpaRepository <Compra, Integer>{
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("SELECT c FROM Compra c WHERE c.codCompra = :codCompra")
+    Optional<Compra> encuentraPorCodigoParaActualizar(@Param("codCompra") String codCompra);
+
     @Query("SELECT COALESCE(SUM(c.numEntradas), 0) FROM Compra c WHERE c.sesion.id = :sesionId AND c.estado = true")
     long cuentaEntradasActivasPorSesion(@Param("sesionId") Integer sesionId);
 

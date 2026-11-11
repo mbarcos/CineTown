@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.security.SecureRandom;
+import java.util.Objects;
 
 @Service
 @AllArgsConstructor
@@ -141,5 +142,44 @@ public class CompraService {
         return compraRepository.encuentraDetalleCompraPorCodigo(codigo)
                 .orElseThrow(() -> new RecursoNoEncontradoException(
                         "No se encontró la compra"));
+    }
+
+    @Transactional
+    public void cancelarCompra(
+            String codigo,
+            String nombreUsuario,
+            boolean consultarTodas) {
+        Compra compra = compraRepository.encuentraPorCodigoParaActualizar(codigo)
+                .orElseThrow(() -> new RecursoNoEncontradoException(
+                        "No se encontró la compra"));
+
+        if (!consultarTodas) {
+            Integer usuarioId = usuarioRepository.findByNombreUsuario(nombreUsuario)
+                    .orElseThrow(() -> new RecursoNoEncontradoException(
+                            "No se encontró el usuario autenticado"))
+                    .getId();
+            if (compra.getUsuario() == null
+                    || !Objects.equals(compra.getUsuario().getId(), usuarioId)) {
+                throw new RecursoNoEncontradoException("No se encontró la compra");
+            }
+        }
+
+        if (Boolean.FALSE.equals(compra.getEstado())) {
+            throw new ReglaNegocioException("La compra ya está cancelada");
+        }
+        if (Boolean.TRUE.equals(compra.getParkingUsado())) {
+            throw new ReglaNegocioException(
+                    "No se puede cancelar una compra cuyo parking ya se ha canjeado");
+        }
+
+        LocalDateTime limiteCancelacion = compra.getSesion().getFechaHoraInicio()
+                .minusHours(1);
+        if (LocalDateTime.now().isAfter(limiteCancelacion)) {
+            throw new ReglaNegocioException(
+                    "La compra solo se puede cancelar hasta una hora antes de la sesión");
+        }
+
+        compra.setEstado(false);
+        compraRepository.save(compra);
     }
 }

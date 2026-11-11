@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.PatchMapping;
 
 @RestController
 @RequestMapping("/compras")
@@ -55,5 +56,15 @@ public class CompraController {
 
         return service.consultarCompra(
                 codigo, authentication.getName(), consultarTodas);
+    }
+
+    @PatchMapping("/{codigo}/cancelar")
+    public void cancelarCompra(
+            @PathVariable String codigo,
+            Authentication authentication) {
+        boolean esTaquilla = authentication.getAuthorities().stream()
+                .anyMatch(authority -> authority.getAuthority().equals("ROLE_TAQUILLA"));
+
+        service.cancelarCompra(codigo, authentication.getName(), esTaquilla);
     }
 }
