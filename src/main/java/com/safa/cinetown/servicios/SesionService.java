@@ -24,6 +24,9 @@ import java.util.List;
 @Service
 @AllArgsConstructor
 public class SesionService {
+    private static final long MINUTOS_LIMPIEZA = 20;
+    private static final int ID_PELICULA_SIN_FILTRO = -1;
+
     private final ISesionRepository repository;
     private final IPeliculaRepository peliculaRepository;
     private final ISalaRepository salaRepository;
@@ -70,8 +73,8 @@ public class SesionService {
 
     private void validarDisponibilidadSala(
             Sala sala, LocalDateTime inicio, LocalDateTime fin) {
-        LocalDateTime inicioConMargen = inicio.minusMinutes(20);
-        LocalDateTime finConMargen = fin.plusMinutes(20);
+        LocalDateTime inicioConMargen = inicio.minusMinutes(MINUTOS_LIMPIEZA);
+        LocalDateTime finConMargen = fin.plusMinutes(MINUTOS_LIMPIEZA);
         if (repository.existeSolapamientoEnSala(
                 sala.getId(), inicioConMargen, finConMargen)) {
             throw new ConflictoException(
@@ -81,18 +84,37 @@ public class SesionService {
 
     @Transactional(readOnly = true)
     public List<SesionConAsientos> consultarSesiones(LocalDate fecha, Integer peliculaId) {
-        LocalDateTime ahora = LocalDateTime.now();
-        LocalDateTime inicio = fecha == null ? ahora : fecha.atStartOfDay();
-        LocalDateTime fin = fecha == null
-                ? ahora
-                : fecha.plusDays(1).atStartOfDay();
+        LocalDateTime inicioDelRango = calcularInicioDelRango(fecha);
+        LocalDateTime finDelRango = calcularFinDelRango(fecha, inicioDelRango);
 
         return repository.encuentraSesionesActivasConAsientosLibres(
-                inicio,
-                fin,
-                peliculaId == null ? -1 : peliculaId,
+                inicioDelRango,
+                finDelRango,
+                obtenerIdPeliculaFiltro(peliculaId),
                 fecha != null,
                 peliculaId != null);
+    }
+
+    private LocalDateTime calcularInicioDelRango(LocalDate fecha) {
+        if (fecha == null) {
+            return LocalDateTime.now();
+        }
+        return fecha.atStartOfDay();
+    }
+
+    private LocalDateTime calcularFinDelRango(
+            LocalDate fecha, LocalDateTime inicioDelRango) {
+        if (fecha == null) {
+            return inicioDelRango;
+        }
+        return fecha.plusDays(1).atStartOfDay();
+    }
+
+    private Integer obtenerIdPeliculaFiltro(Integer peliculaId) {
+        if (peliculaId == null) {
+            return ID_PELICULA_SIN_FILTRO;
+        }
+        return peliculaId;
     }
 
     @Transactional(readOnly = true)
