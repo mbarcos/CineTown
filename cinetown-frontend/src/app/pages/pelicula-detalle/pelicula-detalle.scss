@@ -70,7 +70,7 @@
 
 .contenido {
   min-width: 0;
-  padding-top: clamp(12px, 3vw, 42px);
+  padding-top: clamp(16px, 3vw, 42px);
 }
 
 .pelicula_cabecera {
@@ -252,7 +252,7 @@
   }
 
   .pelicula_cabecera {
-    padding-bottom: 10px;
+    padding-bottom: 20px;
 
     h1 {
       font-size: clamp(32px, 4.5vw, 44px);
@@ -264,7 +264,7 @@
   }
 
   .sinopsis {
-    margin-top: 10px;
+    margin-top: 15px;
     font-size: 13px;
     line-height: 1.4;
   }
