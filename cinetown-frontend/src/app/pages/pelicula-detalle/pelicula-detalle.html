@@ -37,18 +37,26 @@
         @if (sesionesProximas().length) {
           <div class="sesiones_lista">
             @for (sesion of sesionesProximas(); track sesion.id) {
-              <article class="sesion">
-                <div class="sesion_fecha">
+              <button
+                class="sesion"
+                type="button"
+                [class.sesion--seleccionada]="sesionSeleccionadaId() === sesion.id"
+                [attr.aria-pressed]="sesionSeleccionadaId() === sesion.id"
+                (click)="seleccionarSesion(sesion.id)"
+              >
+                <span class="sesion_fecha">
                   <time [attr.datetime]="sesion.fechaHoraInicio">{{ sesion.fechaLegible }}</time>
                   <span>{{ sesion.horaLegible }}</span>
-                </div>
+                </span>
                 <span class="sesion_precio">{{ sesion.precioLegible }}</span>
-              </article>
+              </button>
             }
           </div>
 
-          <p class="precio_desde">Desde {{ precioDesde() }}</p>
-          <button class="boton_elegir" type="button">Elegir sesión</button>
+          <div class="sesiones_pie">
+            <p class="precio_desde">Desde {{ precioDesde() }}</p>
+            <button class="sesiones_ver-todas" type="button">Ver todas las sesiones</button>
+          </div>
         } @else if (sesiones() === undefined) {
           <p class="estado_carga">Cargando sesiones…</p>
         } @else {

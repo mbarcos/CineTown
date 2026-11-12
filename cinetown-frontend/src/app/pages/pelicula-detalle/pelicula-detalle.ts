@@ -1,4 +1,4 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
 import { map, switchMap } from 'rxjs';
@@ -97,6 +97,8 @@ export class PeliculaDetalle {
       });
   });
 
+  readonly sesionSeleccionadaId = signal<number | null>(null);
+
   readonly precioDesde = computed(() => {
     const precios = this.sesionesProximas().map((sesion) => sesion.precioBase);
     return precios.length ? this.precioFormatter.format(Math.min(...precios)) : null;
@@ -104,6 +106,10 @@ export class PeliculaDetalle {
 
   etiquetaClasificacion(clasificacion: Clasificacion): string {
     return this.etiquetas[clasificacion];
+  }
+
+  seleccionarSesion(sesionId: number): void {
+    this.sesionSeleccionadaId.set(sesionId);
   }
 
   duracionTexto(minutos: number): string {

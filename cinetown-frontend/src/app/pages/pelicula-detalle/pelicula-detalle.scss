@@ -7,96 +7,154 @@
 
 .detalle {
   display: grid;
-  grid-template-columns: minmax(260px, 0.5fr) minmax(0, 1fr);
+  grid-template-columns: minmax(240px, 320px) minmax(0, 1fr);
   align-items: start;
-  gap: clamp(36px, 5vw, 64px);
-  width: min(92%, 1450px);
+  gap: clamp(40px, 7vw, 104px);
+  width: min(calc(100% - 64px), 1120px);
   margin-inline: auto;
-  padding-block: 14px 64px;
+  padding-block: clamp(42px, 7vw, 88px) 96px;
   color: var(--color-texto);
 }
 
 .poster {
-  position: relative;
+  position: sticky;
+  top: 32px;
   display: flex;
   aspect-ratio: 2 / 3;
   flex-direction: column;
-  justify-content: flex-end;
+  justify-content: space-between;
   overflow: hidden;
-  border-radius: 8px;
-  padding: 24px;
-  box-shadow: 0 18px 48px rgb(0 0 0 / 20%);
+  border-radius: 3px;
+  padding: 22px;
+  box-shadow: 0 24px 56px rgb(0 0 0 / 34%);
+  isolation: isolate;
+
+  &::before {
+    position: absolute;
+    z-index: -1;
+    inset: 0;
+    background: linear-gradient(180deg, rgb(7 7 10 / 8%) 15%, rgb(7 7 10 / 12%) 42%, rgb(7 7 10 / 88%) 100%);
+    content: "";
+  }
 }
 
 .poster_marca {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  color: rgb(255 255 255 / 16%);
-  font-size: 12px;
-  font-weight: 800;
-  letter-spacing: 0.16em;
+  align-self: flex-end;
+  color: rgb(255 255 255 / 70%);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
 }
 
 .poster_detalles {
   display: grid;
-  gap: 10px;
+  gap: 12px;
 
   .poster_titulo {
+    max-width: 12ch;
     color: var(--color-texto);
-    font-size: 18px;
+    font-size: clamp(22px, 2.6vw, 34px);
     font-weight: 700;
+    letter-spacing: -0.035em;
+    line-height: 0.98;
+    text-wrap: balance;
     text-transform: uppercase;
   }
 
   span {
     color: rgb(255 255 255 / 78%);
-    font-size: 11px;
-    letter-spacing: 0.025em;
+    font-size: 10px;
+    letter-spacing: 0.12em;
   }
 }
 
 .contenido {
   min-width: 0;
-  padding-top: 0;
+  padding-top: clamp(12px, 3vw, 42px);
 }
 
-.pelicula_cabecera h1 {
-  margin: 0;
-  color: var(--color-texto);
-  font-size: clamp(28px, 2.5vw, 32px);
-  font-weight: 700;
-  line-height: 1.15;
+.pelicula_cabecera {
+  padding-bottom: 28px;
+  border-bottom: 1px solid rgb(255 255 255 / 16%);
+
+  h1 {
+    max-width: 15ch;
+    margin: 0;
+    color: var(--color-texto);
+    font-size: clamp(40px, 6vw, 76px);
+    font-weight: 650;
+    letter-spacing: -0.045em;
+    line-height: 0.98;
+    text-wrap: balance;
+  }
 }
 
 .pelicula_metadatos {
   display: flex;
   flex-wrap: wrap;
-  margin: 26px 0 0;
-  color: var(--color-texto-secundario);
+  gap: 6px 10px;
+  margin: 20px 0 0;
+  color: #c4c0c2;
   font-size: 13px;
-  line-height: 1.7;
+  line-height: 1.6;
+
+  [aria-hidden="true"] {
+    color: var(--color-primario-hover);
+  }
 }
 
 .sinopsis {
-  max-width: 66ch;
-  margin: 22px 0 0;
-  color: var(--color-texto);
+  max-width: 62ch;
+  margin: 26px 0 0;
+  color: #d7d4d6;
   font-size: 15px;
-  line-height: 1.75;
+  line-height: 1.8;
 }
 
 .sesiones {
-  margin-top: clamp(44px, 6vw, 76px);
+  margin-top: clamp(48px, 7vw, 76px);
 
   h2 {
-    margin: 0 0 18px;
+    margin: 0 0 20px;
     color: var(--color-texto);
-    font-size: 13px;
+    font-size: clamp(21px, 2.4vw, 28px);
     font-weight: 600;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
+    letter-spacing: -0.035em;
+    line-height: 1.15;
   }
+}
+
+.sesiones_ver-todas {
+  min-height: 40px;
+  border: 1px solid rgb(255 255 255 / 18%);
+  border-radius: 8px;
+  background: transparent;
+  padding: 8px 12px;
+  color: var(--color-texto);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 550;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: border-color 150ms ease, background-color 150ms ease;
+
+  &:hover {
+    border-color: rgb(255 255 255 / 34%);
+    background: var(--color-superficie-2);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-info);
+    outline-offset: 3px;
+  }
+}
+
+.sesiones_pie {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 12px;
 }
 
 .sesiones_lista {
@@ -106,87 +164,165 @@
 }
 
 .sesion {
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  width: 100%;
   min-width: 0;
-  min-height: 68px;
+  min-height: 76px;
   align-items: center;
-  justify-content: space-between;
   gap: 12px;
-  border: 1px solid transparent;
-  border-radius: 8px;
+  border: 1px solid rgb(255 255 255 / 14%);
+  border-radius: 12px;
   background: var(--color-superficie-2);
-  padding: 14px 16px;
-  transition: border-color 150ms ease;
+  padding: 14px;
+  color: var(--color-texto);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 160ms ease, background-color 160ms ease;
 
   &:hover {
-    border-color: rgb(255 255 255 / 18%);
+    border-color: rgb(255 255 255 / 34%);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-info);
+    outline-offset: 3px;
+  }
+
+  &.sesion--seleccionada {
+    border-color: var(--color-primario-hover);
+    background: color-mix(in srgb, var(--color-primario) 28%, var(--color-superficie-2));
   }
 }
 
 .sesion_fecha {
   display: grid;
   min-width: 0;
-  gap: 5px;
+  gap: 4px;
 
   time {
     color: var(--color-texto);
-    font-size: 13px;
-    font-weight: 600;
-    line-height: 1.35;
+    font-size: 14px;
+    font-weight: 550;
+    line-height: 1.4;
   }
 
   span {
-    color: var(--color-texto-secundario);
-    font-size: 12px;
+    color: #bdb8ba;
+    font-size: 13px;
+    font-variant-numeric: tabular-nums;
   }
 }
 
 .sesion_precio {
-  flex-shrink: 0;
   color: var(--color-texto);
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 600;
+  font-variant-numeric: tabular-nums;
 }
 
 .precio_desde {
-  display: inline-flex;
-  margin: 36px 0 0;
-  border-radius: 9999px;
-  background: var(--color-superficie-2);
-  padding: 8px 16px;
-  color: var(--color-texto);
-  font-size: 12px;
-}
-
-.boton_elegir {
-  display: block;
-  width: min(100%, 170px);
-  min-height: 50px;
-  margin-top: 30px;
-  border: 0;
-  border-radius: 8px;
-  background: var(--color-primario);
-  color: var(--color-texto);
-  font: inherit;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background-color 150ms ease;
-
-  &:hover {
-    background: var(--color-primario-hover);
-  }
-
-  &:focus-visible {
-    outline: 2px solid var(--color-info);
-    outline-offset: 2px;
-  }
+  margin: 0;
+  color: #bdb8ba;
+  font-size: 13px;
 }
 
 .sesiones_vacias,
 .estado_carga {
-  color: var(--color-texto-secundario);
+  color: #c4c0c2;
   font-size: 14px;
+  line-height: 1.6;
+}
+
+@media (min-width: 48.01rem) and (max-height: 48rem) {
+  .detalle {
+    gap: clamp(24px, 3vw, 36px);
+    padding-block: clamp(6px, 1svh, 8px);
+  }
+
+  .poster {
+    width: auto;
+    height: min(58svh, 320px);
+    justify-self: center;
+  }
+
+  .contenido {
+    padding-top: 0;
+  }
+
+  .pelicula_cabecera {
+    padding-bottom: 10px;
+
+    h1 {
+      font-size: clamp(32px, 4.5vw, 44px);
+    }
+  }
+
+  .pelicula_metadatos {
+    margin-top: 8px;
+  }
+
+  .sinopsis {
+    margin-top: 10px;
+    font-size: 13px;
+    line-height: 1.4;
+  }
+
+  .sesiones {
+    margin-top: 16px;
+
+    h2 {
+      margin-bottom: 8px;
+      font-size: clamp(18px, 2.5vw, 20px);
+    }
+  }
+
+  .sesiones_ver-todas {
+    min-height: 36px;
+    padding: 6px 9px;
+    font-size: 11px;
+  }
+
+  .sesiones_pie {
+    margin-top: 8px;
+  }
+
+  .sesiones_lista {
+    gap: 7px;
+  }
+
+  .sesion {
+    min-height: 56px;
+    gap: 7px;
+    padding: 7px 9px;
+  }
+
+  .sesion_fecha time,
+  .sesion_precio {
+    font-size: 12px;
+  }
+
+  .sesion_fecha span {
+    font-size: 11px;
+  }
+
+  .sesion_fecha {
+    gap: 2px;
+
+    time {
+      line-height: 1.2;
+    }
+  }
+
+  .sesion_radio {
+    width: 14px;
+    height: 14px;
+  }
+
+  .precio_desde {
+    margin-top: 8px;
+  }
 }
 
 .estado_carga {
@@ -195,44 +331,60 @@
   text-align: center;
 }
 
-@media (max-width: 55rem) {
+@media (max-width: 48rem) {
   .detalle {
     grid-template-columns: minmax(0, 1fr);
-    width: min(88.4%, 760px);
+    width: min(calc(100% - 44px), 680px);
     gap: 36px;
-    padding-block: 24px 52px;
+    padding-block: 32px 72px;
   }
 
   .poster {
-    width: min(68%, 340px);
+    position: relative;
+    top: auto;
+    width: min(58%, 300px);
     justify-self: center;
   }
 
-  .sesiones {
-    margin-top: 44px;
+  .contenido {
+    padding-top: 0;
   }
 }
 
 @media (max-width: 34rem) {
   .detalle {
     width: calc(100% - 40px);
+    gap: 32px;
+    padding-block: 24px 56px;
   }
 
   .poster {
-    width: min(76%, 300px);
+    width: min(68%, 260px);
     padding: 18px;
+  }
+
+  .pelicula_cabecera {
+    padding-bottom: 22px;
+
+    h1 {
+      font-size: clamp(38px, 12vw, 56px);
+    }
   }
 
   .sesiones_lista {
     grid-template-columns: minmax(0, 1fr);
   }
 
-  .precio_desde,
-  .boton_elegir {
-    margin-top: 20px;
+  .sesion {
+    min-height: 68px;
   }
+}
 
-  .boton_elegir {
-    width: 100%;
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
   }
 }
