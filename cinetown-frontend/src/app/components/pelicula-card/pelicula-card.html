@@ -1,19 +1,16 @@
 <a [routerLink]="['/peliculas', pelicula.id]" class="tarjeta-pelicula_enlace">
-<article class="tarjeta-pelicula">
-  <div class="tarjeta-pelicula_cartel"
-       [style.background]="posterBackground"
-       role="img"
-       [attr.aria-label]="'Póster de ' + pelicula.titulo">
-    <span class="tarjeta-pelicula_marca-agua">CINETOWN</span>
-    <div class="tarjeta-pelicula_detalles">
-      <h3 class="tarjeta-pelicula_titulo">{{ pelicula.titulo }}</h3>
-      <span class="tarjeta-pelicula_anio">ESTRENO · {{ pelicula.anio }}</span>
-      <div class="tarjeta-pelicula_generos">
-        @for (genero of pelicula.generos; track genero) {
-          <span class="tarjeta-pelicula_genero">{{ genero }}</span>
-        }
+  <article class="tarjeta-pelicula">
+    <div class="tarjeta-pelicula_cartel" [style.background]="posterBackground" aria-hidden="true">
+      <span class="tarjeta-pelicula_marca-agua">CINETOWN</span>
+      <div class="tarjeta-pelicula_detalles">
+        <h3 class="tarjeta-pelicula_titulo">{{ pelicula.titulo }}</h3>
+        <span class="tarjeta-pelicula_anio">ESTRENO · {{ pelicula.anio }}</span>
+        <div class="tarjeta-pelicula_generos">
+          @for (genero of pelicula.generos; track genero) {
+            <span class="tarjeta-pelicula_genero">{{ genero }}</span>
+          }
+        </div>
       </div>
     </div>
-  </div>
-</article>
+  </article>
 </a>

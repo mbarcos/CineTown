@@ -1,25 +1,27 @@
 .filtro-genero {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.625rem;
-  margin-block: 1.5rem;
+  gap: 4px 11px;
+  margin-block: 12px 30px;
 }
 
 .filtro-genero_opcion {
-  min-width: 5.5rem;
+  min-height: 42px;
   border: 0;
-  border-radius: 9999px;
-  padding: 0.5rem 1rem;
-  font-size: 0.875rem;
-  line-height: 1.25rem;
+  border-bottom: 1px solid transparent;
+  border-radius: 0;
+  background: transparent;
+  padding: 0 0 2px;
+  color: #bdb8ba;
+  font-size: 14px;
+  line-height: 1.25;
   cursor: pointer;
   transition:
-    background-color 150ms,
+    border-color 150ms,
     color 150ms;
 
   &:hover {
-    background-color: var(--color-primario);
-    color: white;
+    color: var(--color-texto);
   }
 
   &:focus-visible {
@@ -29,18 +31,17 @@
 }
 
 .filtro-genero_opcion--seleccionada {
-  background-color: var(--color-primario);
-  color: white;
+  border-color: #c25057;
+  color: var(--color-texto);
 }
 
 .filtro-genero_opcion--disponible {
-  background-color: var(--color-superficie-2);
-  color: var(--color-texto-secundario);
+  color: #bdb8ba;
 }
 
 @media (max-width: 39.99rem) {
   .filtro-genero_opcion {
-    min-width: 0;
-    padding-inline: 0.875rem;
+    min-height: 40px;
+    font-size: 13px;
   }
 }

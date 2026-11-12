@@ -10,6 +10,7 @@ import { FiltroGeneroComponent } from '../../components/filtro-genero/filtro-gen
   standalone: true,
   imports: [TitularComponent, PeliculaCardComponent, FiltroGeneroComponent],
   templateUrl: './landing.html',
+  styleUrl: './landing.scss',
 })
 export class Landing implements OnInit {
   private readonly peliculaService = inject(PeliculaService);

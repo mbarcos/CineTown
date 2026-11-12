@@ -1,9 +1,15 @@
 <app-titular />
 
-<main id="cartelera" class="mx-auto w-[88.4%] max-w-[1450px] py-[30px] pb-16 max-sm:w-[calc(100%-40px)] max-sm:pt-[26px]">
-  <div>
-    <h2 class="text-[22px] font-bold text-texto">Cartelera</h2>
-    <p class="mt-1.5 text-xs text-texto-secundario">Películas disponibles actualmente</p>
+<main id="cartelera" class="cartelera">
+  <div class="cartelera_cabecera">
+    <h2>Películas disponibles</h2>
+    <p>
+      @if (peliculasFiltradas().length === 1) {
+        1 película
+      } @else {
+        {{ peliculasFiltradas().length }} películas
+      }
+    </p>
   </div>
 
   <app-filtro-genero
@@ -12,21 +18,21 @@
   />
 
   @if (estadoCarga() === 'cargando') {
-    <div class="rounded-lg bg-superficie px-5 py-12 text-center text-sm text-texto-secundario">
+    <div class="cartelera_estado">
       <p>Cargando películas...</p>
     </div>
   } @else if (estadoCarga() === 'error') {
-    <div class="rounded-lg bg-superficie px-5 py-12 text-center text-sm text-texto-secundario" role="alert">
+    <div class="cartelera_estado" role="alert">
       <p>No se pudo cargar la cartelera. Comprueba que el servidor esté disponible e inténtalo de nuevo.</p>
     </div>
   } @else if (peliculasFiltradas().length > 0) {
-    <div class="grid grid-cols-2 gap-[13px] md:grid-cols-3 md:gap-[22px] xl:grid-cols-5">
+    <div class="cartelera_lista">
       @for (pelicula of peliculasFiltradas(); track pelicula.id) {
         <app-pelicula-card [pelicula]="pelicula" />
       }
     </div>
   } @else {
-    <div class="rounded-lg bg-superficie px-5 py-12 text-center text-sm text-texto-secundario">
+    <div class="cartelera_estado">
       @if (generoSeleccionado()) {
         <p>No hay películas disponibles del género seleccionado.</p>
       } @else {

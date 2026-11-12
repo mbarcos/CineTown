@@ -2,40 +2,52 @@
   height: 100%;
   min-width: 0;
   cursor: pointer;
-  &:hover {
-    .tarjeta-pelicula_cartel {
-      transform: scale(1.05);
-    }
-  }
 }
 
 .tarjeta-pelicula_enlace {
   display: block;
   color: inherit;
   text-decoration: none;
+
+  &:hover .tarjeta-pelicula_cartel {
+    transform: translateY(-3px);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-info);
+    outline-offset: 5px;
+  }
 }
 
 .tarjeta-pelicula_cartel {
   position: relative;
   isolation: isolate;
   display: flex;
-  height: 100%;
-  min-height: 310px;
+  aspect-ratio: 0.82;
+  min-height: 190px;
   align-items: flex-end;
   overflow: hidden;
   border-radius: 8px;
-  padding: 20px;
-  transition: transform 0.3s ease-in-out;
+  padding: clamp(13px, 1.6vw, 20px);
+  transition: transform 220ms ease;
+
+  &::before {
+    position: absolute;
+    z-index: -1;
+    background: linear-gradient(180deg, transparent 25%, rgb(7 7 9 / 78%) 100%);
+    content: "";
+    inset: 0;
+  }
 }
 
 .tarjeta-pelicula_marca-agua {
   position: absolute;
-  top: 18px;
-  right: 18px;
-  color: rgb(255 255 255 / 15%);
-  font-size: 10px;
+  top: 14px;
+  right: 14px;
+  color: rgb(255 255 255 / 72%);
+  font-size: 9px;
   font-weight: 800;
-  letter-spacing: 2px;
+  letter-spacing: 1.5px;
 }
 
 .tarjeta-pelicula_detalles {
@@ -43,15 +55,16 @@
 }
 
 .tarjeta-pelicula_titulo {
-  margin: 0 0 8px;
+  margin: 0 0 7px;
   color: var(--color-texto);
-  font-size: 17px;
+  font-size: clamp(15px, 1.5vw, 19px);
   font-weight: 700;
-  line-height: 1.25;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
 }
 
 .tarjeta-pelicula_anio {
-  color: rgb(255 255 255 / 75%);
+  color: rgb(255 255 255 / 88%);
   font-size: 10px;
   letter-spacing: 0.025em;
 }
@@ -59,20 +72,20 @@
 .tarjeta-pelicula_generos {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
-  margin-top: 10px;
+  gap: 5px;
+  margin-top: 8px;
 }
 
 .tarjeta-pelicula_genero {
   border-radius: 9999px;
-  background: rgb(0 0 0 / 20%);
-  padding: 4px 8px;
-  color: rgb(255 255 255 / 80%);
+  background: rgb(0 0 0 / 32%);
+  padding: 3px 7px;
+  color: rgb(255 255 255 / 92%);
   font-size: 10px;
 }
 
-@media (max-width: 39.99rem) {
+@media (prefers-reduced-motion: reduce) {
   .tarjeta-pelicula_cartel {
-    min-height: 260px;
+    transition: none;
   }
 }
