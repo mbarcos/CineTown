@@ -29,11 +29,16 @@
       <div class="compra-layout">
         <section class="panel entradas" aria-labelledby="titulo-entradas">
           <h2 id="titulo-entradas">Entradas</h2>
-          <label class="etiqueta">Cantidad</label>
-          <div class="selector-cantidad" aria-label="Cantidad de entradas">
-            <button type="button" aria-label="Quitar una entrada" [disabled]="cantidad() <= 1" (click)="cambiarCantidad(-1)">−</button>
-            <output aria-live="polite">{{ cantidad() }}</output>
-            <button type="button" aria-label="Añadir una entrada" [disabled]="cantidad() >= maxEntradas()" (click)="cambiarCantidad(1)">+</button>
+          <div class="bloque-cantidad">
+            <div class="cantidad-cabecera">
+              <label class="etiqueta" id="etiqueta-cantidad">Cantidad de entradas</label>
+              <span class="precio-unitario">{{ precioUnitario() }} <span>por entrada</span></span>
+            </div>
+            <div class="selector-cantidad" role="group" aria-labelledby="etiqueta-cantidad">
+              <button type="button" aria-label="Quitar una entrada" [disabled]="cantidad() <= 1" (click)="cambiarCantidad(-1)">−</button>
+              <output aria-live="polite" aria-atomic="true">{{ cantidad() }}</output>
+              <button type="button" aria-label="Añadir una entrada" [disabled]="cantidad() >= maxEntradas()" (click)="cambiarCantidad(1)">+</button>
+            </div>
           </div>
           @if (s.asientosLibres < 1) {
             <p class="sin-plazas" role="alert">Esta sesión ya no tiene entradas disponibles.</p>
