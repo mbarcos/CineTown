@@ -1,0 +1,124 @@
+<main class="pagina-sesiones">
+  <div class="pagina-sesiones_contenido">
+    <a class="volver" [routerLink]="['/peliculas', pelicula()?.id ?? '']">
+      <svg viewBox="0 0 20 20" aria-hidden="true">
+        <path d="m12.5 4.5-5.5 5.5 5.5 5.5" />
+      </svg>
+      Volver a la película
+    </a>
+
+    @if (pelicula(); as p) {
+      <header class="cabecera">
+        <div>
+          <h1>Elige sesión</h1>
+          <p>{{ p.titulo }} <span aria-hidden="true">·</span> Selecciona fecha y hora</p>
+        </div>
+        <a class="enlace-pelicula" [routerLink]="['/peliculas', p.id]">Ver detalles</a>
+      </header>
+
+      <section class="selector-fecha" aria-label="Filtrar sesiones por día">
+        <div class="fechas-rapidas">
+          @for (opcion of fechasRapidas(); track opcion.fecha) {
+            <button
+              class="fecha-chip"
+              type="button"
+              [class.fecha-chip--activa]="fechaSeleccionada() === opcion.fecha"
+              [attr.aria-pressed]="fechaSeleccionada() === opcion.fecha"
+              (click)="cambiarFecha(opcion.fecha)"
+            >
+              <span>{{ opcion.etiqueta }}</span>
+              <span class="fecha-chip_detalle">{{ opcion.detalle }}</span>
+            </button>
+          }
+        </div>
+        <label class="selector-calendario">
+          <span>Otro día</span>
+          <input
+            type="date"
+            [value]="fechaSeleccionada()"
+            [min]="hoy"
+            aria-label="Seleccionar otro día"
+            (change)="cambiarFecha($any($event.target).value)"
+          />
+        </label>
+      </section>
+
+      <div class="sesiones-layout">
+        <section class="horarios" aria-labelledby="titulo-horarios">
+          <div class="seccion-cabecera">
+            <div>
+              <h2 id="titulo-horarios">Horarios</h2>
+              <p>{{ fechaLegible() }}</p>
+            </div>
+            @if (!cargando() && !error()) {
+              <span class="contador">{{ sesionesPresentacion().length }} sesiones</span>
+            }
+          </div>
+
+          @if (cargando()) {
+            <p class="estado" role="status">Buscando sesiones disponibles…</p>
+          } @else if (error()) {
+            <div class="estado estado--error" role="alert">
+              <p>No se pudieron cargar las sesiones.</p>
+              <button type="button" (click)="recargarSesiones()">Volver a intentar</button>
+            </div>
+          } @else if (sesionesPresentacion().length) {
+            <div class="lista-sesiones">
+              @for (sesion of sesionesPresentacion(); track sesion.id) {
+                <button
+                  class="fila-sesion"
+                  type="button"
+                  [class.fila-sesion--seleccionada]="sesionSeleccionadaId() === sesion.id"
+                  [attr.aria-pressed]="sesionSeleccionadaId() === sesion.id"
+                  (click)="seleccionarSesion(sesion.id)"
+                >
+                  <time class="hora" [attr.datetime]="sesion.fechaHoraInicio">{{ sesion.horaLegible }}</time>
+                  <span class="sala">Sala {{ sesion.numeroSala }}</span>
+                  <span class="disponibilidad">
+                    <span class="disponibilidad_punto" aria-hidden="true"></span>
+                    {{ sesion.asientosLibres }} {{ sesion.asientosLibres === 1 ? 'asiento libre' : 'asientos libres' }}
+                  </span>
+                  <span class="precio">{{ sesion.precioLegible }}</span>
+                  <span class="accion">{{ sesionSeleccionadaId() === sesion.id ? 'Elegida' : 'Seleccionar' }}</span>
+                </button>
+              }
+            </div>
+          } @else {
+            <div class="estado estado--vacio">
+              <h3>No hay sesiones para este día</h3>
+              <p>Prueba otra fecha para consultar los horarios disponibles de {{ p.titulo }}.</p>
+            </div>
+          }
+        </section>
+
+        <aside class="resumen" aria-labelledby="titulo-resumen">
+          <h2 id="titulo-resumen">Película</h2>
+          <div class="resumen-panel">
+            <div class="resumen-pelicula">
+              <span class="resumen-titulo">{{ p.titulo }}</span>
+              <span>{{ fechaLegible() }}</span>
+              @if (sesionSeleccionada(); as elegida) {
+                <span>Sala {{ elegida.numeroSala }} · {{ elegida.horaLegible }}</span>
+              } @else {
+                <span>Selecciona un horario para verlo aquí</span>
+              }
+            </div>
+            <div class="resumen-linea">
+              <span>Horarios disponibles</span>
+              <span>{{ sesionesPresentacion().length }}</span>
+            </div>
+            @if (sesionSeleccionada(); as elegida) {
+              <div class="resumen-linea resumen-total">
+                <span>Precio por entrada</span>
+                <span>{{ elegida.precioLegible }}</span>
+              </div>
+            }
+            <p class="resumen-nota">El precio y la disponibilidad pueden variar hasta completar la compra.</p>
+          </div>
+        </aside>
+      </div>
+    } @else {
+      <p class="estado" role="status">Cargando película…</p>
+    }
+  </div>
+</main>

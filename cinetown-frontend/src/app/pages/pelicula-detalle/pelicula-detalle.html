@@ -55,7 +55,9 @@
 
           <div class="sesiones_pie">
             <p class="precio_desde">Desde {{ precioDesde() }}</p>
-            <button class="sesiones_ver-todas" type="button">Ver todas las sesiones</button>
+            <a class="sesiones_ver-todas" [routerLink]="['/peliculas', p.id, 'sesiones']">
+              Ver todas las sesiones
+            </a>
           </div>
         } @else if (sesiones() === undefined) {
           <p class="estado_carga">Cargando sesiones…</p>

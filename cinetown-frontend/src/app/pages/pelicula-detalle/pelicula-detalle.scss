@@ -125,7 +125,10 @@
 }
 
 .sesiones_ver-todas {
+  display: inline-flex;
   min-height: 40px;
+  align-items: center;
+  justify-content: center;
   border: 1px solid rgb(255 255 255 / 18%);
   border-radius: 8px;
   background: transparent;
@@ -135,6 +138,7 @@
   font-size: 13px;
   font-weight: 550;
   white-space: nowrap;
+  text-decoration: none;
   cursor: pointer;
   transition: border-color 150ms ease, background-color 150ms ease;
 

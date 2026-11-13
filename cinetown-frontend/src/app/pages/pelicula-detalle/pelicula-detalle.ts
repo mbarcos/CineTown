@@ -1,6 +1,7 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { map, switchMap } from 'rxjs';
 import { Clasificacion } from '../../models/pelicula-detalle.model';
 import { PeliculaService } from '../../services/peliculaService';
@@ -17,6 +18,7 @@ interface SesionPresentacion extends SesionConAsientos {
 @Component({
   selector: 'app-pelicula-detalle',
   standalone: true,
+  imports: [RouterLink],
   templateUrl: './pelicula-detalle.html',
   styleUrl: './pelicula-detalle.scss',
 })
