@@ -25,4 +25,8 @@ export class SesionService {
       params: { fecha, peliculaId },
     });
   }
+
+  consultarSesionPorId(id: number): Observable<SesionConAsientos> {
+    return this.http.get<SesionConAsientos>(`${this.apiUrl}/sesiones/${id}`);
+  }
 }

@@ -103,17 +103,15 @@
                 <span>Selecciona un horario para verlo aquí</span>
               }
             </div>
-            <div class="resumen-linea">
-              <span>Horarios disponibles</span>
-              <span>{{ sesionesPresentacion().length }}</span>
-            </div>
             @if (sesionSeleccionada(); as elegida) {
               <div class="resumen-linea resumen-total">
                 <span>Precio por entrada</span>
                 <span>{{ elegida.precioLegible }}</span>
               </div>
             }
-            <p class="resumen-nota">El precio y la disponibilidad pueden variar hasta completar la compra.</p>
+            <button class="continuar" type="button" [disabled]="!sesionSeleccionada()" (click)="continuarCompra()">
+              Continuar con la compra
+            </button>
           </div>
         </aside>
       </div>

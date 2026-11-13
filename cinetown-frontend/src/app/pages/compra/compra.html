@@ -1,0 +1,73 @@
+<main class="pagina-compra">
+  <a class="volver" routerLink="/">← Volver a la cartelera</a>
+  <header class="cabecera">
+    <h1>Completa tu compra</h1>
+    @if (sesion(); as s) {
+      <p>{{ s.titulo }} · Sala {{ s.numeroSala }} · {{ fechaLegible() }}</p>
+    }
+  </header>
+
+  @if (cargandoSesion()) {
+    <p class="estado" role="status">Cargando sesión…</p>
+  } @else if (errorSesion() || !sesion()) {
+    <div class="estado estado-error" role="alert">
+      <h2>No se pudo encontrar esta sesión</h2>
+      <p>Puede que ya no esté disponible o que el enlace no sea válido.</p>
+      <a routerLink="/">Volver a la cartelera</a>
+    </div>
+  } @else if (sesion(); as s) {
+    @if (compraRealizada(); as compra) {
+      <section class="confirmacion" role="status" aria-live="polite">
+        <span class="confirmacion-icono" aria-hidden="true">✓</span>
+        <h2>¡Compra confirmada!</h2>
+        <p>Hemos registrado {{ compra.numEntradas }} {{ compra.numEntradas === 1 ? 'entrada' : 'entradas' }} para {{ s.titulo }}.</p>
+        <div class="codigo-compra"><span>Código de compra</span><strong>{{ compra.codCompra }}</strong></div>
+        <p class="total-confirmado">Total pagado: {{ precioCompra(compra.precioTotal) }}</p>
+        <a class="boton" routerLink="/">Volver a la cartelera</a>
+      </section>
+    } @else {
+      <div class="compra-layout">
+        <section class="panel entradas" aria-labelledby="titulo-entradas">
+          <h2 id="titulo-entradas">Entradas</h2>
+          <label class="etiqueta">Cantidad</label>
+          <div class="selector-cantidad" aria-label="Cantidad de entradas">
+            <button type="button" aria-label="Quitar una entrada" [disabled]="cantidad() <= 1" (click)="cambiarCantidad(-1)">−</button>
+            <output aria-live="polite">{{ cantidad() }}</output>
+            <button type="button" aria-label="Añadir una entrada" [disabled]="cantidad() >= maxEntradas()" (click)="cambiarCantidad(1)">+</button>
+          </div>
+          @if (s.asientosLibres < 1) {
+            <p class="sin-plazas" role="alert">Esta sesión ya no tiene entradas disponibles.</p>
+          } @else if (s.asientosLibres < 10) {
+            <p class="ayuda">Quedan {{ s.asientosLibres }} {{ s.asientosLibres === 1 ? 'entrada' : 'entradas' }} disponibles.</p>
+          }
+
+          <form id="compra-form" (submit)="confirmarCompra($event)" novalidate>
+            <label class="etiqueta" for="email">Email de confirmación</label>
+            <input id="email" type="email" autocomplete="email" placeholder="tu@email.com" [formField]="formulario.email" />
+            @if (formulario.email().touched() && formulario.email().errors().length) {
+              <p class="error-campo" role="alert">{{ formulario.email().errors()[0].message }}</p>
+            }
+            <p class="ayuda">El código de compra se enviará a este correo.</p>
+            @if (errorCompra()) { <p class="error-compra" role="alert">{{ errorCompra() }}</p> }
+            <button class="boton-movil" type="submit" [disabled]="cargandoCompra() || s.asientosLibres < 1">
+              {{ cargandoCompra() ? 'Procesando…' : 'Confirmar compra' }}
+            </button>
+          </form>
+        </section>
+
+        <aside class="resumen" aria-labelledby="titulo-resumen">
+          <section class="panel resumen-panel">
+            <h2 id="titulo-resumen">Resumen</h2>
+            <p class="resumen-sesion">{{ s.titulo }} · {{ s.fechaHoraInicio.slice(11, 16) }}</p>
+            <div class="linea"><span>{{ cantidad() }} {{ cantidad() === 1 ? 'entrada' : 'entradas' }}</span><span>{{ totalLegible() }}</span></div>
+            <div class="linea total"><strong>Total</strong><strong>{{ totalLegible() }}</strong></div>
+            <button class="boton boton-escritorio" type="submit" form="compra-form" [disabled]="cargandoCompra() || s.asientosLibres < 1">
+              {{ cargandoCompra() ? 'Procesando…' : 'Confirmar compra' }}
+            </button>
+          </section>
+          <p class="nota">Al confirmar, aceptas las condiciones de compra.</p>
+        </aside>
+      </div>
+    }
+  }
+</main>

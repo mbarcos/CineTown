@@ -131,6 +131,11 @@ export class SesionesPelicula {
     this.sesionSeleccionadaId.set(id);
   }
 
+  continuarCompra(): void {
+    const sesion = this.sesionSeleccionada();
+    if (sesion) void this.router.navigate(['/sesiones', sesion.id]);
+  }
+
   recargarSesiones(): void {
     this.reintento.update((valor) => valor + 1);
   }
