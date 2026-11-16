@@ -8,18 +8,18 @@
 
     <div class="encabezado_enlaces">
 
-      <a class="encabezado_enlace encabezado_enlace--activo" href="#cartelera">
+      <a class="encabezado_enlace" routerLink="/" fragment="cartelera" routerLinkActive="encabezado_enlace--activo" [routerLinkActiveOptions]="{ exact: true }">
         Cartelera
       </a>
 
       @if (authService.estaAutenticado()) {
-        <a class="encabezado_enlace" href="#mis-compras">
+        <a class="encabezado_enlace" routerLink="/" fragment="mis-compras">
           Mis compras
         </a>
       }
 
       @if (authService.esAdministrador()) {
-        <a class="encabezado_enlace" href="#gestion-peliculas">
+        <a class="encabezado_enlace" routerLink="/gestion-peliculas" routerLinkActive="encabezado_enlace--activo">
           Gestión de películas
         </a>
       }

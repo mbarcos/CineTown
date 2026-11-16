@@ -19,4 +19,9 @@ public class GeneroController {
     public List<CuentaPeliculasPorGenero> consultarGeneros() {
         return service.consultarGenerosConPeliculasEnCartelera();
     }
+
+    @GetMapping("/catalogo")
+    public List<String> consultarCatalogoGeneros() {
+        return service.consultarTodosLosGeneros();
+    }
 }

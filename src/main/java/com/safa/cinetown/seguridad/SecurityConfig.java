@@ -80,6 +80,10 @@ public class SecurityConfig {
                         // PELÍCULAS
                         // =====================================
 
+                        // Gestión de catálogo: solo ADMIN
+                        .requestMatchers(HttpMethod.GET, "/peliculas/gestion")
+                        .hasRole("ADMIN")
+
                         // Recaudación: solo ADMIN
                         .requestMatchers(HttpMethod.GET,
                                 "/peliculas/*/recaudacion")

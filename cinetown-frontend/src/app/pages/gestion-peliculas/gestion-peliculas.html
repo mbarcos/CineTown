@@ -1,0 +1,113 @@
+<main class="gestion">
+  <header class="cabecera">
+    <div>
+      <h1>Gestión de películas</h1>
+      <p>Alta, modificación y estado de cartelera · Solo ADMIN</p>
+    </div>
+    <button class="boton boton-primario" type="button" (click)="iniciarNuevaPelicula()">
+      <span aria-hidden="true">+</span> Nueva película
+    </button>
+  </header>
+
+  @if (formularioVisible()) {
+    <section class="formulario-panel" aria-labelledby="titulo-formulario">
+      <div class="formulario-cabecera">
+        <h2 id="titulo-formulario">{{ peliculaEditadaId() ? 'Editar película' : 'Nueva película' }}</h2>
+        <button class="boton-cerrar" type="button" (click)="cancelarEdicion()" aria-label="Cerrar formulario">×</button>
+      </div>
+      <form [formGroup]="formulario" (ngSubmit)="guardar()">
+        <div class="campos">
+          <label class="campo campo-titulo">
+            <span>Título</span>
+            <input formControlName="titulo" autocomplete="off" />
+            @if (formulario.controls.titulo.touched && formulario.controls.titulo.invalid) {
+              <small>Introduce un título de hasta 255 caracteres.</small>
+            }
+          </label>
+          <label class="campo">
+            <span>Duración (min)</span>
+            <input type="number" formControlName="duracion" min="1" max="300" />
+          </label>
+          <label class="campo">
+            <span>Año</span>
+            <input type="number" formControlName="anio" min="1888" max="2100" />
+          </label>
+          <label class="campo">
+            <span>Clasificación</span>
+            <select formControlName="clasificacion">
+              <option value="TP">TP</option><option value="P7">P7</option>
+              <option value="P12">P12</option><option value="P16">P16</option><option value="P18">P18</option>
+            </select>
+          </label>
+          <label class="campo campo-sinopsis">
+            <span>Sinopsis</span>
+            <textarea formControlName="sinopsis" rows="3"></textarea>
+          </label>
+        </div>
+        <fieldset class="generos">
+          <legend>Géneros</legend>
+          @for (genero of generos(); track genero) {
+            <label class="genero-opcion">
+              <input type="checkbox" [checked]="formulario.controls.generos.value.includes(genero)"
+                (change)="alternarGenero(genero, $event)" />
+              {{ genero }}
+            </label>
+          }
+          @if (generos().length === 0) {
+            <p class="ayuda">No hay géneros disponibles.</p>
+          }
+        </fieldset>
+        @if (formulario.controls.generos.touched && formulario.controls.generos.invalid) {
+          <p class="error" role="alert">Selecciona al menos un género.</p>
+        }
+        @if (mensajeError()) { <p class="error" role="alert">{{ mensajeError() }}</p> }
+        <div class="acciones-formulario">
+          <button class="boton boton-secundario" type="button" (click)="cancelarEdicion()">Cancelar</button>
+          <button class="boton boton-primario" type="submit" [disabled]="guardando()">
+            {{ guardando() ? 'Guardando…' : 'Guardar película' }}
+          </button>
+        </div>
+      </form>
+    </section>
+  }
+
+  <section class="listado" aria-label="Catálogo de películas">
+    <div class="barra-herramientas">
+      <label class="buscador">
+        <span class="sr-only">Buscar película</span>
+        <input type="search" placeholder="Buscar por título o género" [value]="busqueda()" (input)="actualizarBusqueda($event)" />
+      </label>
+      <span class="contador">{{ peliculasFiltradas().length }} películas</span>
+    </div>
+
+    @if (mensajeError() && !formularioVisible()) { <p class="error" role="alert">{{ mensajeError() }}</p> }
+    @if (cargando()) {
+      <p class="estado" role="status">Cargando películas…</p>
+    } @else if (peliculasFiltradas().length === 0) {
+      <p class="estado">{{ busqueda() ? 'No hay películas que coincidan con la búsqueda.' : 'Todavía no hay películas en el catálogo.' }}</p>
+    } @else {
+      <div class="tabla-contenedor">
+        <table>
+          <thead><tr><th scope="col">Película</th><th scope="col">Géneros</th><th scope="col">Duración</th><th scope="col">Cartelera</th><th scope="col">Acciones</th></tr></thead>
+          <tbody>
+            @for (pelicula of peliculasFiltradas(); track pelicula.id) {
+              <tr>
+                <th scope="row"><span class="titulo">{{ pelicula.titulo }}</span><span class="anio">{{ pelicula.anio }} · {{ pelicula.clasificacion }}</span></th>
+                <td>{{ pelicula.generos.join(' · ') }}</td>
+                <td>{{ pelicula.duracion }} min</td>
+                <td><span class="estado-cartelera" [class.estado-inactivo]="!pelicula.activo">{{ pelicula.activo ? 'En cartelera' : 'Fuera' }}</span></td>
+                <td class="acciones">
+                  <button class="boton boton-secundario" type="button" (click)="editar(pelicula)">Editar</button>
+                  <button class="boton boton-secundario" type="button" (click)="cambiarCartelera(pelicula)">
+                    {{ pelicula.activo ? 'Quitar cartelera' : 'Poner cartelera' }}
+                  </button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </section>
+  <p class="nota">Los cambios de cartelera afectan únicamente a la disponibilidad pública de la película.</p>
+</main>

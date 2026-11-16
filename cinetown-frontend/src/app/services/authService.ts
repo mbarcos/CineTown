@@ -32,7 +32,7 @@ export class AuthService {
   );
 
   readonly esAdministrador = computed(() =>
-    this.roles().some(rol => rol.replace(/^ROLE_/i, '').toLocaleUpperCase() === 'ADMIN')
+    this.tieneAlgunRol(['ADMIN'])
   );
 
   login(datos: LoginRequestDTO): Observable<AuthResponseDTO> {
@@ -82,7 +82,9 @@ export class AuthService {
   obtenerToken(): string | null {return this.sesion()?.token ?? null;}
 
   tieneAlgunRol(roles: string[]): boolean {
-    return roles.some(rol => this.roles().includes(rol));
+    const normalizar = (rol: string) => rol.replace(/^ROLE_/i, '').toLocaleUpperCase();
+    const rolesActuales = this.roles().map(normalizar);
+    return roles.some(rol => rolesActuales.includes(normalizar(rol)));
   }
 
   registrar(datos: RegistroRequestDTO): Observable<AuthResponseDTO> {

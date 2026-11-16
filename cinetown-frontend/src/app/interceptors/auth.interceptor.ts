@@ -23,7 +23,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const esLecturaPublica =
     req.method === 'GET' && (
       path === '/peliculas' ||
-      /^\/peliculas\/[^/]+$/.test(path) ||
+      (path !== '/peliculas/gestion' && /^\/peliculas\/[^/]+$/.test(path)) ||
       path === '/generos' ||
       path === '/sesiones' ||
       /^\/sesiones\/[^/]+$/.test(path)

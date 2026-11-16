@@ -20,6 +20,11 @@ public class PeliculaController {
         return service.consultarTodasPeliculasActivas();
     }
 
+    @GetMapping("/gestion")
+    public List<PeliculaResponse> consultarPeliculasParaGestion() {
+        return service.consultarTodasPeliculas();
+    }
+
     @GetMapping("/{id}")
     public PeliculaResponse consultarPeliculaId(@PathVariable Integer id) {
         return service.consultarPeliculaPorId(id);

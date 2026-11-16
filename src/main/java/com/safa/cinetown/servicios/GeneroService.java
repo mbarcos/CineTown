@@ -17,4 +17,12 @@ public class GeneroService {
     public List<CuentaPeliculasPorGenero> consultarGenerosConPeliculasEnCartelera() {
         return repository.contarPeliculasEnCarteleraPorGenero();
     }
+
+    @Transactional(readOnly = true)
+    public List<String> consultarTodosLosGeneros() {
+        return repository.findAll().stream()
+                .map(genero -> genero.getNombre())
+                .sorted()
+                .toList();
+    }
 }
