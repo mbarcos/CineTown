@@ -31,6 +31,10 @@ export class AuthService {
     () => this.sesion()?.roles ?? []
   );
 
+  readonly esAdministrador = computed(() =>
+    this.roles().some(rol => rol.replace(/^ROLE_/i, '').toLocaleUpperCase() === 'ADMIN')
+  );
+
   login(datos: LoginRequestDTO): Observable<AuthResponseDTO> {
     return this.http.post<AuthResponseDTO>(
       `${this.apiUrl}/auth/login`,

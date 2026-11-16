@@ -32,6 +32,8 @@ build/
 
 # Node.js
 node_modules/
+cinetown-frontend/.angular/
+cinetown-frontend/dist/
 
 ### VS Code ###
 .vscode/
