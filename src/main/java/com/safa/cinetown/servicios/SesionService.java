@@ -56,7 +56,7 @@ public class SesionService {
                         "No se encontró la película"));
         if (!Boolean.TRUE.equals(pelicula.getActivo())) {
             throw new ReglaNegocioException(
-                    "Solo se pueden programar sesiones de películas activas");
+                    "La película no está en cartelera");
         }
         return pelicula;
     }

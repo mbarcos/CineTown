@@ -63,7 +63,6 @@ public class PeliculaService {
         pelicula.setGeneros(new HashSet<>(generos));
 
         Pelicula guardada = repository.save(pelicula);
-        log.info("Película creada: id={} titulo={}", guardada.getId(), guardada.getTitulo());
         return mapper.toResponse(guardada);
     }
 
@@ -73,18 +72,10 @@ public class PeliculaService {
                 .orElseThrow(() -> new RecursoNoEncontradoException(PELICULA_NO_ENCONTRADA));
         List<Genero> generos = buscarGeneros(dto.generos());
 
-        pelicula.setTitulo(dto.titulo());
-        pelicula.setSinopsis(dto.sinopsis());
-        pelicula.setDuracion(dto.duracion());
-        pelicula.setAnio(dto.anio());
-        pelicula.setClasificacion(dto.clasificacion());
-        if (dto.activo() != null) {
-            pelicula.setActivo(dto.activo());
-        }
+        mapper.actualizarEntidad(dto, pelicula);
         pelicula.setGeneros(new HashSet<>(generos));
 
         Pelicula guardada = repository.save(pelicula);
-        log.info("Película modificada: id={} titulo={}", guardada.getId(), guardada.getTitulo());
         return mapper.toResponse(guardada);
     }
 
