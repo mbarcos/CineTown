@@ -18,6 +18,12 @@
         </a>
       }
 
+      @if (authService.tieneAlgunRol(['ADMIN'])) {
+        <a class="encabezado_enlace" href="#gestion-peliculas">
+          Gestión de películas
+        </a>
+      }
+
     </div>
 
     <div class="encabezado_sesion">
