@@ -36,7 +36,7 @@ public class TestRepositorios {
     @Autowired
     private ICompraRepository compraRepository;
 
-    // encuentra todas las peliculas esten o no activas
+    // encuentra todas las peliculas por titulo (este no lo utilizo nunca)
     @Test
     void encuentraLasPeliculasPorTitulo() {
         List<Pelicula> resultado = peliculaRepository.findByTituloContainingIgnoreCase("interstellar");
@@ -44,7 +44,7 @@ public class TestRepositorios {
         resultado.forEach(p -> System.out.println(p.getTitulo()));
     }
 
-    // consulta para obtener una pelicula junto con sus generos
+    // consulta para /pelicula/id, muestra tambien los generos de la pelicula
     @Test
     void encuentraUnaPeliculaConSusGeneros() {
         Optional<Pelicula> resultado = peliculaRepository.findByIdConGeneros(1);
