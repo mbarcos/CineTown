@@ -40,5 +40,12 @@ export const routes: Routes = [
       import('./pages/compra/compra')
         .then(m => m.Compra),
   },
-]
+  {
+    path: 'compras',
+    canActivate: [roleGuard],
+    data: { roles: ['CLIENTE', 'ADMIN', 'TAQUILLA'] },
+    loadComponent: () => import('./pages/mis-compras/mis-compras')
+      .then(m => m.MisCompras),
+  },
+];
 

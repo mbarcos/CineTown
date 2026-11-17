@@ -1,0 +1,71 @@
+<main class="pagina-compras">
+  <header class="cabecera">
+    <div>
+      <p class="sobretitulo">CINETOWN · HISTORIAL</p>
+      <h1>{{ titulo() }}</h1>
+      <p class="descripcion">
+        {{ esPersonal() ? 'Consulta las compras de todos los clientes.' : 'Consulta tus entradas y el estado de tus compras.' }}
+      </p>
+    </div>
+    @if (!cargando() && totalCompras() > 0) {
+      <span class="contador">{{ totalCompras() }} {{ totalCompras() === 1 ? 'compra' : 'compras' }}</span>
+    }
+  </header>
+
+  @if (error()) { <p class="aviso aviso-error" role="alert">{{ error() }}</p> }
+  @if (mensaje()) { <p class="aviso aviso-ok" role="status">{{ mensaje() }}</p> }
+
+  @if (cargando()) {
+    <section class="estado" role="status"><span class="indicador-carga" aria-hidden="true"></span>Cargando compras…</section>
+  } @else if (compras().length === 0 && !error()) {
+    <section class="vacio">
+      <span class="icono-vacio" aria-hidden="true">▤</span>
+      <h2>Aún no hay compras</h2>
+      <p>Cuando reserves tus entradas, aparecerán aquí con sus detalles.</p>
+    </section>
+  } @else if (compras().length > 0) {
+    <section class="lista" aria-label="Listado de compras">
+      @for (compra of compras(); track compra.codCompra) {
+        <article class="compra" [class.compra-cancelada]="!compra.estado">
+          <div class="fecha-compra">
+            <span class="fecha-dia">{{ fechaLegible(compra.fechaHoraInicio) }}</span>
+            <span class="fecha-hora">{{ horaLegible(compra.fechaHoraInicio) }} h</span>
+          </div>
+          <div class="detalle">
+            <div class="titulo-fila">
+              <h2>{{ compra.titulo }}</h2>
+              <span class="estado-compra" [class.estado-cancelado]="!compra.estado">
+                <span aria-hidden="true">{{ compra.estado ? '●' : '○' }}</span>
+                {{ compra.estado ? 'Confirmada' : 'Cancelada' }}
+              </span>
+            </div>
+            <p>Sala {{ compra.numeroSala }} <span aria-hidden="true">·</span> {{ compra.numEntradas }} {{ compra.numEntradas === 1 ? 'entrada' : 'entradas' }}</p>
+            <span class="codigo">Código <strong>{{ compra.codCompra }}</strong></span>
+          </div>
+          <div class="importe-acciones">
+            <strong class="importe">{{ precioLegible(compra.precioTotal) }}</strong>
+            @if (compraPendiente() === compra.codCompra) {
+              <div class="confirmar-cancelacion" role="group" [attr.aria-label]="'Confirmar cancelación de ' + compra.codCompra">
+                <span>¿Cancelar?</span>
+                <button class="accion accion-peligro" type="button" [disabled]="compraCancelando() !== null" (click)="cancelarCompra(compra)">
+                  {{ compraCancelando() === compra.codCompra ? 'Cancelando…' : 'Sí, cancelar' }}
+                </button>
+                <button class="accion" type="button" [disabled]="compraCancelando() !== null" (click)="compraPendiente.set(null)">No</button>
+              </div>
+            } @else if (esCancelable(compra)) {
+              <button class="accion accion-cancelar" type="button" (click)="pedirCancelacion(compra.codCompra)">Cancelar compra</button>
+            }
+          </div>
+        </article>
+      }
+    </section>
+
+    @if (totalPaginas() > 1) {
+      <nav class="paginacion" aria-label="Páginas de compras">
+        <button type="button" class="accion" [disabled]="pagina() === 0" (click)="cambiarPagina(-1)">← Anterior</button>
+        <span>Página {{ pagina() + 1 }} de {{ totalPaginas() }}</span>
+        <button type="button" class="accion" [disabled]="pagina() + 1 >= totalPaginas()" (click)="cambiarPagina(1)">Siguiente →</button>
+      </nav>
+    }
+  }
+</main>

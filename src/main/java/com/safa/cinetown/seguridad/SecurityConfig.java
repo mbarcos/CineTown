@@ -176,10 +176,10 @@ public class SecurityConfig {
                                 "/compras/*")
                         .hasAnyRole("ADMIN", "TAQUILLA", "CLIENTE")
 
-                        // Cancelar compra: TAQUILLA y CLIENTE
+                        // Cancelar compra: ADMIN, TAQUILLA y CLIENTE
                         .requestMatchers(HttpMethod.PATCH,
                                 "/compras/*/cancelar")
-                        .hasAnyRole("TAQUILLA", "CLIENTE")
+                        .hasAnyRole("ADMIN", "TAQUILLA", "CLIENTE")
 
 
                         // =====================================

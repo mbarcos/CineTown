@@ -62,9 +62,10 @@ public class CompraController {
     public void cancelarCompra(
             @PathVariable String codigo,
             Authentication authentication) {
-        boolean esTaquilla = authentication.getAuthorities().stream()
-                .anyMatch(authority -> authority.getAuthority().equals("ROLE_TAQUILLA"));
+        boolean puedeCancelarCompraAjena = authentication.getAuthorities().stream()
+                .anyMatch(authority -> authority.getAuthority().equals("ROLE_ADMIN")
+                        || authority.getAuthority().equals("ROLE_TAQUILLA"));
 
-        service.cancelarCompra(codigo, authentication.getName(), esTaquilla);
+        service.cancelarCompra(codigo, authentication.getName(), puedeCancelarCompraAjena);
     }
 }

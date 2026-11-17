@@ -164,11 +164,11 @@ public class CompraService {
     public void cancelarCompra(
             String codigo,
             String nombreUsuario,
-            boolean consultarTodas) {
+            boolean puedeCancelarCompraAjena) {
         Compra compra = compraRepository.encuentraPorCodigoParaActualizar(codigo)
                 .orElseThrow(() -> new RecursoNoEncontradoException(COMPRA_NO_ENCONTRADA));
 
-        if (!consultarTodas) {
+        if (!puedeCancelarCompraAjena) {
             Integer usuarioId = buscarUsuarioAutenticado(nombreUsuario).getId();
             if (compra.getUsuario() == null
                     || !Objects.equals(compra.getUsuario().getId(), usuarioId)) {
