@@ -36,6 +36,7 @@ public class TestRepositorios {
     @Autowired
     private ICompraRepository compraRepository;
 
+    // encuentra todas las peliculas esten o no activas
     @Test
     void encuentraLasPeliculasPorTitulo() {
         List<Pelicula> resultado = peliculaRepository.findByTituloContainingIgnoreCase("interstellar");
@@ -43,6 +44,22 @@ public class TestRepositorios {
         resultado.forEach(p -> System.out.println(p.getTitulo()));
     }
 
+    // consulta para obtener una pelicula junto con sus generos
+    @Test
+    void encuentraUnaPeliculaConSusGeneros() {
+        Optional<Pelicula> resultado = peliculaRepository.findByIdConGeneros(1);
+
+        assertThat(resultado).isPresent();
+        Pelicula pelicula = resultado.orElseThrow();
+        assertThat(pelicula.getId()).isEqualTo(1);
+        assertThat(pelicula.getGeneros()).isNotNull();
+        System.out.println(pelicula.getTitulo() + " | Géneros: "
+                + pelicula.getGeneros().stream()
+                .map(g -> g.getNombre())
+                .toList());
+    }
+
+    // consulta utilizada en GET /peliculas (solo encuentra las activas)
     @Test
     void encuentraLasPeliculasActivasOrdenadas() {
         List<Pelicula> resultado = peliculaRepository.findByActivoTrueOrderByTituloAsc();
@@ -51,6 +68,7 @@ public class TestRepositorios {
         resultado.forEach(p -> System.out.println(p.getTitulo() + " - " + p.getSinopsis()));
     }
 
+    // consulta para GET /generos
     @Test
     void cuentaPeliculasEnCarteleraPorGenero() {
         List<CuentaPeliculasPorGenero> resultado = generoRepository.contarPeliculasEnCarteleraPorGenero();
@@ -59,6 +77,7 @@ public class TestRepositorios {
                 System.out.println(g.nombre() + ": " + g.peliculasEnCartelera()));
     }
 
+    // para /salas
     @Test
     void encontrarSalasConCapacidades() {
         List<Sala> salas = salaRepository.findAllByOrderByNumeroAsc();
@@ -68,6 +87,7 @@ public class TestRepositorios {
                 System.out.println("Sala " + s.getNumero() + ": " + s.getCapacidad() + " asientos"));
     }
 
+    // para /sesiones?fecha=&peliculaId= (no pongo id asi que salen todas y fecha a partir de hoy)
     @Test
     void encuentraSesionesActivasConAsientosLibres() {
         List<SesionConAsientos> resultado = sesionRepository.encuentraSesionesActivasConAsientosLibres();
@@ -78,6 +98,7 @@ public class TestRepositorios {
                         + " | Libres: " + s.asientosLibres() + "/" + s.capacidad()));
     }
 
+    // para /sesiones/{id}
     @Test
     void encuentraLasSesionesDeUnaPelicula() {
         List<Sesion> sesiones = sesionRepository.findByPeliculaIdOrderByFechaHoraInicioAsc(1);
@@ -89,9 +110,10 @@ public class TestRepositorios {
                         + " | Precio: " + s.getPrecioBase()));
     }
 
+    //consulta para GET /compras/{codigo}
     @Test
     void encuentraLosDetallesDeUnaCompra() {
-        Optional<DetalleCompra> detalle = compraRepository.encuentraDetalleCompraPorCodigo("CIN00001");
+        Optional<DetalleCompra> detalle = compraRepository.encuentraDetalleCompraPorCodigo("W8HM3AFO");
         assertThat(detalle).isPresent();
         detalle.ifPresent(d -> System.out.println(
                 "Código: " + d.codCompra()
@@ -100,6 +122,7 @@ public class TestRepositorios {
                         + " | Inicio: " + d.fechaHoraInicio()));
     }
 
+    //para /compras, deben salir todas las compras. La de abajo es la que uso para un usuario especifico
     @Test
     void encuentraTodasLasComprasPaginadas() {
         Page<CompraResumen> pagina = compraRepository.encuentraTodasLasCompras(PageRequest.of(0, 3));
@@ -108,6 +131,7 @@ public class TestRepositorios {
                 c.codCompra() + " | " + c.titulo() + " | Sala " + c.numeroSala()));
     }
 
+    // /compras de un usuario especifico
     @Test
     void encuentraLasComprasDeUnUsuario() {
         Page<CompraResumen> pagina = compraRepository.encuentraComprasDeUsuario(4, PageRequest.of(0, 5));
@@ -116,6 +140,7 @@ public class TestRepositorios {
                 c.codCompra() + " | " + c.titulo() + " | Sala " + c.numeroSala()));
     }
 
+    // para /peliculas/{id}/recaudacion
     @Test
     void calculaLaRecaudacionDeUnaPelicula() {
         Optional<RecaudacionPelicula> recaudacion = peliculaRepository.calcularRecaudacionPorPelicula(1);
@@ -125,9 +150,10 @@ public class TestRepositorios {
                 r.titulo() + " | Entradas: " + r.entradasVendidas() + " | Total: " + r.recaudacionTotal()));
     }
 
+    // /informes/ocupacion?fecha=
     @Test
     void calculaLaOcupacionDeLasSesionesDeUnDia() {
-        LocalDate fecha = LocalDate.of(2026, 10, 10);;
+        LocalDate fecha = LocalDate.of(2026, 11, 14);;
 
         List<OcupacionPorSesion> ocupacion = sesionRepository.calcularOcupacionPorSesion(
                 fecha.atStartOfDay(), fecha.plusDays(1).atStartOfDay());
