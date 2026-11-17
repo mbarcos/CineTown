@@ -7,6 +7,7 @@ import { Sala } from '../../models/sala.model';
 import { SesionGestion } from '../../models/sesion.model';
 import { PeliculaService } from '../../services/peliculaService';
 import { SesionRequest, SesionService } from '../../services/sesionService';
+import {FormsModule} from '@angular/forms';
 
 interface SesionFormModel {
   peliculaId: string;
@@ -29,10 +30,32 @@ function fechaMananaLocal(): string {
   return fechaLocal(manana);
 }
 
+function descomponerFechaHora(valor: string): { fecha: string; hora: string } {
+  const fechaHora = valor.trim();
+  const tieneZonaHoraria = /(?:Z|[+-]\d{2}:\d{2})$/i.test(fechaHora);
+
+  if (tieneZonaHoraria) {
+    const fechaLocalizada = new Date(fechaHora);
+    if (!Number.isNaN(fechaLocalizada.getTime())) {
+      return {
+        fecha: fechaLocal(fechaLocalizada),
+        hora: `${String(fechaLocalizada.getHours()).padStart(2, '0')}:${String(fechaLocalizada.getMinutes()).padStart(2, '0')}`,
+      };
+    }
+  }
+
+  const [fecha, horaCompleta = ''] = fechaHora.split(/[T ]/);
+  const hora = horaCompleta.match(/^(\d{2}:\d{2})/)?.[1];
+  if (!fecha || !hora) {
+    throw new Error('La fecha y hora de la sesión tienen un formato no válido.');
+  }
+  return { fecha, hora };
+}
+
 @Component({
   selector: 'app-gestion-sesiones',
   standalone: true,
-  imports: [FormField],
+  imports: [FormField, FormsModule],
   templateUrl: './gestion-sesiones.html',
   styleUrl: './gestion-sesiones.scss',
 })
@@ -114,8 +137,8 @@ export class GestionSesiones {
           salaId: String(salas[0]?.id ?? ''),
         }));
       }
-    } catch {
-      this.mensajeError.set('No se pudieron cargar las películas, salas y sesiones. Inténtalo de nuevo.');
+    } catch (error) {
+      this.mensajeError.set(this.mensajeDelError(error, 'No se pudieron cargar las películas, salas y sesiones.'));
     } finally {
       this.cargando.set(false);
     }
@@ -129,23 +152,34 @@ export class GestionSesiones {
     return precio.toLocaleString('es-ES', { style: 'currency', currency: 'EUR' });
   }
 
-  mensajeDelError(error: unknown): string {
+  mensajeDelError(error: unknown, alternativa = 'No se pudo guardar la sesión. Comprueba los datos e inténtalo de nuevo.'): string {
     if (error instanceof HttpErrorResponse) {
-      const cuerpo = error.error as { error?: unknown; detail?: unknown } | null;
+      const cuerpo = error.error as { error?: unknown; detail?: unknown; errores?: Record<string, unknown> } | null;
       if (typeof cuerpo?.error === 'string') return cuerpo.error;
-      if (typeof cuerpo?.detail === 'string') return cuerpo.detail;
+      if (typeof cuerpo?.detail === 'string') {
+        const errores = Object.values(cuerpo.errores ?? {}).filter((valor): valor is string => typeof valor === 'string');
+        return errores.length ? `${cuerpo.detail}: ${errores.join(' ')}` : cuerpo.detail;
+      }
+      if (error.status === 0) return 'No se pudo conectar con el servidor. Revisa tu conexión e inténtalo de nuevo.';
     }
-    return 'No se pudo guardar la sesión. Comprueba los datos e inténtalo de nuevo.';
+    return error instanceof Error ? error.message : alternativa;
   }
 
   editar(sesion: SesionGestion): void {
     this.sesionEditadaId.set(sesion.id);
     this.mensaje.set('');
     this.mensajeError.set('');
+    let partesFechaHora: { fecha: string; hora: string };
+    try {
+      partesFechaHora = descomponerFechaHora(sesion.fechaHoraInicio);
+    } catch (error) {
+      this.mensajeError.set(this.mensajeDelError(error, 'No se pudo cargar la hora de esta sesión.'));
+      return;
+    }
     this.modelo.set({
       peliculaId: String(sesion.peliculaId),
-      fecha: sesion.fechaHoraInicio.slice(0, 10),
-      hora: sesion.fechaHoraInicio.slice(11, 16),
+      fecha: partesFechaHora.fecha,
+      hora: partesFechaHora.hora,
       salaId: String(sesion.salaId),
       precioBase: sesion.precioBase,
     });

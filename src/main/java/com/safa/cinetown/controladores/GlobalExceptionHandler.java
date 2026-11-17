@@ -16,6 +16,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.dao.DataIntegrityViolationException;
 
 import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
@@ -26,45 +27,48 @@ import java.util.regex.Pattern;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
     private static final Pattern CAMPO_JSON = Pattern.compile("\\[\\\"([^\\\"]+)\\\"\\]");
+    private static final System.Logger LOGGER = System.getLogger(GlobalExceptionHandler.class.getName());
 
     @ExceptionHandler(AsientosInsuficientesException.class)
-    public ResponseEntity<?> handleAsientosInsuficientes(
+    public ResponseEntity<ProblemDetail> handleAsientosInsuficientes(
             AsientosInsuficientesException ex) {
-        return ResponseEntity
-                .status(HttpStatus.UNPROCESSABLE_ENTITY)
-                .body(Map.of("error", ex.getMessage()));
+        return crearRespuesta(HttpStatus.UNPROCESSABLE_ENTITY, "Asientos no disponibles", ex.getMessage());
     }
 
     @ExceptionHandler(RecursoNoEncontradoException.class)
-    public ResponseEntity<?> handleRecursoNoEncontrado(
+    public ResponseEntity<ProblemDetail> handleRecursoNoEncontrado(
             RecursoNoEncontradoException ex) {
-
-        return ResponseEntity
-                .status(HttpStatus.NOT_FOUND)
-                .body(Map.of("error", ex.getMessage()));
+        return crearRespuesta(HttpStatus.NOT_FOUND, "Recurso no encontrado", ex.getMessage());
     }
 
     @ExceptionHandler(ConflictoException.class)
-    public ResponseEntity<?> handleConflicto(ConflictoException ex) {
-        return ResponseEntity
-                .status(HttpStatus.CONFLICT)
-                .body(Map.of("error", ex.getMessage()));
+    public ResponseEntity<ProblemDetail> handleConflicto(ConflictoException ex) {
+        return crearRespuesta(HttpStatus.CONFLICT, "Conflicto", ex.getMessage());
     }
 
     @ExceptionHandler(ReglaNegocioException.class)
-    public ResponseEntity<?> handleReglaNegocio(ReglaNegocioException ex) {
-        return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body(Map.of("error", ex.getMessage()));
+    public ResponseEntity<ProblemDetail> handleReglaNegocio(ReglaNegocioException ex) {
+        return crearRespuesta(HttpStatus.BAD_REQUEST, "Regla de negocio no satisfecha", ex.getMessage());
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<?> handleIllegalArgument(
+    public ResponseEntity<ProblemDetail> handleIllegalArgument(
             IllegalArgumentException ex) {
+        return crearRespuesta(HttpStatus.CONFLICT, "Operación no válida", ex.getMessage());
+    }
 
-        return ResponseEntity
-                .status(HttpStatus.CONFLICT)
-                .body(Map.of("error", ex.getMessage()));
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ProblemDetail> handleIntegridadDatos(DataIntegrityViolationException ex) {
+        LOGGER.log(System.Logger.Level.WARNING, "Conflicto de integridad al modificar datos", ex);
+        return crearRespuesta(HttpStatus.CONFLICT, "Conflicto de datos",
+                "Los datos entran en conflicto con un registro existente.");
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ProblemDetail> handleErrorInesperado(Exception ex) {
+        LOGGER.log(System.Logger.Level.ERROR, "Error inesperado al procesar la solicitud", ex);
+        return crearRespuesta(HttpStatus.INTERNAL_SERVER_ERROR, "Error interno",
+                "No se pudo completar la operación. Inténtalo de nuevo más tarde.");
     }
 
     @ExceptionHandler(BadCredentialsException.class)
@@ -163,5 +167,10 @@ public class GlobalExceptionHandler {
         problema.setTitle(titulo);
         problema.setProperty("timestamp", LocalDateTime.now());
         return problema;
+    }
+
+    private ResponseEntity<ProblemDetail> crearRespuesta(
+            HttpStatus estado, String titulo, String detalle) {
+        return ResponseEntity.status(estado).body(construirProblema(estado, titulo, detalle));
     }
 }

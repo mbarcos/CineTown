@@ -105,10 +105,10 @@
         <div class="lista-sesiones">
           @for (sesion of sesionesDelDia(); track sesion.id) {
             <article class="fila-sesion">
-              <time class="hora" [attr.datetime]="sesion.fechaHoraInicio">{{ sesion.fechaHoraInicio.slice(11, 16) }}</time>
+              <time class="hora" [attr.datetime]="sesion.fechaHoraInicio">{{ sesion.fechaHoraInicio.slice(11, 16) }} - {{ sesion.fechaHoraFin.slice(11, 16) }}</time>
               <div class="detalle-sesion">
                 <h3>{{ sesion.titulo }}</h3>
-                <p>Sala {{ sesion.numeroSala }} · {{ sesion.fechaHoraFin.slice(11, 16) }} · {{ formatearPrecio(sesion.precioBase) }}</p>
+                <p>Sala {{ sesion.numeroSala }} · {{ formatearPrecio(sesion.precioBase) }}</p>
               </div>
               <span class="disponibilidad" [class.disponibilidad-baja]="sesion.asientosLibres < sesion.capacidad">
                 {{ sesion.asientosLibres }} libres
