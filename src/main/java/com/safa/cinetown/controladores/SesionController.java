@@ -1,6 +1,7 @@
 package com.safa.cinetown.controladores;
 
 import com.safa.cinetown.dtos.SesionConAsientos;
+import com.safa.cinetown.dtos.SesionGestionResponse;
 import com.safa.cinetown.dtos.OcupacionPorSesion;
 import com.safa.cinetown.dtos.request.SesionRequest;
 import com.safa.cinetown.servicios.SesionService;
@@ -20,6 +21,18 @@ public class SesionController {
     @PostMapping("/sesiones")
     public void programarSesion(@Valid @RequestBody SesionRequest request) {
         service.programarSesion(request);
+    }
+
+    @PutMapping("/sesiones/{id}")
+    public void modificarSesion(
+            @PathVariable Integer id,
+            @Valid @RequestBody SesionRequest request) {
+        service.modificarSesion(id, request);
+    }
+
+    @GetMapping("/sesiones/gestion")
+    public List<SesionGestionResponse> consultarSesionesParaGestion() {
+        return service.consultarSesionesParaGestion();
     }
 
     @GetMapping("/sesiones")

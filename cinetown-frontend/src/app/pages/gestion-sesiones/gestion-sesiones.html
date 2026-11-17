@@ -1,0 +1,125 @@
+<main class="gestion-sesiones">
+  <header class="cabecera">
+    <div>
+      <h1>Programar sesión</h1>
+      <p>Crea sesiones y consulta los horarios de cada sala.</p>
+    </div>
+    <button class="boton boton-secundario boton-nueva" type="button" (click)="nuevaSesion()">
+      + Nueva sesión
+    </button>
+  </header>
+
+  <div class="contenido">
+    <section #panelFormulario class="panel panel-formulario" aria-labelledby="titulo-formulario">
+      <div class="panel-cabecera">
+        <div>
+          <h2 id="titulo-formulario">{{ sesionEditadaId() === null ? 'Nueva sesión' : 'Modificar sesión' }}</h2>
+          <p>Asigna una película, fecha, hora y sala.</p>
+        </div>
+        @if (sesionEditadaId() !== null) {
+          <button class="enlace" type="button" (click)="nuevaSesion()">Cancelar edición</button>
+        }
+      </div>
+
+      <form (ngSubmit)="guardar()">
+        <label class="campo">
+          <span>Película</span>
+          <select [formField]="formulario.peliculaId">
+            <option value="" disabled>Selecciona una película</option>
+            @for (pelicula of peliculasDisponibles(); track pelicula.id) {
+              <option [value]="pelicula.id">{{ pelicula.titulo }}</option>
+            }
+          </select>
+        </label>
+        @if (peliculasDisponibles().length === 0) {
+          <small class="error-campo">No hay películas disponibles en cartelera.</small>
+        }
+        @if (formulario.peliculaId().touched() && formulario.peliculaId().invalid()) {
+          <small class="error-campo">{{ formulario.peliculaId().errors()[0]?.message }}</small>
+        }
+
+        <div class="campos-dobles">
+          <label class="campo">
+            <span>Fecha</span>
+            <input type="date" [formField]="formulario.fecha" />
+          </label>
+          <label class="campo">
+            <span>Hora</span>
+            <input type="time" [formField]="formulario.hora" />
+          </label>
+        </div>
+        @if (formulario.hora().touched() && formulario.hora().invalid()) {
+          <small class="error-campo">{{ formulario.hora().errors()[0]?.message }}</small>
+        }
+
+        <label class="campo">
+          <span>Sala</span>
+          <select [formField]="formulario.salaId">
+            <option value="" disabled>Selecciona una sala</option>
+            @for (sala of salas(); track sala.id) {
+              <option [value]="sala.id">Sala {{ sala.numero }} · {{ sala.capacidad }} plazas</option>
+            }
+          </select>
+        </label>
+        @if (salas().length === 0) {
+          <small class="error-campo">No hay salas disponibles.</small>
+        }
+
+        <label class="campo campo-precio">
+          <span>Precio base</span>
+          <div class="entrada-precio">
+            <input type="number" step="0.01" [formField]="formulario.precioBase" />
+            <span>€</span>
+          </div>
+        </label>
+        @if (formulario.precioBase().touched() && formulario.precioBase().invalid()) {
+          <small class="error-campo">{{ formulario.precioBase().errors()[0]?.message }}</small>
+        }
+
+        @if (mensajeError()) { <p class="aviso aviso-error" role="alert">{{ mensajeError() }}</p> }
+        @if (mensaje()) { <p class="aviso aviso-ok" role="status">{{ mensaje() }}</p> }
+        <button class="boton boton-primario boton-guardar" type="submit"
+          [disabled]="guardando() || formulario().invalid() || cargando()">
+          {{ guardando() ? 'Guardando…' : sesionEditadaId() === null ? 'Programar sesión' : 'Guardar cambios' }}
+        </button>
+      </form>
+    </section>
+
+    <section class="panel panel-listado" aria-labelledby="titulo-listado">
+      <div class="panel-cabecera listado-cabecera">
+        <div>
+          <h2 id="titulo-listado">Sesiones · {{ fechaFormateada() }}</h2>
+          <p>Consulta disponibilidad y modifica una sesión programada.</p>
+        </div>
+        <label class="filtro-fecha">
+          <span class="sr-only">Filtrar sesiones por fecha</span>
+          <input type="date" [value]="fechaListado()" (input)="actualizarFechaListado($event)" />
+        </label>
+      </div>
+
+      @if (cargando()) {
+        <p class="estado" role="status">Cargando sesiones…</p>
+      } @else if (sesionesDelDia().length === 0) {
+        <p class="estado">No hay sesiones programadas para esta fecha.</p>
+      } @else {
+        <div class="lista-sesiones">
+          @for (sesion of sesionesDelDia(); track sesion.id) {
+            <article class="fila-sesion">
+              <time class="hora" [attr.datetime]="sesion.fechaHoraInicio">{{ sesion.fechaHoraInicio.slice(11, 16) }}</time>
+              <div class="detalle-sesion">
+                <h3>{{ sesion.titulo }}</h3>
+                <p>Sala {{ sesion.numeroSala }} · {{ sesion.fechaHoraFin.slice(11, 16) }} · {{ formatearPrecio(sesion.precioBase) }}</p>
+              </div>
+              <span class="disponibilidad" [class.disponibilidad-baja]="sesion.asientosLibres < sesion.capacidad">
+                {{ sesion.asientosLibres }} libres
+              </span>
+              <button class="boton-editar" type="button" (click)="editar(sesion)" [attr.aria-label]="'Modificar sesión de ' + sesion.titulo">
+                Modificar
+              </button>
+            </article>
+          }
+        </div>
+      }
+    </section>
+  </div>
+</main>

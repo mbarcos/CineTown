@@ -140,6 +140,14 @@ public class SecurityConfig {
                                 "/sesiones")
                         .hasRole("ADMIN")
 
+                        .requestMatchers(HttpMethod.GET,
+                                "/sesiones/gestion")
+                        .hasRole("ADMIN")
+
+                        .requestMatchers(HttpMethod.PUT,
+                                "/sesiones/*")
+                        .hasRole("ADMIN")
+
                         // Consultar sesiones y sus detalles: público
                         .requestMatchers(HttpMethod.GET,
                                 "/sesiones",

@@ -1,6 +1,7 @@
 package com.safa.cinetown.repositorios;
 
 import com.safa.cinetown.dtos.OcupacionPorSesion;
+import com.safa.cinetown.dtos.SesionGestionResponse;
 import com.safa.cinetown.modelos.Sesion;
 import com.safa.cinetown.dtos.SesionConAsientos;
 import jakarta.persistence.LockModeType;
@@ -31,6 +32,38 @@ public interface ISesionRepository extends JpaRepository<Sesion, Integer> {
             @Param("salaId") Integer salaId,
             @Param("inicioConMargen") LocalDateTime inicioConMargen,
             @Param("finConMargen") LocalDateTime finConMargen);
+
+    @Query("""
+            SELECT CASE WHEN COUNT(s) > 0 THEN true ELSE false END
+            FROM Sesion s
+            WHERE s.id <> :sesionId
+              AND s.sala.id = :salaId
+              AND s.fechaHoraInicio < :finConMargen
+              AND s.fechaHoraFin > :inicioConMargen
+            """)
+    boolean existeSolapamientoEnSalaExcluyendoSesion(
+            @Param("sesionId") Integer sesionId,
+            @Param("salaId") Integer salaId,
+            @Param("inicioConMargen") LocalDateTime inicioConMargen,
+            @Param("finConMargen") LocalDateTime finConMargen);
+
+    @Query("""
+            SELECT new com.safa.cinetown.dtos.SesionGestionResponse(
+                    s.id, p.id, p.titulo, sa.id, sa.numero,
+                    s.fechaHoraInicio, s.fechaHoraFin, s.precioBase,
+                    sa.capacidad,
+                    CAST(sa.capacidad - COALESCE(SUM(c.numEntradas), 0L) AS Integer)
+            )
+            FROM Sesion s
+            JOIN s.pelicula p
+            JOIN s.sala sa
+            LEFT JOIN Compra c ON c.sesion = s AND c.estado = true
+            WHERE s.fechaHoraInicio > CURRENT_TIMESTAMP
+            GROUP BY s.id, p.id, p.titulo, sa.id, sa.numero,
+                    s.fechaHoraInicio, s.fechaHoraFin, s.precioBase, sa.capacidad
+            ORDER BY s.fechaHoraInicio
+            """)
+    List<SesionGestionResponse> encuentraSesionesParaGestion();
 
     @Query("""
             SELECT new com.safa.cinetown.dtos.SesionConAsientos(

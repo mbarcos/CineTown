@@ -16,6 +16,13 @@ export const routes: Routes = [
       .then(m => m.GestionPeliculas),
   },
   {
+    path: 'gestion-sesiones',
+    canActivate: [roleGuard],
+    data: { roles: ['ADMIN'] },
+    loadComponent: () => import('./pages/gestion-sesiones/gestion-sesiones')
+      .then(m => m.GestionSesiones),
+  },
+  {
     path: 'peliculas/:id',
     loadComponent: () =>
       import('./pages/pelicula-detalle/pelicula-detalle')

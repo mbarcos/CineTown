@@ -26,7 +26,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
       (path !== '/peliculas/gestion' && /^\/peliculas\/[^/]+$/.test(path)) ||
       path === '/generos' ||
       path === '/sesiones' ||
-      /^\/sesiones\/[^/]+$/.test(path)
+      /^\/sesiones\/\d+$/.test(path)
     );
 
   if (!token || esAutenticacion || esLecturaPublica) {
