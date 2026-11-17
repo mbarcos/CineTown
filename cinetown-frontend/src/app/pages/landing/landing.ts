@@ -33,7 +33,13 @@ export class Landing implements OnInit {
     this.cargarPeliculas();
   }
 
+  reintentarCarga(): void {
+    if (this.estadoCarga() === 'cargando') return;
+    this.cargarPeliculas();
+  }
+
   private cargarPeliculas(): void {
+    this.estadoCarga.set('cargando');
     this.peliculaService.getPeliculas().subscribe({
       next: (peliculas) => this.mostrarPeliculas(peliculas),
       error: (error: unknown) => this.manejarErrorCarga(error),

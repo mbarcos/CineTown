@@ -3,108 +3,108 @@
   min-height: 68px;
   align-items: center;
   justify-content: space-between;
-  gap: 40px;
-
+  gap: 32px;
   border-bottom: 1px solid rgb(255 255 255 / 10%);
   background: #101014;
-
-  padding: 0 5.8%;
+  padding-inline: 5.8%;
 }
 
-// MARCA
 .encabezado_marca {
   flex-shrink: 0;
-
   color: var(--color-texto);
   font-size: 18px;
-  font-weight: 900;
-  letter-spacing: -0.025em;
+  font-weight: 700;
+  letter-spacing: 0.04em;
   text-decoration: none;
 }
 
-// NAVEGACIÓN
 .encabezado_navegacion {
   display: flex;
-  flex: 1;
+  min-width: 0;
   height: 100%;
+  flex: 1;
   align-items: center;
   justify-content: space-between;
-
-  min-width: 0;
 }
 
-// ENLACES CENTRALES
 .encabezado_enlaces {
   display: flex;
+  min-width: 0;
+  flex: 1 1 auto;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 32px;
+  gap: 4px 24px;
 }
 
-.encabezado_enlace {
+.encabezado_enlace,
+.encabezado_cuenta {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
   color: var(--color-texto-secundario);
-  font-size: 13px;
+  font-size: 14px;
   text-decoration: none;
-  transition: color 150ms;
+  transition: color 140ms ease;
 
-  &:hover,
   &--activo {
     color: var(--color-texto);
+    font-weight: 600;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      color: var(--color-texto);
+    }
   }
 }
 
-// ZONA DE SESIÓN
 .encabezado_sesion {
   display: flex;
+  flex: 0 0 auto;
   align-items: center;
   justify-content: flex-end;
-  gap: 20px;
-
+  gap: 12px;
   margin-left: auto;
-  border-left: 1px solid rgb(255 255 255 / 10%);
+  border-left: 1px solid rgb(255 255 255 / 12%);
   padding-left: 24px;
 }
 
 .encabezado_cuenta {
   color: var(--color-texto);
-  font-size: 13px;
-  text-decoration: none;
   white-space: nowrap;
-
-  &:hover {
-    color: white;
-  }
 }
 
 .encabezado_usuario {
   color: var(--color-texto-secundario);
-  font-size: 13px;
+  font-size: 14px;
   white-space: nowrap;
 }
 
 .encabezado_boton {
-  border: none;
+  min-height: 44px;
+  border: 0;
   background: transparent;
-  padding: 0;
-
+  padding: 8px 0 8px 8px;
   color: var(--color-texto);
-  font-family: inherit;
-  font-size: 13px;
+  font: inherit;
+  font-size: 14px;
   cursor: pointer;
   white-space: nowrap;
-  transition: color 150ms;
-  &:hover {
-    color: white;
+  transition: color 140ms ease;
+
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      color: #fff;
+    }
   }
 }
 
-// RESPONSIVE
 @media (max-width: 39.99rem) {
-
   .encabezado {
     min-height: 62px;
     flex-wrap: wrap;
-    gap: 14px;
-    padding: 12px 20px;
+    gap: 4px 12px;
+    padding: 8px 20px;
   }
 
   .encabezado_marca {
@@ -112,25 +112,18 @@
   }
 
   .encabezado_navegacion {
-    flex: 1 1 100%;
     height: auto;
-    gap: 12px;
+    flex: 1 1 100%;
+    flex-wrap: wrap;
+    gap: 4px 12px;
   }
 
   .encabezado_enlaces {
-    gap: 14px;
+    gap: 0 10px;
   }
 
   .encabezado_sesion {
-    gap: 12px;
+    gap: 8px;
     padding-left: 12px;
   }
-
-  .encabezado_enlace,
-  .encabezado_cuenta,
-  .encabezado_usuario,
-  .encabezado_boton {
-    font-size: 11px;
-  }
-
 }

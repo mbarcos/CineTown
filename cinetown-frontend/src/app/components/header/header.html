@@ -8,7 +8,7 @@
 
     <div class="encabezado_enlaces">
 
-      <a class="encabezado_enlace" routerLink="/" fragment="cartelera" routerLinkActive="encabezado_enlace--activo" [routerLinkActiveOptions]="{ exact: true }">
+      <a class="encabezado_enlace" routerLink="/" fragment="cartelera" routerLinkActive="encabezado_enlace--activo" [routerLinkActiveOptions]="{ exact: true }" ariaCurrentWhen="page">
         Cartelera
       </a>
 
@@ -38,13 +38,13 @@
     <div class="encabezado_sesion">
       @if (!authService.estaAutenticado()) {
         <a class="encabezado_cuenta" routerLink="/login">
-          Iniciar Sesión
+          Iniciar sesión
         </a>
       } @else {
         <span class="encabezado_usuario">
           Hola, {{ authService.usuarioActual()?.nombreUsuario }}
         </span>
-        <button class="encabezado_boton" (click)="authService.cerrarSesion()">
+        <button class="encabezado_boton" type="button" (click)="authService.cerrarSesion()">
           Cerrar sesión
         </button>
       }

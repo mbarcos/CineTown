@@ -1,47 +1,45 @@
 .filtro-genero {
   display: flex;
   flex-wrap: wrap;
-  gap: 4px 11px;
-  margin-block: 12px 30px;
+  gap: 8px;
+  margin-block: 16px 24px;
 }
 
 .filtro-genero_opcion {
-  min-height: 42px;
-  border: 0;
-  border-bottom: 1px solid transparent;
-  border-radius: 0;
+  min-width: 44px;
+  min-height: 44px;
+  border: 1px solid transparent;
+  border-radius: 9999px;
   background: transparent;
-  padding: 0 0 2px;
-  color: #bdb8ba;
+  padding: 8px 12px;
+  color: var(--color-texto-secundario);
+  font: inherit;
   font-size: 14px;
   line-height: 1.25;
   cursor: pointer;
-  transition:
-    border-color 150ms,
-    color 150ms;
-
-  &:hover {
-    color: var(--color-texto);
-  }
+  touch-action: manipulation;
+  transition: border-color 140ms ease, background-color 140ms ease, color 140ms ease;
 
   &:focus-visible {
-    outline: 2px solid var(--color-info);
     outline-offset: 2px;
+  }
+
+  &:active {
+    background: var(--color-superficie-2);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      border-color: rgb(255 255 255 / 22%);
+      background: var(--color-superficie-2);
+      color: var(--color-texto);
+    }
   }
 }
 
 .filtro-genero_opcion--seleccionada {
-  border-color: #c25057;
+  border-color: rgb(165 0 11 / 70%);
+  background: rgb(165 0 11 / 20%);
   color: var(--color-texto);
-}
-
-.filtro-genero_opcion--disponible {
-  color: #bdb8ba;
-}
-
-@media (max-width: 39.99rem) {
-  .filtro-genero_opcion {
-    min-height: 40px;
-    font-size: 13px;
-  }
+  font-weight: 600;
 }

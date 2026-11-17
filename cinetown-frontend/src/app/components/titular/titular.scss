@@ -1,7 +1,7 @@
 .titular {
   border-bottom: 1px solid rgb(255 255 255 / 12%);
-  background: #17171d;
-  padding: clamp(58px, 9vw, 128px) 5.8% clamp(48px, 6vw, 82px);
+  background: var(--color-superficie);
+  padding: clamp(56px, 7vw, 88px) 5.8% clamp(44px, 5vw, 64px);
 }
 
 .titular_contenido {
@@ -9,72 +9,68 @@
   width: min(100%, 1450px);
   grid-template-columns: minmax(0, 1.35fr) minmax(250px, 0.65fr);
   align-items: end;
-  gap: 48px;
+  gap: clamp(24px, 5vw, 72px);
   margin-inline: auto;
 }
 
 .titular_titulo {
   margin: 0;
   color: var(--color-texto);
-  font-size: clamp(64px, 11.5vw, 160px);
+  font-size: clamp(48px, 8vw, 96px);
   font-weight: 600;
-  letter-spacing: -0.055em;
-  line-height: 0.88;
+  letter-spacing: -0.035em;
+  line-height: 0.98;
+  text-wrap: balance;
 }
 
 .titular_aside {
   max-width: 350px;
-  padding-bottom: 5px;
+  padding-bottom: 2px;
 }
 
 .titular_descripcion {
   margin: 0;
-  color: #c7c3c5;
+  color: var(--color-texto-secundario);
   font-size: 17px;
   line-height: 1.55;
 }
 
 .titular_enlace {
-  display: inline-block;
-  margin-top: 20px;
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  margin-top: 14px;
   border-bottom: 1px solid var(--color-primario-hover);
-  padding-bottom: 5px;
+  padding: 4px 0;
   color: #f1b9bc;
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 600;
   text-decoration: none;
-  transition: color 150ms ease, border-color 150ms ease;
+  transition: color 140ms ease, border-color 140ms ease;
 
-  &:hover {
-    border-color: white;
-    color: white;
-  }
-
-  &:focus-visible {
-    outline: 2px solid var(--color-info);
-    outline-offset: 5px;
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      border-color: var(--color-texto);
+      color: var(--color-texto);
+    }
   }
 }
 
 @media (max-width: 39.99rem) {
   .titular {
-    padding: 62px 22px 40px;
+    padding: 48px 20px 36px;
   }
 
   .titular_contenido {
     grid-template-columns: 1fr;
-    gap: 28px;
+    gap: 18px;
   }
 
   .titular_titulo {
-    font-size: clamp(60px, 17vw, 90px);
+    font-size: clamp(48px, 13vw, 72px);
   }
 
   .titular_aside {
-    max-width: 300px;
-  }
-
-  .titular_descripcion {
-    font-size: 15px;
+    max-width: 36ch;
   }
 }

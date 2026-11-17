@@ -1,0 +1,134 @@
+:host {
+  display: block;
+}
+
+.dias {
+  min-inline-size: 0;
+  margin: 0;
+  border: 0;
+  padding: 0;
+}
+
+legend {
+  margin-bottom: 10px;
+  color: var(--color-texto-secundario);
+  font-size: 14px;
+}
+
+.dias_opciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.dia {
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.dia_cara {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  gap: 4px;
+  border: 1px solid transparent;
+  border-radius: 9999px;
+  padding: 8px 12px;
+  color: var(--color-texto-secundario);
+  font-size: 14px;
+  line-height: 1.25;
+  transition: background-color 120ms ease-out, border-color 120ms ease-out, color 120ms ease-out;
+
+  time {
+    white-space: nowrap;
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .dia:hover .dia_cara {
+    background: var(--color-superficie-2);
+    color: var(--color-texto);
+    transition-duration: 0s;
+  }
+}
+
+.dia input:checked + .dia_cara {
+  border-color: #c26970;
+  background: rgb(165 0 11 / 20%);
+  color: var(--color-texto);
+  font-weight: 600;
+}
+
+.dia input:focus-visible + .dia_cara {
+  outline: 2px solid var(--color-info);
+  outline-offset: 3px;
+}
+
+.dia:active .dia_cara {
+  background: var(--color-superficie-2);
+  transition-duration: 0s;
+}
+
+.horarios {
+  margin-top: 16px;
+  border-top: 1px solid rgb(255 255 255 / 16%);
+  padding-top: 16px;
+
+  h3 {
+    margin: 0 0 12px;
+    font-size: 16px;
+    font-weight: 600;
+  }
+}
+
+.horarios_opciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 24px;
+}
+
+.horario {
+  display: inline-flex;
+  min-height: 44px;
+  max-width: 100%;
+  flex-wrap: wrap;
+  align-items: baseline;
+  align-content: center;
+  gap: 4px 12px;
+  padding: 8px 0;
+  color: var(--color-texto);
+  text-decoration: none;
+  touch-action: manipulation;
+
+  time {
+    font-size: 20px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    &:hover .horario_accion {
+      color: var(--color-texto);
+      transition-duration: 0s;
+    }
+  }
+
+  &:focus-visible .horario_accion,
+  &:active .horario_accion {
+    color: var(--color-texto);
+    transition-duration: 0s;
+  }
+}
+
+.horario_precio {
+  color: var(--color-texto-secundario);
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.horario_accion {
+  color: #f1b9bc;
+  font-size: 14px;
+  text-decoration: underline;
+  transition: color 120ms ease-out;
+}

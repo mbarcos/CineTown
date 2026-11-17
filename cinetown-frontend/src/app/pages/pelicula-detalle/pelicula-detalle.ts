@@ -1,6 +1,6 @@
 import { Component, computed, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { RouterLink } from '@angular/router';
 import { map, switchMap } from 'rxjs';
 import { Clasificacion } from '../../models/pelicula-detalle.model';
@@ -8,6 +8,8 @@ import { PeliculaService } from '../../services/peliculaService';
 import { SesionService } from '../../services/sesionService';
 import { SesionConAsientos } from '../../models/sesion.model';
 import { obtenerFondoPoster } from '../../shared/utils/pelicula-poster';
+
+import { SelectorSesiones, type DiaConSesiones } from './selector-sesiones/selector-sesiones';
 
 interface SesionPresentacion extends SesionConAsientos {
   fechaLegible: string;
@@ -18,7 +20,7 @@ interface SesionPresentacion extends SesionConAsientos {
 @Component({
   selector: 'app-pelicula-detalle',
   standalone: true,
-  imports: [RouterLink],
+  imports: [RouterLink, SelectorSesiones],
   templateUrl: './pelicula-detalle.html',
   styleUrl: './pelicula-detalle.scss',
 })
@@ -32,7 +34,6 @@ export class PeliculaDetalle {
   };
 
   private readonly route = inject(ActivatedRoute);
-  private readonly router = inject(Router);
   private readonly peliculaService = inject(PeliculaService);
   private readonly sesionService = inject(SesionService);
 
@@ -100,17 +101,26 @@ export class PeliculaDetalle {
       });
   });
 
-  readonly precioDesde = computed(() => {
-    const precios = this.sesionesProximas().map((sesion) => sesion.precioBase);
-    return precios.length ? this.precioFormatter.format(Math.min(...precios)) : null;
+  readonly sesionesPorDia = computed(() => {
+    const dias = new Map<string, DiaConSesiones>();
+
+    for (const sesion of this.sesionesProximas()) {
+      const fecha = sesion.fechaHoraInicio.slice(0, 10);
+      let dia = dias.get(fecha);
+
+      if (!dia) {
+        dia = { fecha, etiqueta: sesion.fechaLegible, sesiones: [] };
+        dias.set(fecha, dia);
+      }
+
+      dia.sesiones.push(sesion);
+    }
+
+    return [...dias.values()];
   });
 
   etiquetaClasificacion(clasificacion: Clasificacion): string {
     return this.etiquetas[clasificacion];
-  }
-
-  seleccionarSesion(sesionId: number): void {
-    void this.router.navigate(['/sesiones', sesionId]);
   }
 
   duracionTexto(minutos: number): string {
