@@ -36,7 +36,7 @@ tbody td { color: var(--color-texto-secundario); }
 .nota, .ayuda { color: var(--color-texto-secundario); font-size: 11px; line-height: 1.5; }
 .nota { margin: 16px 0 0; }
 .error { margin: 12px 16px; color: var(--color-error); font-size: 12px; }
-.formulario-panel { margin-bottom: 20px; border: 1px solid rgb(255 255 255 / 8%); border-radius: 10px; background: var(--color-superficie); padding: 20px; }
+.formulario-panel { scroll-margin-top: 20px; margin-bottom: 20px; border: 1px solid rgb(255 255 255 / 8%); border-radius: 10px; background: var(--color-superficie); padding: 20px; }
 .formulario-cabecera { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
 h2 { margin: 0; font-size: 17px; font-weight: 600; }
 .boton-cerrar { border: 0; background: transparent; color: var(--color-texto-secundario); font-size: 24px; cursor: pointer; }

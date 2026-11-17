@@ -10,7 +10,7 @@
   </header>
 
   @if (formularioVisible()) {
-    <section class="formulario-panel" aria-labelledby="titulo-formulario">
+    <section #panelEdicion class="formulario-panel" aria-labelledby="titulo-formulario">
       <div class="formulario-cabecera">
         <h2 id="titulo-formulario">{{ peliculaEditadaId() ? 'Editar película' : 'Nueva película' }}</h2>
         <button class="boton-cerrar" type="button" (click)="cancelarEdicion()" aria-label="Cerrar formulario">×</button>

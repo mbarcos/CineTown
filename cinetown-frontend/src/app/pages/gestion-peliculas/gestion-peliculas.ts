@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, ElementRef, inject, signal, viewChild } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { finalize, Observable } from 'rxjs';
 import { PeliculaResponse } from '../../models/pelicula-detalle.model';
@@ -12,6 +12,7 @@ import { PeliculaRequest, PeliculaService } from '../../services/peliculaService
   styleUrl: './gestion-peliculas.scss',
 })
 export class GestionPeliculas {
+  private readonly panelEdicion = viewChild<ElementRef<HTMLElement>>('panelEdicion');
   private readonly peliculasApi = inject(PeliculaService);
   private readonly formBuilder = inject(FormBuilder);
 
@@ -86,6 +87,9 @@ export class GestionPeliculas {
     });
     this.mensajeError.set('');
     this.formularioVisible.set(true);
+    requestAnimationFrame(() => {
+      this.panelEdicion()?.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
   }
 
   alternarGenero(nombre: string, evento: Event): void {
