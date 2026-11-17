@@ -57,7 +57,7 @@ export class SesionesPelicula {
   readonly pelicula = toSignal(
     this.route.paramMap.pipe(
       map((params) => Number(params.get('id'))),
-      switchMap((id) => this.peliculaService.obtenerDetalle(id)),
+      switchMap((id) => this.peliculaService.obtenerDetalle(id).pipe(catchError(() => of(null)))),
     ),
   );
 
@@ -73,6 +73,7 @@ export class SesionesPelicula {
       toObservable(this.reintento),
     ]).pipe(
       tap(() => {
+        this.sesionSeleccionadaId.set(null);
         this.cargando.set(true);
         this.error.set(false);
       }),
@@ -118,8 +119,7 @@ export class SesionesPelicula {
   ]);
 
   cambiarFecha(fecha: string): void {
-    if (!fecha) return;
-    this.sesionSeleccionadaId.set(null);
+    if (!fecha || fecha === this.fechaSeleccionada()) return;
     void this.router.navigate([], {
       relativeTo: this.route,
       queryParams: { fecha },
@@ -140,16 +140,8 @@ export class SesionesPelicula {
     this.reintento.update((valor) => valor + 1);
   }
 
-  esHoy(fecha: string): boolean {
-    return fecha === this.hoy;
-  }
-
-  esManana(fecha: string): boolean {
-    return fecha === this.manana;
-  }
-
   private etiquetaFecha(fecha: string): string {
-    return this.fechaCortaFormatter.format(new Date(`${fecha}T00:00:00Z`)).replace('.', '').toLocaleUpperCase('es-ES');
+    return this.fechaCortaFormatter.format(new Date(`${fecha}T00:00:00Z`));
   }
 
   private fechaISO(fecha: Date): string {
