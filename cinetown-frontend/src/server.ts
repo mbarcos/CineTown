@@ -12,6 +12,11 @@ const browserDistFolder = join(import.meta.dirname, '../browser');
 const app = express();
 const angularApp = new AngularNodeAppEngine();
 
+app.get('/config.js', (_req, res) => {
+  const apiUrl = JSON.stringify(process.env['API_URL'] || 'http://localhost:8081');
+  res.type('application/javascript').send(`globalThis.CINETOWN_API_URL = ${apiUrl};`);
+});
+
 /**
  * Example Express Rest API endpoints can be defined here.
  * Uncomment and define endpoints as necessary.

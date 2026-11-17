@@ -1,0 +1,53 @@
+services:
+  db:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-cinetown}
+      POSTGRES_USER: ${DB_USER:-cinetown}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?Define DB_PASSWORD en .env_example}
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - "./ScriptsSQL/CrearBDcine - Máximo Barcos.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro"
+      - "./ScriptsSQL/Cargar_datos.sql:/docker-entrypoint-initdb.d/02-seed.sql:ro"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-cinetown} -d ${POSTGRES_DB:-cinetown}"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      DB_URL: jdbc:postgresql://db:5432/${POSTGRES_DB:-cinetown}
+      DB_USER: ${DB_USER:-cinetown}
+      DB_PASSWORD: ${DB_PASSWORD:?Define DB_PASSWORD en .env_example}
+      DB_SCHEMA: ${DB_SCHEMA:-cine}
+      JWT_SECRET: ${JWT_SECRET:?Define JWT_SECRET en .env_example}
+      CORS_ALLOWED_ORIGIN: ${CORS_ALLOWED_ORIGIN:-http://localhost:4000}
+    ports:
+      - "${BACKEND_PORT:-8081}:8081"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: ./cinetown-frontend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      PORT: 4000
+      API_URL: ${API_URL:-http://localhost:8081}
+    ports:
+      - "${FRONTEND_PORT:-4000}:4000"
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:

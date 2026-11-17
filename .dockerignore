@@ -1,0 +1,11 @@
+.git
+.idea
+.vscode
+.agents
+.aws
+.codex
+target
+config.properties
+ScriptsSQL
+postman
+*.iml
