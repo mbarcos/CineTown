@@ -15,6 +15,13 @@ export interface PeliculaRequest {
   generos: string[];
 }
 
+export interface RecaudacionPelicula {
+  peliculaId: number;
+  titulo: string;
+  entradasVendidas: number;
+  recaudacionTotal: number;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -43,5 +50,9 @@ export class PeliculaService {
   }
   obtenerDetalle(id: number): Observable<PeliculaResponse> {
     return this.http.get<PeliculaResponse>(`${this.apiUrl}/peliculas/${id}`);
+  }
+
+  obtenerRecaudacion(id: number): Observable<RecaudacionPelicula> {
+    return this.http.get<RecaudacionPelicula>(`${this.apiUrl}/peliculas/${id}/recaudacion`);
   }
 }

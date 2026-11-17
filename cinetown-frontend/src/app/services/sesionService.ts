@@ -12,6 +12,16 @@ export interface SesionRequest {
   precioBase: number;
 }
 
+export interface OcupacionPorSesion {
+  sesionId: number;
+  titulo: string;
+  numeroSala: number;
+  fechaHoraInicio: string;
+  capacidad: number;
+  entradasVendidas: number;
+  porcentajeOcupacion: number;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -52,5 +62,11 @@ export class SesionService {
 
   modificarSesion(id: number, sesion: SesionRequest): Observable<void> {
     return this.http.put<void>(`${this.apiUrl}/sesiones/${id}`, sesion);
+  }
+
+  consultarOcupacion(fecha: string): Observable<OcupacionPorSesion[]> {
+    return this.http.get<OcupacionPorSesion[]>(`${this.apiUrl}/informes/ocupacion`, {
+      params: { fecha },
+    });
   }
 }

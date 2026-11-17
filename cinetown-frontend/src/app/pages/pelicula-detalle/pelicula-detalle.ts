@@ -1,6 +1,6 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { RouterLink } from '@angular/router';
 import { map, switchMap } from 'rxjs';
 import { Clasificacion } from '../../models/pelicula-detalle.model';
@@ -32,6 +32,7 @@ export class PeliculaDetalle {
   };
 
   private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
   private readonly peliculaService = inject(PeliculaService);
   private readonly sesionService = inject(SesionService);
 
@@ -99,8 +100,6 @@ export class PeliculaDetalle {
       });
   });
 
-  readonly sesionSeleccionadaId = signal<number | null>(null);
-
   readonly precioDesde = computed(() => {
     const precios = this.sesionesProximas().map((sesion) => sesion.precioBase);
     return precios.length ? this.precioFormatter.format(Math.min(...precios)) : null;
@@ -111,7 +110,7 @@ export class PeliculaDetalle {
   }
 
   seleccionarSesion(sesionId: number): void {
-    this.sesionSeleccionadaId.set(sesionId);
+    void this.router.navigate(['/sesiones', sesionId]);
   }
 
   duracionTexto(minutos: number): string {

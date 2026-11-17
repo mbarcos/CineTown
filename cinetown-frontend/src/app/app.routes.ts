@@ -23,6 +23,20 @@ export const routes: Routes = [
       .then(m => m.GestionSesiones),
   },
   {
+    path: 'recaudacion',
+    canActivate: [roleGuard],
+    data: { roles: ['ADMIN'] },
+    loadComponent: () => import('./pages/recaudacion/recaudacion')
+      .then(m => m.Recaudacion),
+  },
+  {
+    path: 'informes/ocupacion',
+    canActivate: [roleGuard],
+    data: { roles: ['ADMIN'] },
+    loadComponent: () => import('./pages/informe-ocupacion/informe-ocupacion')
+      .then(m => m.InformeOcupacion),
+  },
+  {
     path: 'peliculas/:id',
     loadComponent: () =>
       import('./pages/pelicula-detalle/pelicula-detalle')

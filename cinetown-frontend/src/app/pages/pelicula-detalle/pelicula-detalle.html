@@ -40,8 +40,6 @@
               <button
                 class="sesion"
                 type="button"
-                [class.sesion--seleccionada]="sesionSeleccionadaId() === sesion.id"
-                [attr.aria-pressed]="sesionSeleccionadaId() === sesion.id"
                 (click)="seleccionarSesion(sesion.id)"
               >
                 <span class="sesion_fecha">

@@ -194,10 +194,6 @@
     outline-offset: 3px;
   }
 
-  &.sesion--seleccionada {
-    border-color: var(--color-primario-hover);
-    background: color-mix(in srgb, var(--color-primario) 28%, var(--color-superficie-2));
-  }
 }
 
 .sesion_fecha {
