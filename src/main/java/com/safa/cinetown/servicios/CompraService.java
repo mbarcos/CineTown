@@ -10,6 +10,7 @@ import com.safa.cinetown.excepciones.RecursoNoEncontradoException;
 import com.safa.cinetown.excepciones.ReglaNegocioException;
 import com.safa.cinetown.modelos.Compra;
 import com.safa.cinetown.modelos.Sesion;
+import com.safa.cinetown.modelos.TarifaEntrada;
 import com.safa.cinetown.modelos.Usuario;
 import com.safa.cinetown.repositorios.ICompraRepository;
 import com.safa.cinetown.repositorios.ISesionRepository;
@@ -24,9 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.security.SecureRandom;
-import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -41,8 +40,6 @@ public class CompraService {
     private static final int LONGITUD_CODIGO_COMPRA = 8;
     private static final int HORAS_LIMITE_CANCELACION = 1;
     private static final String CARACTERES_CODIGO = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-    private static final BigDecimal MULTIPLICADOR_PRECIO_MIERCOLES =
-            new BigDecimal("0.70");
     private static final SecureRandom RANDOM = new SecureRandom();
 
     private final ICompraRepository compraRepository;
@@ -102,12 +99,8 @@ public class CompraService {
     }
 
     private BigDecimal calcularPrecioTotal(Sesion sesion, int numEntradas) {
-        BigDecimal precioUnitario = sesion.getPrecioBase();
-        if (sesion.getFechaHoraInicio().getDayOfWeek() == DayOfWeek.WEDNESDAY) {
-            precioUnitario = precioUnitario
-                    .multiply(MULTIPLICADOR_PRECIO_MIERCOLES)
-                    .setScale(2, RoundingMode.HALF_UP);
-        }
+        BigDecimal precioUnitario =
+                TarifaEntrada.calcular(sesion.getPrecioBase(), sesion.getFechaHoraInicio());
         return precioUnitario.multiply(BigDecimal.valueOf(numEntradas));
     }
 

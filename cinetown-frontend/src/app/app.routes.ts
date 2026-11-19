@@ -50,6 +50,7 @@ export const routes: Routes = [
   },
   {
     path: 'sesiones/:id',
+    title: 'CineTown | Compra de entradas',
     loadComponent: () =>
       import('./pages/compra/compra')
         .then(m => m.Compra),

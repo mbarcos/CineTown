@@ -5,6 +5,7 @@ export interface SesionConAsientos {
   fechaHoraInicio: string;
   fechaHoraFin: string;
   precioBase: number;
+  precioEntrada?: number;
   capacidad: number;
   asientosLibres: number;
 }
