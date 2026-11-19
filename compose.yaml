@@ -30,6 +30,11 @@ services:
       DB_SCHEMA: ${DB_SCHEMA:-cine}
       JWT_SECRET: ${JWT_SECRET:?Define JWT_SECRET en .env_example}
       CORS_ALLOWED_ORIGIN: ${CORS_ALLOWED_ORIGIN:-http://localhost:4000}
+      MAIL_HOST: ${MAIL_HOST:?Define MAIL_HOST en .env}
+      MAIL_PORT: ${MAIL_PORT:-587}
+      MAIL_USERNAME: ${MAIL_USERNAME:?Define MAIL_USERNAME en .env}
+      MAIL_PASSWORD: ${MAIL_PASSWORD:?Define MAIL_PASSWORD en .env}
+      MAIL_FROM: ${MAIL_FROM:?Define MAIL_FROM en .env}
     ports:
       - "${BACKEND_PORT:-8081}:8081"
     depends_on:

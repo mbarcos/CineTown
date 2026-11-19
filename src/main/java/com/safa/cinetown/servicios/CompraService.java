@@ -18,6 +18,7 @@ import com.safa.cinetown.repositorios.IUsuarioRepository;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -46,6 +47,7 @@ public class CompraService {
     private final IUsuarioRepository usuarioRepository;
     private final ISesionRepository sesionRepository;
     private final CompraMapper mapper;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
     public CompraResponse comprarEntradas(
@@ -57,7 +59,13 @@ public class CompraService {
         validarAsientosDisponibles(sesion, request.numEntradas());
 
         Compra compra = crearCompra(request, sesion, nombreUsuario, asociarUsuario);
-        return mapper.aRespuesta(compraRepository.save(compra));
+        Compra guardada = compraRepository.save(compra);
+        eventPublisher.publishEvent(new CompraConfirmadaEvent(
+                guardada.getCodCompra(), guardada.getEmail(),
+                sesion.getPelicula().getTitulo(), sesion.getFechaHoraInicio(),
+                sesion.getSala().getNumero(), guardada.getNumEntradas(),
+                guardada.getPrecioTotal()));
+        return mapper.aRespuesta(guardada);
     }
 
     private Sesion obtenerSesion(Integer sesionId) {

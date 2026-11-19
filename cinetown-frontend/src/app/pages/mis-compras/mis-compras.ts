@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { afterNextRender, Component, computed, ElementRef, inject, Injector, signal, viewChild, viewChildren } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import { AuthService } from '../../services/authService';
@@ -11,13 +11,23 @@ import { CompraResumen, CompraService } from '../../services/compraService';
 export class MisCompras {
   private readonly comprasApi = inject(CompraService);
   private readonly auth = inject(AuthService);
+  private readonly injector = inject(Injector);
+  private readonly encabezado = viewChild.required<ElementRef<HTMLHeadingElement>>('encabezado');
+  private readonly conservar = viewChild<ElementRef<HTMLButtonElement>>('conservar');
+  private readonly titulosCompras = viewChildren<ElementRef<HTMLHeadingElement>>('tituloCompra');
   private readonly tamanoPagina = 10;
+  private readonly formatoFecha = new Intl.DateTimeFormat('es-ES', {
+    weekday: 'short', day: 'numeric', month: 'short', year: 'numeric',
+  });
+  private readonly formatoPrecio = new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' });
+  private origenCancelacion: HTMLButtonElement | undefined;
   readonly compras = signal<CompraResumen[]>([]);
   readonly pagina = signal(0);
   readonly totalPaginas = signal(0);
   readonly totalCompras = signal(0);
   readonly cargando = signal(true);
   readonly error = signal('');
+  readonly errorCancelacion = signal('');
   readonly mensaje = signal('');
   readonly compraPendiente = signal<string | null>(null);
   readonly compraCancelando = signal<string | null>(null);
@@ -27,8 +37,8 @@ export class MisCompras {
 
   constructor() { void this.cargarCompras(); }
 
-  async cargarCompras(): Promise<void> {
-    this.cargando.set(true);
+  async cargarCompras(mostrarCarga = true): Promise<void> {
+    if (mostrarCarga) this.cargando.set(true);
     this.error.set('');
     try {
       const resultado = await firstValueFrom(this.comprasApi.consultarCompras(this.pagina(), this.tamanoPagina));
@@ -36,35 +46,76 @@ export class MisCompras {
       this.totalPaginas.set(resultado.totalPages);
       this.totalCompras.set(resultado.totalElements);
     } catch (error) {
+      if (mostrarCarga) this.compras.set([]);
       this.error.set(this.mensajeDeError(error));
     } finally { this.cargando.set(false); }
   }
 
   async cambiarPagina(delta: number): Promise<void> {
     const nuevaPagina = this.pagina() + delta;
-    if (nuevaPagina < 0 || nuevaPagina >= this.totalPaginas()) return;
+    if (this.cargando() || this.compraCancelando() || nuevaPagina < 0 || nuevaPagina >= this.totalPaginas()) return;
     this.pagina.set(nuevaPagina);
-    this.compraPendiente.set(null);
+    this.limpiarConfirmacion();
+    this.mensaje.set('');
+    this.encabezado().nativeElement.focus({ preventScroll: true });
     await this.cargarCompras();
   }
 
-  pedirCancelacion(codigo: string): void {
+  reintentarCarga(): void {
+    this.encabezado().nativeElement.focus({ preventScroll: true });
+    void this.cargarCompras();
+  }
+
+  pedirCancelacion(codigo: string, origen: HTMLButtonElement): void {
+    if (this.compraCancelando()) return;
+    if (this.compraPendiente() === codigo) {
+      this.conservarCompra();
+      return;
+    }
     this.mensaje.set('');
+    this.errorCancelacion.set('');
+    this.origenCancelacion = origen;
     this.compraPendiente.set(codigo);
+    afterNextRender(() => this.conservar()?.nativeElement.focus(), { injector: this.injector });
+  }
+
+  conservarCompra(): void {
+    if (this.compraCancelando()) return;
+    const origen = this.origenCancelacion;
+    this.limpiarConfirmacion();
+    if (origen?.isConnected) origen.focus();
+    else this.encabezado().nativeElement.focus();
+  }
+
+  private limpiarConfirmacion(): void {
+    this.compraPendiente.set(null);
+    this.errorCancelacion.set('');
+    this.origenCancelacion = undefined;
   }
 
   async cancelarCompra(compra: CompraResumen): Promise<void> {
-    if (this.compraCancelando() || !this.esCancelable(compra)) return;
+    if (this.compraCancelando() || this.compraPendiente() !== compra.codCompra) return;
+    if (!this.esCancelable(compra)) {
+      this.errorCancelacion.set('Esta compra ya no se puede cancelar.');
+      return;
+    }
     this.compraCancelando.set(compra.codCompra);
-    this.error.set('');
+    this.errorCancelacion.set('');
     this.mensaje.set('');
     try {
       await firstValueFrom(this.comprasApi.cancelarCompra(compra.codCompra));
-      this.compraPendiente.set(null);
+      this.limpiarConfirmacion();
+      this.compras.update(compras => compras.map(actual =>
+        actual.codCompra === compra.codCompra ? { ...actual, estado: false } : actual,
+      ));
       this.mensaje.set(`La compra ${compra.codCompra} se ha cancelado.`);
-      await this.cargarCompras();
+      afterNextRender(() => {
+        const titulo = this.titulosCompras().find(({ nativeElement }) => nativeElement.dataset['compra'] === compra.codCompra);
+        (titulo ?? this.encabezado()).nativeElement.focus();
+      }, { injector: this.injector });
+      await this.cargarCompras(false);
     } catch (error) {
-      this.error.set(this.mensajeDeError(error, 'No se pudo cancelar la compra. Comprueba las condiciones e inténtalo de nuevo.'));
+      this.errorCancelacion.set(this.mensajeDeError(error, 'No se pudo cancelar la compra. Inténtalo de nuevo.'));
     } finally { this.compraCancelando.set(null); }
   }
 
@@ -74,11 +125,10 @@ export class MisCompras {
   }
 
   fechaLegible(valor: string): string {
-    return new Intl.DateTimeFormat('es-ES', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' })
-      .format(this.parsearFechaLocal(valor));
+    return this.formatoFecha.format(this.parsearFechaLocal(valor));
   }
   horaLegible(valor: string): string { return valor.slice(11, 16); }
-  precioLegible(valor: number): string { return valor.toLocaleString('es-ES', { style: 'currency', currency: 'EUR' }); }
+  precioLegible(valor: number): string { return this.formatoPrecio.format(valor); }
 
   private parsearFechaLocal(valor: string): Date {
     const [fecha, hora = '00:00:00'] = valor.split(/[T ]/);

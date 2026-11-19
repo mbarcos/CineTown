@@ -34,6 +34,7 @@
           <dd class="tabular-nums">{{ compra.codCompra }}</dd>
         </div>
       </dl>
+      <p class="mt-4 text-14 text-texto-secundario">Enviaremos los detalles a {{ correoConfirmacion() }}. Guarda también el código de compra por si el correo tarda en llegar.</p>
     </section>
   } @else if (cargandoSesion()) {
     <p class="panel estado" role="status">Cargando sesión…</p>
@@ -79,6 +80,7 @@
 
         <section class="bloque" aria-labelledby="titulo-contacto">
           <h2 class="text-18 font-semibold" id="titulo-contacto">Contacto</h2>
+          <p class="mt-2 text-14 text-texto-secundario">Te enviaremos la confirmación y el código de compra a este correo.</p>
           <label class="mt-4 block text-14 font-medium" for="correo-compra">Correo electrónico</label>
           <input
             #correo

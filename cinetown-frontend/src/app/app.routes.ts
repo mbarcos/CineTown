@@ -57,6 +57,7 @@ export const routes: Routes = [
   },
   {
     path: 'compras',
+    title: 'CineTown | Compras',
     canActivate: [roleGuard],
     data: { roles: ['CLIENTE', 'ADMIN', 'TAQUILLA'] },
     loadComponent: () => import('./pages/mis-compras/mis-compras')

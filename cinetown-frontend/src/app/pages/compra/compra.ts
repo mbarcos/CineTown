@@ -75,6 +75,7 @@ export class Compra {
     source: this.sesion,
     computation: (): CompraResponse | null => null,
   });
+  protected readonly correoConfirmacion = linkedSignal({ source: this.sesion, computation: () => '' });
   protected readonly errorCompra = linkedSignal({ source: this.sesion, computation: () => '' });
 
   private readonly datos = linkedSignal({ source: this.sesion, computation: () => ({ email: '' }) });
@@ -128,6 +129,7 @@ export class Compra {
         );
 
         if (this.sesion() !== sesion) return;
+        this.correoConfirmacion.set(this.datos().email.trim());
         this.compraRealizada.set(compra);
         afterNextRender({ write: () => this.tituloCompra().nativeElement.focus() }, { injector: this.injector });
       } catch (error) {

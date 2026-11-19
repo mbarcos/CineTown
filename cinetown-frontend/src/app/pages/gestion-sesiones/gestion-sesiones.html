@@ -1,125 +1,197 @@
-<main class="gestion-sesiones">
-  <header class="cabecera">
-    <div>
-      <h1>Programar sesión</h1>
-      <p>Crea sesiones y consulta los horarios de cada sala.</p>
-    </div>
-    <button class="boton boton-secundario boton-nueva" type="button" (click)="nuevaSesion()">
-      + Nueva sesión
-    </button>
-  </header>
+<ng-template #contenidoEditor>
+  <h2 #tituloFormulario id="titulo-formulario" tabindex="-1">
+    {{ sesionEditadaId() === null ? 'Nueva sesión' : 'Editar sesión' }}
+  </h2>
 
-  <div class="contenido">
-    <section #panelFormulario class="panel panel-formulario" aria-labelledby="titulo-formulario">
-      <div class="panel-cabecera">
-        <div>
-          <h2 id="titulo-formulario">{{ sesionEditadaId() === null ? 'Nueva sesión' : 'Modificar sesión' }}</h2>
-          <p>Asigna una película, fecha, hora y sala.</p>
-        </div>
-        @if (sesionEditadaId() !== null) {
-          <button class="enlace" type="button" (click)="nuevaSesion()">Cancelar edición</button>
+  <form #elementoFormulario (submit)="guardar($event)" novalidate>
+    <fieldset [disabled]="cargando() || guardando()">
+      <legend class="sr-only">Datos de la sesión</legend>
+
+      @let errorPelicula = errorDe(formulario.peliculaId());
+      @let errorFecha = errorDe(formulario.fecha());
+      @let errorHora = errorDe(formulario.hora());
+      @let errorSala = errorDe(formulario.salaId());
+      @let errorPrecio = errorDe(formulario.precioBase());
+
+      <div class="campo">
+        <label for="sesion-pelicula">Película</label>
+        <select id="sesion-pelicula" [formField]="formulario.peliculaId"
+          [attr.aria-invalid]="errorPelicula ? 'true' : null"
+          [attr.aria-describedby]="errorPelicula ? 'sesion-pelicula-error' : null">
+          <option value="" disabled>Selecciona una película</option>
+          @for (pelicula of peliculasDisponibles(); track pelicula.id) {
+            <option [value]="pelicula.id">{{ pelicula.titulo }}</option>
+          }
+        </select>
+        @if (errorPelicula) {
+          <p class="error" id="sesion-pelicula-error">{{ errorPelicula }}</p>
         }
       </div>
 
-      <form (ngSubmit)="guardar()">
-        <label class="campo">
-          <span>Película</span>
-          <select [formField]="formulario.peliculaId">
-            <option value="" disabled>Selecciona una película</option>
-            @for (pelicula of peliculasDisponibles(); track pelicula.id) {
-              <option [value]="pelicula.id">{{ pelicula.titulo }}</option>
-            }
-          </select>
-        </label>
-        @if (peliculasDisponibles().length === 0) {
-          <small class="error-campo">No hay películas disponibles en cartelera.</small>
-        }
-        @if (formulario.peliculaId().touched() && formulario.peliculaId().invalid()) {
-          <small class="error-campo">{{ formulario.peliculaId().errors()[0]?.message }}</small>
-        }
-
-        <div class="campos-dobles">
-          <label class="campo">
-            <span>Fecha</span>
-            <input type="date" [formField]="formulario.fecha" />
-          </label>
-          <label class="campo">
-            <span>Hora</span>
-            <input type="time" [formField]="formulario.hora" />
-          </label>
-        </div>
-        @if (formulario.hora().touched() && formulario.hora().invalid()) {
-          <small class="error-campo">{{ formulario.hora().errors()[0]?.message }}</small>
-        }
-
-        <label class="campo">
-          <span>Sala</span>
-          <select [formField]="formulario.salaId">
-            <option value="" disabled>Selecciona una sala</option>
-            @for (sala of salas(); track sala.id) {
-              <option [value]="sala.id">Sala {{ sala.numero }} · {{ sala.capacidad }} plazas</option>
-            }
-          </select>
-        </label>
-        @if (salas().length === 0) {
-          <small class="error-campo">No hay salas disponibles.</small>
-        }
-
-        <label class="campo campo-precio">
-          <span>Precio base</span>
-          <div class="entrada-precio">
-            <input type="number" step="0.01" [formField]="formulario.precioBase" />
-            <span>€</span>
-          </div>
-        </label>
-        @if (formulario.precioBase().touched() && formulario.precioBase().invalid()) {
-          <small class="error-campo">{{ formulario.precioBase().errors()[0]?.message }}</small>
-        }
-
-        @if (mensajeError()) { <p class="aviso aviso-error" role="alert">{{ mensajeError() }}</p> }
-        @if (mensaje()) { <p class="aviso aviso-ok" role="status">{{ mensaje() }}</p> }
-        <button class="boton boton-primario boton-guardar" type="submit"
-          [disabled]="guardando() || formulario().invalid() || cargando()">
-          {{ guardando() ? 'Guardando…' : sesionEditadaId() === null ? 'Programar sesión' : 'Guardar cambios' }}
-        </button>
-      </form>
-    </section>
-
-    <section class="panel panel-listado" aria-labelledby="titulo-listado">
-      <div class="panel-cabecera listado-cabecera">
-        <div>
-          <h2 id="titulo-listado">Sesiones · {{ fechaFormateada() }}</h2>
-          <p>Consulta disponibilidad y modifica una sesión programada.</p>
-        </div>
-        <label class="filtro-fecha">
-          <span class="sr-only">Filtrar sesiones por fecha</span>
-          <input type="date" [value]="fechaListado()" (input)="actualizarFechaListado($event)" />
-        </label>
-      </div>
-
-      @if (cargando()) {
-        <p class="estado" role="status">Cargando sesiones…</p>
-      } @else if (sesionesDelDia().length === 0) {
-        <p class="estado">No hay sesiones programadas para esta fecha.</p>
-      } @else {
-        <div class="lista-sesiones">
-          @for (sesion of sesionesDelDia(); track sesion.id) {
-            <article class="fila-sesion">
-              <time class="hora" [attr.datetime]="sesion.fechaHoraInicio">{{ sesion.fechaHoraInicio.slice(11, 16) }} - {{ sesion.fechaHoraFin.slice(11, 16) }}</time>
-              <div class="detalle-sesion">
-                <h3>{{ sesion.titulo }}</h3>
-                <p>Sala {{ sesion.numeroSala }} · {{ formatearPrecio(sesion.precioBase) }}</p>
-              </div>
-              <span class="disponibilidad" [class.disponibilidad-baja]="sesion.asientosLibres < sesion.capacidad">
-                {{ sesion.asientosLibres }} libres
-              </span>
-              <button class="boton-editar" type="button" (click)="editar(sesion)" [attr.aria-label]="'Modificar sesión de ' + sesion.titulo">
-                Modificar
-              </button>
-            </article>
+      <div class="campos-dobles">
+        <div class="campo">
+          <label for="sesion-fecha">Fecha</label>
+          <input id="sesion-fecha" type="date" [formField]="formulario.fecha"
+            [attr.aria-invalid]="errorFecha ? 'true' : null"
+            [attr.aria-describedby]="errorFecha ? 'sesion-fecha-error' : null" />
+          @if (errorFecha) {
+            <p class="error" id="sesion-fecha-error">{{ errorFecha }}</p>
           }
         </div>
+
+        <div class="campo">
+          <label for="sesion-hora">Hora de inicio</label>
+          <input id="sesion-hora" type="time" [formField]="formulario.hora"
+            [attr.aria-invalid]="errorHora ? 'true' : null"
+            [attr.aria-describedby]="errorHora ? 'sesion-hora-error' : null" />
+          @if (errorHora) {
+            <p class="error" id="sesion-hora-error">{{ errorHora }}</p>
+          }
+        </div>
+      </div>
+
+      <div class="campo">
+        <label for="sesion-sala">Sala</label>
+        <select id="sesion-sala" [formField]="formulario.salaId"
+          [attr.aria-invalid]="errorSala ? 'true' : null"
+          [attr.aria-describedby]="errorSala ? 'sesion-sala-error' : null">
+          <option value="" disabled>Selecciona una sala</option>
+          @for (sala of salas(); track sala.id) {
+            <option [value]="sala.id">Sala {{ sala.numero }} · {{ sala.capacidad }} plazas</option>
+          }
+        </select>
+        @if (errorSala) {
+          <p class="error" id="sesion-sala-error">{{ errorSala }}</p>
+        }
+      </div>
+
+      <div class="campo campo-precio">
+        <label for="sesion-precio">Precio base (€)</label>
+        <input id="sesion-precio" type="number" step="0.01" [formField]="formulario.precioBase"
+          [attr.aria-invalid]="errorPrecio ? 'true' : null"
+          [attr.aria-describedby]="errorPrecio ? 'sesion-precio-error' : null" />
+        @if (errorPrecio) {
+          <p class="error" id="sesion-precio-error">{{ errorPrecio }}</p>
+        }
+      </div>
+    </fieldset>
+
+    @if (!cargando() && !errorCarga()) {
+      @if (!peliculasDisponibles().length) {
+        <p class="estado formulario-estado">Activa una película en cartelera para programar una sesión.</p>
       }
+      @if (!salas().length) {
+        <p class="estado formulario-estado">No hay salas disponibles.</p>
+      }
+    }
+
+    <p class="error aviso" role="alert">{{ mensajeError() }}</p>
+    <p class="exito aviso" role="status">{{ mensaje() }}</p>
+    <div class="acciones">
+      <button #botonGuardar class="boton boton-primario" type="submit" [attr.aria-disabled]="!puedeGuardar()">
+        {{ guardando() ? 'Guardando…' : sesionEditadaId() === null ? 'Programar sesión' : 'Guardar cambios' }}
+      </button>
+      @if (modoCompacto() || sesionEditadaId() !== null) {
+        <button class="boton boton-secundario" type="button" [disabled]="guardando()" (click)="cancelarFormulario()">
+          {{ sesionEditadaId() === null ? 'Cancelar' : 'Cancelar edición' }}
+        </button>
+      }
+    </div>
+  </form>
+</ng-template>
+
+<main class="gestion-sesiones">
+  <header class="cabecera-pagina">
+    <h1>Gestión de sesiones</h1>
+    @if (modoCompacto()) {
+      <button #nueva class="boton boton-primario" type="button" (click)="nuevaSesion(nueva)">Nueva sesión</button>
+    }
+  </header>
+
+  <div class="contenido" [class.contenido-compacto]="modoCompacto()">
+    @if (modoCompacto()) {
+      <dialog #dialogoEditor class="editor dialogo-editor" aria-labelledby="titulo-formulario" (cancel)="cancelarFormulario($event)">
+        <ng-container [ngTemplateOutlet]="contenidoEditor" />
+      </dialog>
+    } @else {
+      <section class="editor" aria-labelledby="titulo-formulario">
+        <ng-container [ngTemplateOutlet]="contenidoEditor" />
+      </section>
+    }
+
+    <section class="agenda" aria-labelledby="titulo-agenda">
+      <div class="agenda-cabecera">
+        <div>
+          <h2 #tituloAgenda id="titulo-agenda" tabindex="-1">Sesiones programadas</h2>
+          <p class="fecha-agenda">{{ fechaFormateada() }}</p>
+        </div>
+        <div class="campo filtro-fecha">
+          <label for="agenda-fecha">Fecha de consulta</label>
+          <input id="agenda-fecha" type="date" [value]="fechaListado()" (input)="actualizarFechaListado($event)" />
+        </div>
+      </div>
+
+      @if (modoCompacto()) {
+        <p class="exito aviso-agenda" role="status">{{ mensaje() }}</p>
+      }
+      <div #agendaCuerpo class="agenda-cuerpo" role="group" aria-label="Lista de sesiones"
+        [attr.tabindex]="!cargando() && !errorCarga() && sesionesDelDia().length ? 0 : null">
+        <p class="sr-only" role="status">
+          @if (cargando()) {
+            Cargando sesiones.
+          } @else if (!errorCarga()) {
+            @if (fechaListado()) {
+              {{ sesionesDelDia().length }} {{ sesionesDelDia().length === 1 ? 'sesión programada' : 'sesiones programadas' }}
+              para el {{ fechaFormateada() }}.
+            } @else {
+              Selecciona una fecha para ver sus sesiones.
+            }
+          }
+        </p>
+        @if (cargando()) {
+          <p class="estado" aria-hidden="true">Cargando sesiones…</p>
+        } @else if (errorCarga(); as error) {
+          <p class="estado error" role="alert">{{ error }}</p>
+          <button class="boton boton-secundario" type="button" (click)="reintentarCarga()">Volver a cargar</button>
+        } @else if (!fechaListado()) {
+          <p class="estado">Selecciona una fecha para ver sus sesiones.</p>
+        } @else if (!sesionesDelDia().length) {
+          <p class="estado">No hay sesiones programadas para esta fecha.</p>
+        } @else {
+          <div class="columnas" aria-hidden="true">
+            <span>Horario</span>
+            <span>Película</span>
+            <span>Plazas libres</span>
+          </div>
+          <ul class="lista" role="list" [attr.aria-label]="'Sesiones del ' + fechaFormateada()">
+            @for (sesion of sesionesDelDia(); track sesion.id) {
+              <li class="sesion" role="listitem" [attr.aria-current]="sesion.id === sesionEditadaId() ? 'true' : null">
+                <div class="horario">
+                  <span class="sr-only">De </span><time [attr.datetime]="sesion.fechaHoraInicio">{{ sesion.fechaHoraInicio.slice(11, 16) }}</time>
+                  <span aria-hidden="true">–</span><span class="sr-only"> a </span>
+                  <time [attr.datetime]="sesion.fechaHoraFin">{{ sesion.fechaHoraFin.slice(11, 16) }}</time>
+                </div>
+                <div class="pelicula">
+                  <h3>{{ sesion.titulo }}</h3>
+                  <p>Sala {{ sesion.numeroSala }} · {{ formatearPrecio(sesion.precioBase) }}</p>
+                </div>
+                <span class="plazas" [class.agotada]="sesion.asientosLibres === 0">
+                  @if (sesion.asientosLibres === 0) {
+                    Agotada
+                  } @else {
+                    {{ sesion.asientosLibres }}<span class="capacidad" aria-hidden="true"> / {{ sesion.capacidad }}</span><span class="leyenda-movil" aria-hidden="true"> libres</span><span class="sr-only"> plazas libres de {{ sesion.capacidad }}</span>
+                  }
+                </span>
+                <button #origen class="boton boton-editar" type="button" [disabled]="guardando()"
+                  (click)="editar(sesion, origen)"
+                  [attr.aria-label]="'Editar ' + sesion.titulo + ', sala ' + sesion.numeroSala + ', a las ' + sesion.fechaHoraInicio.slice(11, 16)">
+                  Editar
+                </button>
+              </li>
+            }
+          </ul>
+        }
+      </div>
     </section>
   </div>
 </main>

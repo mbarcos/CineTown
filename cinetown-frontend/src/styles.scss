@@ -66,6 +66,31 @@
     color: var(--color-texto);
   }
 }
+
+html:has(app-root > app-gestion-sesiones) { overflow: clip; }
+
+app-root:has(> app-gestion-sesiones) {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  block-size: 100dvh;
+  overflow: clip;
+
+  > router-outlet { display: none; }
+}
+
+@media (height >= 32rem) {
+  html:has(app-root > app-mis-compras) { overflow: clip; }
+
+  app-root:has(> app-mis-compras) {
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr);
+    block-size: 100dvh;
+    overflow: clip;
+
+    > router-outlet { display: none; }
+  }
+}
+
 @utility btn-primary {
   @apply bg-primario text-texto font-medium text-16 px-5 py-2.5 rounded-lg
   transition-colors

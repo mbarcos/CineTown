@@ -60,5 +60,6 @@ describe('Compra', () => {
 
     expect(pagina.querySelector('h1')?.textContent).toBe('Compra confirmada');
     expect(pagina.querySelector('.codigo dd')?.textContent).toBe('PRUEBA42');
+    expect(pagina.querySelector('.confirmacion')?.textContent).toContain('prueba@example.com');
   });
 });

@@ -1,5 +1,6 @@
-import { Component, computed, ElementRef, inject, signal, viewChild } from '@angular/core';
-import { FormField, form, min, required, submit, validate } from '@angular/forms/signals';
+import { NgTemplateOutlet } from '@angular/common';
+import { afterNextRender, Component, computed, DestroyRef, ElementRef, inject, Injector, signal, viewChild } from '@angular/core';
+import { FieldState, FormField, form, min, required, submit, validate } from '@angular/forms/signals';
 import { HttpErrorResponse } from '@angular/common/http';
 import { firstValueFrom, forkJoin } from 'rxjs';
 import { PeliculaResponse } from '../../models/pelicula-detalle.model';
@@ -7,7 +8,6 @@ import { Sala } from '../../models/sala.model';
 import { SesionGestion } from '../../models/sesion.model';
 import { PeliculaService } from '../../services/peliculaService';
 import { SesionRequest, SesionService } from '../../services/sesionService';
-import {FormsModule} from '@angular/forms';
 
 interface SesionFormModel {
   peliculaId: string;
@@ -55,14 +55,21 @@ function descomponerFechaHora(valor: string): { fecha: string; hora: string } {
 @Component({
   selector: 'app-gestion-sesiones',
   standalone: true,
-  imports: [FormField, FormsModule],
+  imports: [FormField, NgTemplateOutlet],
   templateUrl: './gestion-sesiones.html',
   styleUrl: './gestion-sesiones.scss',
 })
 export class GestionSesiones {
   private readonly sesionesApi = inject(SesionService);
   private readonly peliculasApi = inject(PeliculaService);
-  private readonly panelFormulario = viewChild<ElementRef<HTMLElement>>('panelFormulario');
+  private readonly injector = inject(Injector);
+  private readonly elementoFormulario = viewChild.required<ElementRef<HTMLFormElement>>('elementoFormulario');
+  private readonly tituloFormulario = viewChild.required<ElementRef<HTMLHeadingElement>>('tituloFormulario');
+  private readonly dialogoEditor = viewChild<ElementRef<HTMLDialogElement>>('dialogoEditor');
+  private readonly tituloAgenda = viewChild.required<ElementRef<HTMLHeadingElement>>('tituloAgenda');
+  private readonly agendaCuerpo = viewChild.required<ElementRef<HTMLElement>>('agendaCuerpo');
+  private readonly botonGuardar = viewChild.required<ElementRef<HTMLButtonElement>>('botonGuardar');
+  private origenFormulario: HTMLButtonElement | undefined;
 
   private readonly modelo = signal<SesionFormModel>({
     peliculaId: '',
@@ -96,6 +103,8 @@ export class GestionSesiones {
   readonly guardando = signal(false);
   readonly mensaje = signal('');
   readonly mensajeError = signal('');
+  readonly errorCarga = signal('');
+  readonly modoCompacto = signal(false);
 
   readonly peliculasDisponibles = computed(() => {
     const idSeleccionado = this.modelo().peliculaId;
@@ -104,23 +113,45 @@ export class GestionSesiones {
 
   readonly sesionesDelDia = computed(() =>
     this.sesiones().filter(sesion => sesion.fechaHoraInicio.slice(0, 10) === this.fechaListado())
+      .sort((a, b) => a.fechaHoraInicio.localeCompare(b.fechaHoraInicio) || a.numeroSala - b.numeroSala)
   );
 
   readonly fechaFormateada = computed(() => {
-    const [anio, mes, dia] = this.fechaListado().split('-').map(Number);
-    return new Date(anio, mes - 1, dia, 12).toLocaleDateString('es-ES', {
+    const fecha = this.fechaListado();
+    if (!fecha) return '';
+    return new Date(`${fecha}T12:00:00`).toLocaleDateString('es-ES', {
+      weekday: 'long',
       day: 'numeric',
       month: 'long',
     });
   });
 
+  readonly puedeGuardar = computed(() =>
+    !this.cargando() && !this.guardando() && this.peliculasDisponibles().length > 0 && this.salas().length > 0
+  );
+
   constructor() {
+    const destroyRef = inject(DestroyRef);
+    afterNextRender(() => {
+      const consulta = window.matchMedia?.('(width <= 59rem), (height < 48rem)');
+      if (!consulta) return;
+      const actualizarModo = () => {
+        const editorEnUso = this.tituloFormulario().nativeElement.closest('.editor')?.contains(document.activeElement)
+          || this.sesionEditadaId() !== null;
+        this.dialogoEditor()?.nativeElement.close();
+        this.modoCompacto.set(consulta.matches);
+        if (editorEnUso) this.mostrarFormulario();
+      };
+      actualizarModo();
+      consulta.addEventListener('change', actualizarModo);
+      destroyRef.onDestroy(() => consulta.removeEventListener('change', actualizarModo));
+    });
     void this.cargarDatos();
   }
 
   async cargarDatos(): Promise<void> {
     this.cargando.set(true);
-    this.mensajeError.set('');
+    this.errorCarga.set('');
     try {
       const { peliculas, salas, sesiones } = await firstValueFrom(forkJoin({
         peliculas: this.peliculasApi.getPeliculasParaGestion(),
@@ -138,7 +169,7 @@ export class GestionSesiones {
         }));
       }
     } catch (error) {
-      this.mensajeError.set(this.mensajeDelError(error, 'No se pudieron cargar las películas, salas y sesiones.'));
+      this.errorCarga.set(this.mensajeDelError(error, 'No se pudo cargar la agenda. Inténtalo de nuevo.'));
     } finally {
       this.cargando.set(false);
     }
@@ -146,6 +177,16 @@ export class GestionSesiones {
 
   actualizarFechaListado(evento: Event): void {
     this.fechaListado.set((evento.target as HTMLInputElement).value);
+    this.agendaCuerpo().nativeElement.scrollTop = 0;
+  }
+
+  reintentarCarga(): void {
+    this.tituloAgenda().nativeElement.focus();
+    void this.cargarDatos();
+  }
+
+  errorDe<T>(campo: FieldState<T>): string | undefined {
+    return campo.touched() ? campo.errors()[0]?.message : undefined;
   }
 
   formatearPrecio(precio: number): string {
@@ -165,8 +206,8 @@ export class GestionSesiones {
     return error instanceof Error ? error.message : alternativa;
   }
 
-  editar(sesion: SesionGestion): void {
-    this.sesionEditadaId.set(sesion.id);
+  editar(sesion: SesionGestion, origen: HTMLButtonElement): void {
+    if (this.guardando()) return;
     this.mensaje.set('');
     this.mensajeError.set('');
     let partesFechaHora: { fecha: string; hora: string };
@@ -174,39 +215,67 @@ export class GestionSesiones {
       partesFechaHora = descomponerFechaHora(sesion.fechaHoraInicio);
     } catch (error) {
       this.mensajeError.set(this.mensajeDelError(error, 'No se pudo cargar la hora de esta sesión.'));
+      this.mostrarFormulario();
       return;
     }
-    this.modelo.set({
+    this.origenFormulario = origen;
+    this.sesionEditadaId.set(sesion.id);
+    this.formulario().reset({
       peliculaId: String(sesion.peliculaId),
       fecha: partesFechaHora.fecha,
       hora: partesFechaHora.hora,
       salaId: String(sesion.salaId),
       precioBase: sesion.precioBase,
     });
-    requestAnimationFrame(() => {
-      this.panelFormulario()?.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    });
+    this.mostrarFormulario();
   }
 
-  nuevaSesion(): void {
+  nuevaSesion(origen: HTMLButtonElement): void {
+    this.restablecerFormulario();
+    this.origenFormulario = origen;
+    this.mostrarFormulario();
+  }
+
+  private mostrarFormulario(): void {
+    afterNextRender(() => {
+      const dialogo = this.dialogoEditor()?.nativeElement;
+      if (dialogo && !dialogo.open) dialogo.showModal();
+      this.tituloFormulario().nativeElement.focus();
+    }, { injector: this.injector });
+  }
+
+  cancelarFormulario(evento?: Event): void {
+    evento?.preventDefault();
+    if (this.guardando()) return;
+    const origen = this.origenFormulario;
+    this.dialogoEditor()?.nativeElement.close();
+    this.restablecerFormulario();
+    if (origen?.isConnected) origen.focus();
+    else if (this.modoCompacto()) this.tituloAgenda().nativeElement.focus();
+    else this.tituloFormulario().nativeElement.focus();
+  }
+
+  private restablecerFormulario(): void {
+    this.origenFormulario = undefined;
     this.sesionEditadaId.set(null);
     this.mensaje.set('');
     this.mensajeError.set('');
-    const manana = new Date();
-    manana.setDate(manana.getDate() + 1);
-    this.modelo.set({
+    this.formulario().reset({
       peliculaId: String(this.peliculas().find(pelicula => pelicula.activo)?.id ?? ''),
-      fecha: fechaLocal(manana),
+      fecha: fechaMananaLocal(),
       hora: '16:00',
       salaId: String(this.salas()[0]?.id ?? ''),
       precioBase: 8.9,
     });
   }
 
-  async guardar(): Promise<void> {
+  async guardar(evento: Event): Promise<void> {
+    evento.preventDefault();
+    if (!this.puedeGuardar()) return;
     this.mensaje.set('');
     this.mensajeError.set('');
-    await submit(this.formulario, async () => {
+    const guardado = await submit(this.formulario, async () => {
+      this.botonGuardar().nativeElement.focus();
       this.guardando.set(true);
       const datos = this.modelo();
       const solicitud: SesionRequest = {
@@ -222,9 +291,14 @@ export class GestionSesiones {
         } else {
           await firstValueFrom(this.sesionesApi.modificarSesion(id, solicitud));
         }
-        this.nuevaSesion();
+        this.restablecerFormulario();
         this.fechaListado.set(datos.fecha);
-        this.mensaje.set('La sesión se ha guardado correctamente.');
+        this.agendaCuerpo().nativeElement.scrollTop = 0;
+        this.mensaje.set(id === null ? 'Sesión programada.' : 'Cambios guardados.');
+        if (this.modoCompacto()) {
+          this.dialogoEditor()?.nativeElement.close();
+          this.tituloAgenda().nativeElement.focus();
+        }
         await this.cargarDatos();
       } catch (error) {
         this.mensajeError.set(this.mensajeDelError(error));
@@ -232,5 +306,10 @@ export class GestionSesiones {
         this.guardando.set(false);
       }
     });
+    if (!guardado) {
+      afterNextRender(() => {
+        this.elementoFormulario().nativeElement.querySelector<HTMLElement>('[aria-invalid="true"]')?.focus();
+      }, { injector: this.injector });
+    }
   }
 }
