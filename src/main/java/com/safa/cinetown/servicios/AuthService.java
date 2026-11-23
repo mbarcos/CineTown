@@ -44,22 +44,18 @@ public class AuthService {
             );
         }
 
-        // Crear usuario
         Usuario usuario = new Usuario();
 
         usuario.setNombreUsuario(nombreUsuario);
 
-        // Cifrar contraseña
         usuario.setPassword(
                 passwordEncoder.encode(request.password())
         );
 
-        // Todos los registros nuevos son clientes
         usuario.setRol(RolUsuario.cliente);
 
         usuarioRepository.save(usuario);
 
-        // Generar JWT
         List<String> roles = List.of("ROLE_CLIENTE");
 
         String token = jwtService.generarToken(
