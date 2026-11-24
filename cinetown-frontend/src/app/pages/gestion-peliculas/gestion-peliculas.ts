@@ -1,4 +1,4 @@
-import { Component, computed, ElementRef, inject, signal, viewChild } from '@angular/core';
+import { afterNextRender, Component, computed, ElementRef, inject, Injector, signal, viewChild } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { finalize, Observable } from 'rxjs';
 import { PeliculaResponse } from '../../models/pelicula-detalle.model';
@@ -12,13 +12,20 @@ import { PeliculaRequest, PeliculaService } from '../../services/peliculaService
   styleUrl: './gestion-peliculas.scss',
 })
 export class GestionPeliculas {
-  private readonly panelEdicion = viewChild<ElementRef<HTMLElement>>('panelEdicion');
+  private readonly tituloFormulario = viewChild<ElementRef<HTMLHeadingElement>>('tituloFormulario');
+  private readonly nuevaPelicula = viewChild<ElementRef<HTMLButtonElement>>('nuevaPelicula');
+  private readonly editor = viewChild<ElementRef<HTMLFormElement>>('editor');
+  private readonly buscador = viewChild<ElementRef<HTMLInputElement>>('buscador');
+  private readonly selectorCartelera = viewChild<ElementRef<HTMLSelectElement>>('estadoCartelera');
+  private readonly injector = inject(Injector);
   private readonly peliculasApi = inject(PeliculaService);
   private readonly formBuilder = inject(FormBuilder);
+  private origenEdicion?: HTMLButtonElement;
 
   readonly peliculas = signal<PeliculaResponse[]>([]);
   readonly generos = signal<string[]>([]);
   readonly busqueda = signal('');
+  readonly filtroCartelera = signal('todas');
   readonly cargando = signal(true);
   readonly guardando = signal(false);
   readonly mensajeError = signal('');
@@ -27,11 +34,15 @@ export class GestionPeliculas {
 
   readonly peliculasFiltradas = computed(() => {
     const termino = this.busqueda().trim().toLocaleLowerCase();
-    return this.peliculas().filter(pelicula =>
-      !termino || pelicula.titulo.toLocaleLowerCase().includes(termino) ||
-      pelicula.generos.some(genero => genero.toLocaleLowerCase().includes(termino))
-    );
+    const filtro = this.filtroCartelera();
+    return this.peliculas().filter(pelicula => {
+      const coincideCartelera = filtro === 'todas' || pelicula.activo === (filtro === 'activas');
+      return coincideCartelera && (!termino || pelicula.titulo.toLocaleLowerCase().includes(termino) ||
+        pelicula.generos.some(genero => genero.toLocaleLowerCase().includes(termino)));
+    });
   });
+
+  readonly hayFiltros = computed(() => !!this.busqueda().trim() || this.filtroCartelera() !== 'todas');
 
   readonly formulario = this.formBuilder.nonNullable.group({
     titulo: ['', [Validators.required, Validators.maxLength(255)]],
@@ -46,13 +57,21 @@ export class GestionPeliculas {
     this.cargarDatos();
   }
 
-  cargarDatos(): void {
+  cargarDatos(origen?: HTMLButtonElement): void {
     this.cargando.set(true);
     this.mensajeError.set('');
     this.peliculasApi.getPeliculasParaGestion().pipe(
       finalize(() => this.cargando.set(false))
     ).subscribe({
-      next: peliculas => this.peliculas.set(peliculas),
+      next: peliculas => {
+        const teniaFoco = origen && origen.ownerDocument.activeElement === origen;
+        this.peliculas.set(peliculas);
+        if (teniaFoco) {
+          afterNextRender({ write: () => {
+            if (!origen.isConnected) this.enfocar(this.selectorCartelera()?.nativeElement);
+          } }, { injector: this.injector });
+        }
+      },
       error: () => this.mensajeError.set('No se pudieron cargar las películas. Inténtalo de nuevo.'),
     });
     this.peliculasApi.getGeneros().subscribe({
@@ -61,7 +80,7 @@ export class GestionPeliculas {
     });
   }
 
-  iniciarNuevaPelicula(): void {
+  iniciarNuevaPelicula(origen: HTMLButtonElement): void {
     this.peliculaEditadaId.set(null);
     this.formulario.reset({
       titulo: '',
@@ -71,11 +90,10 @@ export class GestionPeliculas {
       clasificacion: 'TP',
       generos: [],
     });
-    this.mensajeError.set('');
-    this.formularioVisible.set(true);
+    this.abrirFormulario(origen);
   }
 
-  editar(pelicula: PeliculaResponse): void {
+  editar(pelicula: PeliculaResponse, origen: HTMLButtonElement): void {
     this.peliculaEditadaId.set(pelicula.id);
     this.formulario.reset({
       titulo: pelicula.titulo,
@@ -85,11 +103,14 @@ export class GestionPeliculas {
       clasificacion: pelicula.clasificacion,
       generos: [...pelicula.generos],
     });
+    this.abrirFormulario(origen);
+  }
+
+  private abrirFormulario(origen: HTMLButtonElement): void {
+    this.origenEdicion = origen;
     this.mensajeError.set('');
     this.formularioVisible.set(true);
-    requestAnimationFrame(() => {
-      this.panelEdicion()?.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    });
+    afterNextRender({ write: () => this.enfocar(this.tituloFormulario()?.nativeElement) }, { injector: this.injector });
   }
 
   alternarGenero(nombre: string, evento: Event): void {
@@ -102,8 +123,17 @@ export class GestionPeliculas {
   }
 
   guardar(): void {
+    if (this.guardando()) return;
     this.formulario.markAllAsTouched();
-    if (this.formulario.invalid || this.guardando()) return;
+    if (this.formulario.invalid) {
+      afterNextRender({ write: () => {
+        const primerError = this.editor()?.nativeElement.querySelector<HTMLElement>(
+          '[aria-invalid="true"], fieldset[aria-describedby] input, #error-generos',
+        );
+        this.enfocar(primerError ?? undefined);
+      } }, { injector: this.injector });
+      return;
+    }
 
     const datos: PeliculaRequest = {
       ...this.formulario.getRawValue(),
@@ -120,28 +150,47 @@ export class GestionPeliculas {
 
     solicitud.pipe(finalize(() => this.guardando.set(false))).subscribe({
       next: () => {
-        this.formularioVisible.set(false);
+        this.cerrarFormulario();
         this.cargarDatos();
       },
       error: () => this.mensajeError.set('No se pudo guardar la película. Revisa los datos e inténtalo de nuevo.'),
     });
   }
 
-  cambiarCartelera(pelicula: PeliculaResponse): void {
+  cambiarCartelera(pelicula: PeliculaResponse, origen: HTMLButtonElement): void {
     this.mensajeError.set('');
     this.peliculasApi.cambiarEstadoCartelera(pelicula.id).subscribe({
-      next: () => this.cargarDatos(),
+      next: () => this.cargarDatos(origen),
       error: () => this.mensajeError.set(`No se pudo actualizar la cartelera de «${pelicula.titulo}».`),
     });
   }
 
   cancelarEdicion(): void {
-    this.formularioVisible.set(false);
+    this.cerrarFormulario(this.origenEdicion);
     this.peliculaEditadaId.set(null);
     this.mensajeError.set('');
   }
 
+  private cerrarFormulario(origen?: HTMLButtonElement): void {
+    this.formularioVisible.set(false);
+    this.origenEdicion = undefined;
+    afterNextRender({
+      write: () => this.enfocar(origen?.isConnected ? origen : this.nuevaPelicula()?.nativeElement),
+    }, { injector: this.injector });
+  }
+
+  private enfocar(elemento: HTMLElement | undefined): void {
+    elemento?.focus({ preventScroll: true });
+    elemento?.scrollIntoView({ behavior: 'instant', block: 'nearest' });
+  }
+
   actualizarBusqueda(evento: Event): void {
     this.busqueda.set((evento.target as HTMLInputElement).value);
+  }
+
+  limpiarFiltros(): void {
+    this.busqueda.set('');
+    this.filtroCartelera.set('todas');
+    this.enfocar(this.buscador()?.nativeElement);
   }
 }
