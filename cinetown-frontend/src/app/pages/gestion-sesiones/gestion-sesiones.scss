@@ -1,7 +1,6 @@
 :host {
   display: block;
-  --divisor: color-mix(in srgb, var(--color-texto) 16%, var(--color-fondo));
-  --borde-control: color-mix(in srgb, var(--color-texto-secundario) 66%, var(--color-superficie));
+  --divisor: rgb(255 255 255 / 11%);
   --texto-error: color-mix(in srgb, var(--color-error) 58%, var(--color-texto));
   --texto-exito: color-mix(in srgb, var(--color-exito) 70%, var(--color-texto));
 }
@@ -46,10 +45,7 @@ h1 {
 
 .editor {
   min-width: 0;
-  border: 1px solid var(--divisor);
-  border-radius: 0.75rem;
   padding: clamp(1rem, 2.5vw, 1.75rem);
-  background: var(--color-superficie);
 }
 
 .dialogo-editor {
@@ -94,8 +90,6 @@ label, .columnas {
 
 input, select, .boton {
   min-height: 2.75rem;
-  border: 1px solid var(--borde-control);
-  border-radius: 0.5rem;
   font-size: var(--text-16);
   line-height: 1.4;
 }
@@ -104,11 +98,9 @@ input, select {
   width: 100%;
   min-width: 0;
   padding: 0.5rem 0.625rem;
-  background: var(--color-fondo);
   color: var(--color-texto);
 }
 
-input[aria-invalid='true'], select[aria-invalid='true'] { border-color: var(--texto-error); }
 .campo-precio input { max-width: 9rem; }
 
 .acciones {
@@ -122,40 +114,19 @@ input[aria-invalid='true'], select[aria-invalid='true'] { border-color: var(--te
   padding: 0.5rem 0.875rem;
   color: var(--color-texto);
   font-weight: 600;
-  cursor: pointer;
   touch-action: manipulation;
 }
 
-.boton-primario {
-  border-color: transparent;
-  background: var(--color-primario);
-}
-
-.boton:disabled, .boton[aria-disabled='true'] {
-  opacity: 0.55;
-  cursor: not-allowed;
-}
-
-.boton:active:not(:disabled, [aria-disabled='true']) { background: var(--color-superficie-2); }
-.boton-primario:active:not([aria-disabled='true']) { background: var(--color-primario-hover); }
-
-@media (hover: hover) and (pointer: fine) {
-  .boton:hover:not(:disabled, [aria-disabled='true']) { background: var(--color-superficie-2); }
-  .boton-primario:hover:not([aria-disabled='true']) { background: var(--color-primario-hover); }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .boton { transition: background-color 140ms ease-out; }
-  .boton:active { transition-duration: 0s; }
-}
+.boton:not(:disabled, [aria-disabled='true']) { cursor: pointer; }
 
 .agenda-cabecera {
   display: flex;
+  flex: none;
   align-items: flex-end;
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 0.875rem 1rem;
-  margin-block-end: 1.25rem;
+  padding: 1rem var(--agenda-espacio);
 }
 
 .fecha-agenda, .estado, .pelicula p, .columnas {
@@ -172,12 +143,16 @@ input[aria-invalid='true'], select[aria-invalid='true'] { border-color: var(--te
   grid-template-columns: 7rem minmax(0, 1fr) 6.5rem 5rem;
   align-items: center;
   gap: clamp(0.5rem, 1.3vw, 1.25rem);
-  padding-inline: 0.625rem;
+  padding-inline: var(--agenda-espacio);
 }
 
 .columnas {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: 1;
   padding-block: 0.625rem;
   border-block-start: 1px solid var(--divisor);
+  background: var(--vidrio-solido);
 }
 
 .columnas span:last-child, .plazas { text-align: end; }
@@ -189,7 +164,12 @@ input[aria-invalid='true'], select[aria-invalid='true'] { border-color: var(--te
 }
 
 .sesion:last-child { border-block-end: 1px solid var(--divisor); }
-.sesion[aria-current='true'] { background: var(--color-superficie); }
+.sesion:has(:focus-visible) { background: var(--vidrio-fila); }
+.sesion[aria-current='true'] { background: var(--vidrio-franja); }
+
+@media (hover: hover) and (pointer: fine) {
+  .sesion:not([aria-current='true']):hover { background: var(--vidrio-fila); }
+}
 
 .horario, .plazas, .pelicula p, input { font-variant-numeric: tabular-nums; }
 .horario, .plazas { white-space: nowrap; }
@@ -213,29 +193,28 @@ input[aria-invalid='true'], select[aria-invalid='true'] { border-color: var(--te
 .aviso:not(:empty) { margin-block-start: 1rem; }
 
 .agenda {
+  --agenda-espacio: clamp(0.875rem, 1.75vw, 1.5rem);
   display: flex;
   flex-direction: column;
   align-self: stretch;
   contain: size;
   min-block-size: 0;
+  overflow: clip;
 }
 
-.agenda-cabecera { flex: none; }
-.aviso-agenda:not(:empty) { margin-block-end: 0.5rem; }
+.aviso-agenda:not(:empty) { margin: 0 var(--agenda-espacio) 0.5rem; }
 
 .agenda-cuerpo {
   overflow-y: auto;
   overscroll-behavior-y: contain;
+  scrollbar-color: #83778a transparent;
   scrollbar-gutter: stable;
   scroll-padding-block-start: 2.625rem;
 }
 
-.columnas {
-  position: sticky;
-  inset-block-start: 0;
-  z-index: 1;
-  background: var(--color-fondo);
-}
+.agenda-cuerpo:focus-visible { outline-offset: -3px; }
+.agenda-cuerpo > .estado { padding-inline: var(--agenda-espacio); }
+.agenda-cuerpo > .boton { margin: 0 var(--agenda-espacio) 1rem; }
 
 @media (height < 52rem) {
   .gestion-sesiones { padding-block-start: 1rem; }
@@ -252,7 +231,6 @@ input[aria-invalid='true'], select[aria-invalid='true'] { border-color: var(--te
   .sesion {
     grid-template-columns: minmax(0, 1fr) auto;
     gap: 0.25rem 0.75rem;
-    padding-inline: 0;
   }
 
   .plazas { grid-area: 1 / 2; }

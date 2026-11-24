@@ -2,7 +2,7 @@
   @for (genero of opciones(); track $index) {
     <button
       type="button"
-      class="filtro-genero_opcion"
+      class="filtro-genero_opcion vidrio-control"
       [ngClass]="{
         'filtro-genero_opcion--seleccionada': generoSeleccionado() === genero,
         'filtro-genero_opcion--disponible': generoSeleccionado() !== genero,

@@ -46,8 +46,55 @@
     scroll-behavior: smooth;
   }
 
+  :root {
+    --vidrio-luz: radial-gradient(ellipse at 17% 17%, #451622 0%, transparent 56%),
+      radial-gradient(ellipse at 86% 26%, #29263f 0%, transparent 58%);
+    --vidrio-solido: #1c1922;
+    --vidrio-panel-fondo: var(--vidrio-solido);
+    --vidrio-modal-fondo: #211c27;
+    --vidrio-superficie-fondo: #282330;
+    --vidrio-control-fondo: #302936;
+    --vidrio-control-hover: #3c3343;
+    --vidrio-control-activo: #47394a;
+    --vidrio-campo-fondo: #141119;
+    --vidrio-franja: #27212c;
+    --vidrio-fila: #2b2531;
+    --vidrio-rojo: #951e32;
+    --vidrio-rojo-hover: #ab2940;
+    --vidrio-rojo-activo: #7d1628;
+    --vidrio-rojo-borde: #da7987;
+    --vidrio-seleccion-fondo: #542632;
+    --vidrio-seleccion-hover: #66303e;
+    --vidrio-seleccion-activo: #703542;
+    --vidrio-desenfoque: none;
+  }
+
+  @supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    @media not (prefers-reduced-transparency: reduce) {
+      :root {
+        --vidrio-panel-fondo: rgb(27 24 34 / 54%);
+        --vidrio-modal-fondo: rgb(29 24 36 / 84%);
+        --vidrio-superficie-fondo: rgb(232 208 249 / 8%);
+        --vidrio-control-fondo: rgb(236 217 250 / 10%);
+        --vidrio-control-hover: rgb(238 220 252 / 17%);
+        --vidrio-control-activo: rgb(238 220 252 / 23%);
+        --vidrio-campo-fondo: rgb(11 8 15 / 38%);
+        --vidrio-franja: rgb(239 212 248 / 7%);
+        --vidrio-fila: rgb(239 212 248 / 6%);
+        --vidrio-seleccion-fondo: rgb(166 47 74 / 42%);
+        --vidrio-seleccion-hover: rgb(177 55 81 / 52%);
+        --vidrio-seleccion-activo: rgb(177 55 81 / 62%);
+        --vidrio-desenfoque: blur(18px) saturate(135%);
+      }
+    }
+  }
+
   body {
     @apply bg-fondo text-texto font-sans antialiased;
+    min-block-size: 100svh;
+    background-image: var(--vidrio-luz);
+    background-repeat: no-repeat;
+    background-size: 100% min(56rem, 110vh);
     font-size: var(--text-16);
     line-height: 1.5;
   }
@@ -65,6 +112,14 @@
     background: var(--color-primario-hover);
     color: var(--color-texto);
   }
+}
+
+app-root:has(> :is(app-login, app-registro)) {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  min-block-size: 100svh;
+
+  > router-outlet { display: none; }
 }
 
 html:has(app-root > app-gestion-sesiones) { overflow: clip; }
@@ -92,19 +147,11 @@ app-root:has(> app-gestion-sesiones) {
 }
 
 @utility btn-primary {
-  @apply bg-primario text-texto font-medium text-16 px-5 py-2.5 rounded-lg
-  transition-colors
-  hover:bg-primario-hover
-  focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-info
-  disabled:opacity-40 disabled:cursor-not-allowed;
+  @apply text-texto font-medium text-16 px-5 py-2.5 rounded-lg;
 }
 
 @utility btn-secondary {
-  @apply bg-superficie-2 text-texto font-medium text-16 px-5 py-2.5 rounded-lg
-  transition-colors
-  hover:bg-superficie
-  focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-info
-  disabled:opacity-40 disabled:cursor-not-allowed;
+  @apply text-texto font-medium text-16 px-5 py-2.5 rounded-lg;
 }
 
 /* Badge — "+16", "Miércoles" */
@@ -114,6 +161,92 @@ app-root:has(> app-gestion-sesiones) {
 }
 /* --- Componentes reutilizables (de la guía de estilo) ----------------- */
 @layer components {
+  .vidrio-panel,
+  .vidrio-superficie {
+    border: 1px solid var(--vidrio-ribete, rgb(246 225 255 / 17%));
+    border-block-start-color: var(--vidrio-ribete, rgb(246 225 255 / 29%));
+    border-radius: 1rem;
+    background-image: var(--vidrio-reflejo, linear-gradient(145deg, rgb(247 222 255 / 10%), transparent 58%));
+  }
+
+  .vidrio-panel {
+    background-color: var(--vidrio-tinte, var(--vidrio-panel-fondo));
+    -webkit-backdrop-filter: var(--vidrio-desenfoque);
+    backdrop-filter: var(--vidrio-desenfoque);
+    box-shadow: 0 16px 44px rgb(0 0 0 / 24%), inset 0 1px rgb(255 255 255 / 6%),
+      inset 0 -1px rgb(0 0 0 / 16%);
+  }
+
+  .vidrio-panel:modal {
+    background-color: var(--vidrio-modal-fondo);
+  }
+
+  .vidrio-superficie {
+    background-color: var(--vidrio-tinte, var(--vidrio-superficie-fondo));
+    box-shadow: 0 5px 14px rgb(0 0 0 / 14%), inset 0 1px rgb(255 255 255 / 5%);
+  }
+
+  :is(.vidrio-control, .btn-primary, .btn-secondary, .vidrio-campo) {
+    border: 1px solid var(--vidrio-borde, rgb(242 222 252 / 40%));
+    border-radius: 0.5rem;
+    background-color: var(--vidrio-relleno, var(--vidrio-control-fondo));
+    transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease;
+  }
+
+  :is(.vidrio-control, .btn-primary, .btn-secondary) {
+    background-image: linear-gradient(165deg, rgb(255 240 249 / 12%), transparent 78%);
+    box-shadow: 0 2px 5px rgb(0 0 0 / 16%), inset 0 1px rgb(255 255 255 / 11%);
+  }
+
+  .vidrio-campo {
+    --vidrio-relleno: var(--vidrio-campo-fondo);
+    --vidrio-borde: #817586;
+    box-shadow: inset 0 2px 4px rgb(0 0 0 / 18%);
+    caret-color: var(--color-texto);
+  }
+
+  .vidrio-campo::placeholder {
+    color: #b7adbf;
+  }
+
+  :is(.vidrio-primario, .btn-primary) {
+    --vidrio-relleno: var(--vidrio-rojo);
+    --vidrio-hover: var(--vidrio-rojo-hover);
+    --vidrio-activo: var(--vidrio-rojo-activo);
+    --vidrio-borde: var(--vidrio-rojo-borde);
+  }
+
+  :is(.vidrio-control[aria-pressed='true'], .vidrio-control.vidrio-seleccionado) {
+    --vidrio-relleno: var(--vidrio-seleccion-fondo);
+    --vidrio-hover: var(--vidrio-seleccion-hover);
+    --vidrio-activo: var(--vidrio-seleccion-activo);
+    --vidrio-borde: var(--vidrio-rojo-borde);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    :is(.vidrio-control, .btn-primary, .btn-secondary):hover:not(:disabled, [aria-disabled='true']) {
+      background-color: var(--vidrio-hover, var(--vidrio-control-hover));
+      border-color: var(--vidrio-borde, rgb(242 222 252 / 52%));
+    }
+
+    .vidrio-campo:hover:not(:disabled, [aria-invalid='true'], :focus) {
+      border-color: #a99aaf;
+    }
+  }
+
+  :is(.vidrio-control, .btn-primary, .btn-secondary):active:not(:disabled, [aria-disabled='true']) {
+    background-color: var(--vidrio-activo, var(--vidrio-control-activo));
+  }
+
+  :is(.vidrio-control, .btn-primary, .btn-secondary):is(:disabled, [aria-disabled='true']) {
+    opacity: 0.61;
+    cursor: not-allowed;
+  }
+
+  .vidrio-campo[aria-invalid='true'] {
+    --vidrio-borde: #e59099;
+  }
+
   /* Caja de estado de error */
   .alert-error {
     @apply bg-superficie text-texto rounded-md p-4;
@@ -145,6 +278,10 @@ app-root:has(> app-gestion-sesiones) {
 
   .is-loading {
     animation: none;
+  }
+
+  :is(.vidrio-control, .btn-primary, .btn-secondary, .vidrio-campo) {
+    transition: none;
   }
 }
 

@@ -2,12 +2,14 @@
 
 /* --- Página: centra la tarjeta en pantalla ----------------------------- */
 :host {
-  @apply flex min-h-screen items-center justify-center bg-fondo p-4;
+  @apply flex items-center justify-center;
+  padding: clamp(1.5rem, 5vh, 3rem) 1.25rem;
 }
 
 /* --- Tarjeta ----------------------------------------------------------- */
 .auth-card {
-  @apply w-full max-w-sm bg-superficie rounded-xl p-8 shadow-xl;
+  width: min(100%, 26rem);
+  padding: clamp(1.5rem, 5vw, 2.25rem);
 }
 
 .auth-card h1 {
@@ -24,25 +26,25 @@
 }
 
 .form-group input {
-  @apply w-full bg-superficie-2 text-texto text-16 px-4 py-2.5 rounded-lg
-  border border-superficie-2 placeholder:text-texto-secundario/60
-  transition-colors
-  hover:border-texto-secundario/40
-  focus:outline-none focus:border-info focus:ring-2 focus:ring-info/30;
+  @apply w-full text-texto text-16 px-4 py-2.5;
+  min-block-size: 2.75rem;
 }
 
 /* Campo inválido y tocado: Angular añade ng-invalid y ng-touched */
 .form-group input.ng-invalid.ng-touched {
-  @apply border-error;
+  --vidrio-borde: #e59099;
 }
 
 .form-group small {
-  @apply text-14 text-error;
+  @apply text-14;
+  color: #f4a5ad;
 }
 
 /* --- Error del servidor o de autenticación ---------------------------- */
 .error {
-  @apply bg-superficie-2 border-l-4 border-error text-texto text-14 rounded-md p-4 mb-5;
+  @apply text-texto text-14 rounded-md p-4 mb-5;
+  border: 1px solid rgb(238 147 158 / 46%);
+  background: var(--vidrio-seleccion-fondo);
 }
 
 /* --- Enlaces de pie de tarjeta ("¿Ya tienes cuenta?") ------------------ */
@@ -51,7 +53,8 @@
 }
 
 .auth-links a {
-  @apply text-info font-medium transition-colors hover:underline
+  color: #a8c5ff;
+  @apply font-medium hover:underline
   focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-info;
 }
 

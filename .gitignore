@@ -43,3 +43,4 @@ postman
 .agents
 .aws
 .codex
+src/test/java/com/safa/cinetown/PeliculaControllerTest.java

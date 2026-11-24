@@ -31,13 +31,11 @@ legend {
   min-height: 44px;
   align-items: center;
   gap: 4px;
-  border: 1px solid transparent;
   border-radius: 9999px;
   padding: 8px 12px;
-  color: var(--color-texto-secundario);
+  color: #dfd3e3;
   font-size: 14px;
   line-height: 1.25;
-  transition: background-color 120ms ease-out, border-color 120ms ease-out, color 120ms ease-out;
 
   time {
     white-space: nowrap;
@@ -46,15 +44,11 @@ legend {
 
 @media (hover: hover) and (pointer: fine) {
   .dia:hover .dia_cara {
-    background: var(--color-superficie-2);
     color: var(--color-texto);
-    transition-duration: 0s;
   }
 }
 
 .dia input:checked + .dia_cara {
-  border-color: #c26970;
-  background: rgb(165 0 11 / 20%);
   color: var(--color-texto);
   font-weight: 600;
 }
@@ -65,8 +59,7 @@ legend {
 }
 
 .dia:active .dia_cara {
-  background: var(--color-superficie-2);
-  transition-duration: 0s;
+  background-color: var(--vidrio-activo, var(--vidrio-control-activo));
 }
 
 .horarios {
@@ -84,7 +77,7 @@ legend {
 .horarios_opciones {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px 24px;
+  gap: 0.5rem;
 }
 
 .horario {
@@ -95,7 +88,7 @@ legend {
   align-items: baseline;
   align-content: center;
   gap: 4px 12px;
-  padding: 8px 0;
+  padding: 0.5rem 0.75rem;
   color: var(--color-texto);
   text-decoration: none;
   touch-action: manipulation;
@@ -109,14 +102,12 @@ legend {
   @media (hover: hover) and (pointer: fine) {
     &:hover .horario_accion {
       color: var(--color-texto);
-      transition-duration: 0s;
     }
   }
 
   &:focus-visible .horario_accion,
   &:active .horario_accion {
     color: var(--color-texto);
-    transition-duration: 0s;
   }
 }
 
@@ -130,5 +121,4 @@ legend {
   color: #f1b9bc;
   font-size: 14px;
   text-decoration: underline;
-  transition: color 120ms ease-out;
 }

@@ -2,9 +2,7 @@
 
 :host {
   display: block;
-  background: var(--color-fondo);
   --borde-panel: color-mix(in srgb, var(--color-texto) 13%, transparent);
-  --borde-control: color-mix(in srgb, var(--color-texto-secundario) 66%, theme(--color-superficie-2));
   --texto-error: color-mix(in srgb, theme(--color-error) 57%, var(--color-texto));
 }
 
@@ -57,9 +55,6 @@
 .panel {
   min-width: 0;
   padding: 1.75rem;
-  border: 1px solid var(--borde-panel);
-  border-radius: 0.75rem;
-  background: var(--color-superficie);
   overflow-wrap: anywhere;
 }
 
@@ -89,15 +84,11 @@
   width: 2.75rem;
   height: 2.75rem;
   place-items: center;
-  border: 1px solid var(--borde-control);
-  border-radius: 0.5rem;
-  background: theme(--color-superficie-2);
   font-size: 1.5rem;
   line-height: 1;
 
   &[aria-disabled='true'] {
-    border-color: var(--borde-panel);
-    color: var(--color-texto-secundario);
+    --vidrio-borde: var(--borde-panel);
   }
 }
 
@@ -112,13 +103,6 @@ input {
   min-height: 3rem;
   margin-top: 0.5rem;
   padding: 0.625rem 0.75rem;
-  border: 1px solid var(--borde-control);
-  border-radius: 0.5rem;
-  background: theme(--color-superficie-2);
-
-  &[aria-invalid='true'] {
-    border-color: var(--texto-error);
-  }
 }
 
 .desglose,
@@ -150,8 +134,6 @@ input {
   margin-top: 1.25rem;
 
   &[aria-disabled='true'] {
-    background: theme(--color-superficie-2);
-    color: var(--color-texto-secundario);
     cursor: wait;
   }
 }
@@ -188,25 +170,6 @@ input {
   .volver:hover {
     color: var(--color-texto);
     text-decoration: underline;
-  }
-
-  .control[aria-disabled='false']:hover {
-    background: color-mix(in srgb, theme(--color-superficie-2) 85%, var(--color-texto));
-  }
-}
-
-.control[aria-disabled='false']:active {
-  background: var(--color-superficie);
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .control {
-    transition: background-color 140ms ease, transform 140ms cubic-bezier(0.22, 1, 0.36, 1);
-
-    &[aria-disabled='false']:active {
-      transform: scale(0.98);
-      transition-duration: 0s;
-    }
   }
 }
 

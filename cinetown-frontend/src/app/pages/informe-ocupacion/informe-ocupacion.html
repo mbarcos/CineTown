@@ -1,35 +1,33 @@
 <main class="pagina-informe">
   <header class="cabecera">
-    <div class="intro">
-      <p class="sobretitulo">CINETOWN · INFORMES</p>
+    <div>
       <h1>Ocupación de sesiones</h1>
       <p class="descripcion">Consulta diaria de entradas vendidas y aforo por sesión.</p>
     </div>
     <label class="campo-fecha">
       <span>Fecha del informe</span>
-      <input type="date" [value]="fecha()" (input)="actualizarFecha($event)" />
+      <input class="vidrio-campo" type="date" [value]="fecha()" (input)="actualizarFecha($event)" />
     </label>
   </header>
 
   @if (error()) {
-    <div class="aviso-error" role="alert">{{ error() }} Cambia la fecha para volver a consultar.</div>
+    <div class="aviso-error vidrio-superficie" role="alert">{{ error() }} Cambia la fecha para volver a consultar.</div>
   }
 
   @if (cargando()) {
-    <section class="estado-carga" role="status">
+    <section class="estado-carga vidrio-panel" role="status">
       <span class="spinner" aria-hidden="true"></span>
       <span>Generando informe de ocupación…</span>
     </section>
   } @else if (fechaConsultada() && sesiones().length === 0 && !error()) {
-    <section class="estado-vacio">
-      <span class="icono-vacio" aria-hidden="true">▤</span>
+    <section class="estado-vacio vidrio-panel">
       <h2>No hay sesiones para esta fecha</h2>
       <p>Prueba con otro día para consultar su ocupación.</p>
     </section>
   } @else if (fechaConsultada(); as fechaInforme) {
-    <section class="resumen" aria-label="Resumen del informe">
+    <section class="resumen vidrio-panel" aria-label="Resumen del informe">
       <div>
-        <span class="resumen-etiqueta">OCUPACIÓN MEDIA</span>
+        <span class="resumen-etiqueta">Ocupación media</span>
         <strong class="resumen-valor">{{ porcentaje(ocupacionMedia()) }}</strong>
       </div>
       <div class="resumen-meta">
@@ -38,8 +36,8 @@
       </div>
     </section>
 
-    <section class="tabla-panel" aria-label="Ocupación por sesión">
-      <div class="tabla-scroll">
+    <section class="tabla-panel vidrio-panel">
+      <div class="tabla-scroll" role="region" aria-label="Ocupación por sesión" tabindex="0">
         <table>
           <thead>
             <tr>
@@ -54,8 +52,10 @@
             @for (sesion of sesiones(); track sesion.sesionId) {
               <tr>
                 <th scope="row" class="sesion-titulo">
-                  <time [attr.datetime]="sesion.fechaHoraInicio">{{ horaLegible(sesion.fechaHoraInicio) }}</time>
-                  <span>{{ sesion.titulo }}</span>
+                  <div class="sesion-datos">
+                    <time [attr.datetime]="sesion.fechaHoraInicio">{{ horaLegible(sesion.fechaHoraInicio) }}</time>
+                    <span>{{ sesion.titulo }}</span>
+                  </div>
                 </th>
                 <td class="sala">Sala {{ sesion.numeroSala }}</td>
                 <td class="numerico">{{ sesion.capacidad }}</td>
@@ -80,7 +80,6 @@
         </table>
       </div>
       <footer class="pie-tabla">
-        <span class="punto-leyenda" aria-hidden="true"></span>
         Informe agregado con datos activos de ocupación por sesión.
       </footer>
     </section>

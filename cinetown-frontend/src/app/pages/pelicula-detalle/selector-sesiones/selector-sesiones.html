@@ -11,7 +11,7 @@
           [attr.aria-label]="dia.etiqueta"
           (change)="diaSeleccionado.set(dia)"
         />
-        <span class="dia_cara">
+        <span class="dia_cara vidrio-control" [class.vidrio-seleccionado]="diaSeleccionado() === dia">
           <span class="dia_semana">{{ diaCorto(dia.fecha) }}</span>
           <time [attr.datetime]="dia.fecha">{{ fechaCorta(dia.fecha) }}</time>
         </span>
@@ -26,7 +26,7 @@
     <div class="horarios_opciones">
       @for (sesion of dia.sesiones; track sesion.id) {
         <a
-          class="horario"
+          class="horario vidrio-control"
           [routerLink]="['/sesiones', sesion.id]"
           [attr.aria-label]="'Elegir asientos: ' + dia.etiqueta + ' a las ' + sesion.horaLegible + ', ' + sesion.precioLegible"
         >

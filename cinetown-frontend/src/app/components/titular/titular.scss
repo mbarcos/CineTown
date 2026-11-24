@@ -1,6 +1,8 @@
 .titular {
-  border-bottom: 1px solid rgb(255 255 255 / 12%);
-  background: var(--color-superficie);
+  border-inline: 0;
+  border-block-start: 0;
+  border-radius: 0;
+  --vidrio-reflejo: linear-gradient(112deg, rgb(252 191 200 / 11%), transparent 63%);
   padding: clamp(56px, 7vw, 88px) 5.8% clamp(44px, 5vw, 64px);
 }
 
@@ -30,7 +32,7 @@
 
 .titular_descripcion {
   margin: 0;
-  color: var(--color-texto-secundario);
+  color: #d7cbd7;
   font-size: 17px;
   line-height: 1.55;
 }
@@ -40,20 +42,12 @@
   min-height: 44px;
   align-items: center;
   margin-top: 14px;
-  border-bottom: 1px solid var(--color-primario-hover);
-  padding: 4px 0;
-  color: #f1b9bc;
+  padding: 0.5rem 0.875rem;
+  color: var(--color-texto);
   font-size: 16px;
   font-weight: 600;
   text-decoration: none;
-  transition: color 140ms ease, border-color 140ms ease;
-
-  @media (hover: hover) and (pointer: fine) {
-    &:hover {
-      border-color: var(--color-texto);
-      color: var(--color-texto);
-    }
-  }
+  touch-action: manipulation;
 }
 
 @media (max-width: 39.99rem) {

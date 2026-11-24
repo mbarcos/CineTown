@@ -91,7 +91,8 @@ app-filtro-genero {
   align-items: flex-start;
   justify-content: center;
   gap: 14px;
-  border-top: 1px solid rgb(255 255 255 / 15%);
+  margin-block-start: 1.25rem;
+  padding: 1.25rem clamp(1rem, 3vw, 1.5rem);
   color: var(--color-texto-secundario);
   font-size: 16px;
   line-height: 1.55;
@@ -107,9 +108,6 @@ app-filtro-genero {
   min-height: 44px;
   align-items: center;
   justify-content: center;
-  border: 1px solid rgb(255 255 255 / 18%);
-  border-radius: 8px;
-  background: var(--color-superficie-2);
   padding: 9px 14px;
   color: var(--color-texto);
   font: inherit;
@@ -117,18 +115,6 @@ app-filtro-genero {
   font-weight: 600;
   cursor: pointer;
   touch-action: manipulation;
-  transition: background-color 140ms ease, border-color 140ms ease;
-
-  @media (hover: hover) and (pointer: fine) {
-    &:hover {
-      border-color: rgb(255 255 255 / 40%);
-      background: #292932;
-    }
-  }
-
-  &:active {
-    background: #30303a;
-  }
 }
 
 @media (min-width: 48.01rem) and (max-width: 70rem) {

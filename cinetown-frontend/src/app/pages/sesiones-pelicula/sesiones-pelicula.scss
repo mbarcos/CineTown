@@ -73,22 +73,17 @@ h2 {
 }
 
 .fecha-chip {
-  border: 1px solid transparent;
   border-radius: 9999px;
-  background: var(--color-superficie);
   padding: 8px 12px;
   color: var(--color-texto);
-  transition: background-color 120ms ease-out;
-
   &[aria-pressed='true'] {
-    border-color: #c26970;
-    background: rgb(165 0 11 / 20%);
+    font-weight: 600;
   }
 }
 
 .fecha-chip_detalle {
   margin-inline-start: 4px;
-  color: var(--color-texto-secundario);
+  color: #dfd3e3;
 }
 
 .selector-calendario {
@@ -102,9 +97,6 @@ h2 {
   input {
     min-height: 44px;
     max-width: 100%;
-    border: 1px solid #777781;
-    border-radius: 8px;
-    background: var(--color-superficie);
     padding: 8px 10px;
     color: var(--color-texto);
     color-scheme: dark;
@@ -114,8 +106,7 @@ h2 {
 
 .horarios {
   margin-top: 24px;
-  border-top: 1px solid rgb(255 255 255 / 16%);
-  padding-top: 24px;
+  padding: clamp(1rem, 3vw, 1.5rem);
 }
 
 .fecha-horarios {
@@ -150,7 +141,9 @@ h2 {
   padding: 10px 12px;
   cursor: pointer;
   touch-action: manipulation;
-  transition: background-color 120ms ease-out;
+  @media (prefers-reduced-motion: no-preference) {
+    transition: background-color 150ms ease;
+  }
 
   input {
     width: 18px;
@@ -159,7 +152,7 @@ h2 {
   }
 
   &:has(input:checked) {
-    background: rgb(165 0 11 / 20%);
+    background: var(--vidrio-seleccion-fondo);
   }
 
   &:has(input:focus-visible) {
@@ -208,54 +201,19 @@ h2 {
 }
 
 .continuar {
-  border: 0;
-  border-radius: 8px;
-  background: var(--color-primario-hover);
   padding: 8px 16px;
-  color: #fff;
+  color: var(--color-texto);
   font-weight: 600;
-
-  &:disabled {
-    background: var(--color-superficie-2);
-    color: var(--color-texto-secundario);
-    cursor: default;
-  }
 }
 
 .reintentar {
-  border: 0;
-  background: none;
-  padding: 0;
-  color: var(--color-info);
-  text-decoration: underline;
+  padding: 0.5rem 0.75rem;
+  color: var(--color-texto);
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .fecha-chip:hover:not([aria-pressed='true']),
   .opcion-sesion:hover:not(:has(input:checked)) {
-    background: var(--color-superficie-2);
-    transition-duration: 0s;
-  }
-
-  .continuar:hover:not(:disabled) {
-    text-decoration: underline;
-  }
-}
-
-.fecha-chip:active,
-.continuar:active:not(:disabled) {
-  background: var(--color-primario);
-  transition-duration: 0s;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .continuar {
-    transition: transform 140ms cubic-bezier(0.22, 1, 0.36, 1);
-  }
-
-  .continuar:active:not(:disabled) {
-    transform: scale(0.98);
-    transition-duration: 0s;
+    background: var(--vidrio-fila);
   }
 }
 

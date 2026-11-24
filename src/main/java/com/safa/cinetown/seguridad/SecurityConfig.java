@@ -83,6 +83,8 @@ public class SecurityConfig {
                         // Gestión de catálogo: solo ADMIN
                         .requestMatchers(HttpMethod.GET, "/peliculas/gestion")
                         .hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/peliculas/gestion/cartel")
+                        .hasRole("ADMIN")
 
                         // Recaudación: solo ADMIN
                         .requestMatchers(HttpMethod.GET,

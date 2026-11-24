@@ -5,6 +5,11 @@ import com.safa.cinetown.dtos.RecaudacionPelicula;
 import com.safa.cinetown.dtos.request.PeliculaRequest;
 import com.safa.cinetown.servicios.PeliculaService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,6 +28,19 @@ public class PeliculaController {
     @GetMapping("/gestion")
     public List<PeliculaResponse> consultarPeliculasParaGestion() {
         return service.consultarTodasPeliculas();
+    }
+
+    @PostMapping("/gestion/cartel")
+    public CartelResponse previsualizarCartel(@Valid @RequestBody CartelRequest datos) {
+        return new CartelResponse(service.buscarCartel(datos.titulo(), datos.anio(), datos.sinopsis()).orElse(null));
+    }
+
+    public record CartelRequest(@NotBlank @Size(max = 255) String titulo,
+                                @NotNull @Min(1888) @Max(2100) Integer anio,
+                                String sinopsis) {
+    }
+
+    public record CartelResponse(String cartelUrl) {
     }
 
     @GetMapping("/{id}")

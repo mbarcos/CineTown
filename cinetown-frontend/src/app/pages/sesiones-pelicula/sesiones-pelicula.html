@@ -17,7 +17,7 @@
         <div class="fechas-rapidas" role="group" aria-label="Fechas rápidas">
           @for (opcion of fechasRapidas(); track opcion.fecha) {
             <button
-              class="fecha-chip"
+              class="fecha-chip vidrio-control"
               type="button"
               [attr.aria-pressed]="fechaSeleccionada() === opcion.fecha"
               (click)="cambiarFecha(opcion.fecha)"
@@ -29,7 +29,7 @@
         </div>
         <label class="selector-calendario">
           Otra fecha
-          <input
+          <input class="vidrio-campo"
             #calendario
             type="date"
             [value]="fechaSeleccionada()"
@@ -40,7 +40,7 @@
       </div>
     </section>
 
-    <section class="horarios" aria-labelledby="titulo-horarios">
+    <section class="horarios vidrio-panel" aria-labelledby="titulo-horarios">
       <h2 id="titulo-horarios">Horarios</h2>
       <p class="fecha-horarios">{{ fechaLegible() }}</p>
 
@@ -56,7 +56,7 @@
 
       @if (error()) {
         <p class="estado" role="alert">No se pudieron cargar las sesiones.</p>
-        <button class="reintentar" type="button" (click)="recargarSesiones()">Volver a intentar</button>
+        <button class="reintentar vidrio-control" type="button" (click)="recargarSesiones()">Volver a intentar</button>
       } @else if (!cargando() && sesionesPresentacion().length) {
         <fieldset class="lista-sesiones">
           <legend class="sr-only">Elige un horario</legend>
@@ -89,7 +89,7 @@
               Elige un horario para continuar.
             }
           </p>
-          <button class="continuar" type="button" [disabled]="!sesionSeleccionada()" (click)="continuarCompra()">
+          <button class="continuar vidrio-control vidrio-primario" type="button" [disabled]="!sesionSeleccionada()" (click)="continuarCompra()">
             Elegir asientos
           </button>
         </div>

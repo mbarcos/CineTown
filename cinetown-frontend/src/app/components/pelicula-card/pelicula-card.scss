@@ -56,6 +56,16 @@
   object-fit: cover;
 }
 
+.tarjeta-pelicula--previa .tarjeta-pelicula_imagen {
+  opacity: 0;
+
+  &.tarjeta-pelicula_imagen--lista { opacity: 1; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    transition: opacity 150ms ease-out;
+  }
+}
+
 .tarjeta-pelicula_marca-agua {
   position: absolute;
   top: 14px;

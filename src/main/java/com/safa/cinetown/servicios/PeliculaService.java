@@ -20,6 +20,7 @@ import org.springframework.validation.annotation.Validated;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -59,8 +60,12 @@ public class PeliculaService {
                 .orElseThrow(() -> new RecursoNoEncontradoException(PELICULA_NO_ENCONTRADA));
     }
 
+    public Optional<String> buscarCartel(String titulo, int anio, String sinopsis) {
+        return tmdbClient.buscarCartel(titulo, anio, sinopsis);
+    }
+
     public PeliculaResponse crearPelicula(@Valid PeliculaRequest dto) {
-        String cartelUrl = tmdbClient.buscarCartel(dto.titulo(), dto.anio(), dto.sinopsis()).orElse(null);
+        String cartelUrl = buscarCartel(dto.titulo(), dto.anio(), dto.sinopsis()).orElse(null);
         Pelicula pelicula = mapper.aEntidad(dto);
         pelicula.setActivo(dto.activo() == null || dto.activo());
         pelicula.setCartelUrl(cartelUrl);
@@ -96,7 +101,7 @@ public class PeliculaService {
         String cartelGuardado = pelicula.getCartelUrl();
         if (Boolean.TRUE.equals(pelicula.getActivo())
                 && (cartelGuardado == null || cartelGuardado.trim().isEmpty())) {
-            tmdbClient.buscarCartel(pelicula.getTitulo(), pelicula.getAnio(), pelicula.getSinopsis())
+            buscarCartel(pelicula.getTitulo(), pelicula.getAnio(), pelicula.getSinopsis())
                     .ifPresent(cartelUrl -> repository.guardarCartelSiFalta(
                             id, pelicula.getTitulo(), pelicula.getAnio(), pelicula.getSinopsis(), cartelUrl));
         }

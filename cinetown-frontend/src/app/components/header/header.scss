@@ -4,8 +4,10 @@
   align-items: center;
   justify-content: space-between;
   gap: 32px;
-  border-bottom: 1px solid rgb(255 255 255 / 10%);
-  background: #101014;
+  border-inline: 0;
+  border-block-start: 0;
+  border-radius: 0;
+  --vidrio-reflejo: linear-gradient(95deg, rgb(247 222 255 / 7%), transparent 56%);
   padding-inline: 5.8%;
 }
 
@@ -44,11 +46,13 @@
   color: var(--color-texto-secundario);
   font-size: 14px;
   text-decoration: none;
-  transition: color 140ms ease;
 
   &--activo {
     color: var(--color-texto);
     font-weight: 600;
+    text-decoration: underline;
+    text-decoration-color: var(--vidrio-rojo-borde);
+    text-underline-offset: 0.45em;
   }
 
   @media (hover: hover) and (pointer: fine) {
@@ -71,6 +75,7 @@
 
 .encabezado_cuenta {
   color: var(--color-texto);
+  padding-inline: 0.75rem;
   white-space: nowrap;
 }
 
@@ -82,21 +87,12 @@
 
 .encabezado_boton {
   min-height: 44px;
-  border: 0;
-  background: transparent;
-  padding: 8px 0 8px 8px;
+  padding: 0.5rem 0.75rem;
   color: var(--color-texto);
   font: inherit;
   font-size: 14px;
   cursor: pointer;
   white-space: nowrap;
-  transition: color 140ms ease;
-
-  @media (hover: hover) and (pointer: fine) {
-    &:hover {
-      color: #fff;
-    }
-  }
 }
 
 @media (max-width: 39.99rem) {
@@ -123,7 +119,15 @@
   }
 
   .encabezado_sesion {
+    max-inline-size: 100%;
     gap: 8px;
-    padding-left: 12px;
+    border-left: 0;
+    padding-left: 0;
+  }
+
+  .encabezado_usuario {
+    min-inline-size: 0;
+    overflow-wrap: anywhere;
+    white-space: normal;
   }
 }

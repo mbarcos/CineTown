@@ -1,4 +1,4 @@
-<header class="encabezado">
+<header class="encabezado vidrio-panel">
 
   <a class="encabezado_marca" routerLink="/" aria-label="CineTown, inicio">
     CINETOWN
@@ -37,14 +37,14 @@
 
     <div class="encabezado_sesion">
       @if (!authService.estaAutenticado()) {
-        <a class="encabezado_cuenta" routerLink="/login">
+        <a class="encabezado_cuenta vidrio-control" routerLink="/login">
           Iniciar sesión
         </a>
       } @else {
         <span class="encabezado_usuario">
           Hola, {{ authService.usuarioActual()?.nombreUsuario }}
         </span>
-        <button class="encabezado_boton" type="button" (click)="authService.cerrarSesion()">
+        <button class="encabezado_boton vidrio-control" type="button" (click)="authService.cerrarSesion()">
           Cerrar sesión
         </button>
       }

@@ -1,4 +1,5 @@
-import { Component, Input, signal } from '@angular/core';
+import { NgTemplateOutlet } from '@angular/common';
+import { Component, computed, input, linkedSignal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { obtienePeliculasDto } from '../../models/dto/peliculaDTO';
 import { obtenerFondoPoster } from '../../shared/utils/pelicula-poster';
@@ -9,15 +10,25 @@ import { obtenerFondoPoster } from '../../shared/utils/pelicula-poster';
   templateUrl: './pelicula-card.html',
   styleUrl: './pelicula-card.scss',
   imports: [
-    RouterLink
+    RouterLink, NgTemplateOutlet
   ]
 })
 export class PeliculaCardComponent {
-  @Input({ required: true }) pelicula!: obtienePeliculasDto;
+  readonly pelicula = input.required<Pick<obtienePeliculasDto, 'id' | 'titulo' | 'generos' | 'cartelUrl'> & { anio: number | null }>();
+  readonly vistaPrevia = input(false);
 
-  protected readonly cartelNoDisponible = signal<string | null>(null);
+  protected readonly fondoCartel = computed(() => obtenerFondoPoster(this.pelicula().id));
+  private readonly urlImagen = computed(() => this.pelicula().cartelUrl);
+  protected readonly imagenes = computed(() => {
+    const url = this.urlImagen();
+    return url ? [url] : [];
+  });
+  protected readonly estadoImagen = linkedSignal((): 'cargando' | 'lista' | 'error' => {
+    this.urlImagen();
+    return 'cargando';
+  });
 
-  protected get fondoCartel(): string {
-    return obtenerFondoPoster(this.pelicula.id);
+  protected actualizarImagen(url: string, estado: 'lista' | 'error'): void {
+    if (url === this.urlImagen()) this.estadoImagen.set(estado);
   }
 }

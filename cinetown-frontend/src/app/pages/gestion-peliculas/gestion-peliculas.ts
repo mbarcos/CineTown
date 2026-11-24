@@ -1,13 +1,15 @@
 import { afterNextRender, Component, computed, ElementRef, inject, Injector, signal, viewChild } from '@angular/core';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { finalize, Observable } from 'rxjs';
+import { catchError, finalize, map, Observable, of, switchMap, timer } from 'rxjs';
+import { PeliculaCardComponent } from '../../components/pelicula-card/pelicula-card';
 import { PeliculaResponse } from '../../models/pelicula-detalle.model';
-import { PeliculaRequest, PeliculaService } from '../../services/peliculaService';
+import { BusquedaCartel, PeliculaRequest, PeliculaService } from '../../services/peliculaService';
 
 @Component({
   selector: 'app-gestion-peliculas',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, PeliculaCardComponent],
   templateUrl: './gestion-peliculas.html',
   styleUrl: './gestion-peliculas.scss',
 })
@@ -51,6 +53,58 @@ export class GestionPeliculas {
     anio: [new Date().getFullYear(), [Validators.required, Validators.min(1888), Validators.max(2100)]],
     clasificacion: ['TP' as PeliculaResponse['clasificacion'], Validators.required],
     generos: this.formBuilder.nonNullable.control<string[]>([], Validators.required),
+  });
+
+  private readonly borrador = toSignal(this.formulario.valueChanges, { initialValue: this.formulario.getRawValue() });
+  private readonly peliculaEditada = computed(() =>
+    this.peliculas().find(pelicula => pelicula.id === this.peliculaEditadaId()),
+  );
+  private readonly cartelGuardado = computed(() => {
+    const original = this.peliculaEditada();
+    const { titulo, anio } = this.borrador();
+    return original && original.titulo.trim() === titulo?.trim() && original.anio === anio
+      ? original.cartelUrl?.trim() || null : null;
+  });
+
+  private readonly busquedaCartel = computed<BusquedaCartel | null>(() => {
+    if (!this.formularioVisible() || this.cartelGuardado()) return null;
+    const { titulo, anio, sinopsis } = this.borrador();
+    const nombre = titulo?.trim();
+    if (!nombre || nombre.length > 255 || anio == null || !Number.isInteger(anio) || anio < 1888 || anio > 2100) return null;
+    return { titulo: nombre, anio, sinopsis: sinopsis?.trim() ?? '' };
+  }, { equal: (a, b) => a?.titulo === b?.titulo && a?.anio === b?.anio && a?.sinopsis === b?.sinopsis });
+
+  private readonly resultadoCartel = toSignal(toObservable(this.busquedaCartel).pipe(
+    switchMap(busqueda => busqueda ? timer(450).pipe(
+      switchMap(() => this.peliculasApi.previsualizarCartel(busqueda)),
+      map(({ cartelUrl }) => ({ busqueda, cartelUrl, error: false })),
+      catchError(() => of({ busqueda, cartelUrl: null, error: true })),
+    ) : of(null)),
+  ));
+
+  private readonly cartelEncontrado = computed(() => {
+    const resultado = this.resultadoCartel();
+    return resultado?.busqueda === this.busquedaCartel() ? resultado : null;
+  });
+
+  readonly tarjetaPrevia = computed(() => {
+    const { titulo, anio, generos } = this.borrador();
+    return {
+      id: this.peliculaEditadaId() ?? 0,
+      titulo: titulo?.trim() || 'Nueva película',
+      anio: anio ?? null,
+      generos: generos ?? [],
+      cartelUrl: this.cartelGuardado() ?? this.cartelEncontrado()?.cartelUrl ?? null,
+    };
+  });
+
+  readonly avisoCartel = computed(() => {
+    if (this.cartelGuardado()) return '';
+    if (!this.busquedaCartel()) return 'Introduce un título y un año válidos para buscar el cartel.';
+    const resultado = this.cartelEncontrado();
+    if (!resultado) return 'Buscando cartel…';
+    if (resultado.error) return 'No se pudo buscar el cartel.';
+    return resultado.cartelUrl ? '' : 'No se encontró un cartel.';
   });
 
   constructor() {

@@ -1,32 +1,46 @@
-<a
-  [routerLink]="['/peliculas', pelicula.id]"
-  [attr.aria-label]="'Ver detalles de ' + pelicula.titulo"
-  class="tarjeta-pelicula_enlace"
->
-  <article class="tarjeta-pelicula">
-    <div class="tarjeta-pelicula_cartel" [style.background]="fondoCartel">
-      @let cartelUrl = pelicula.cartelUrl;
-      @if (cartelUrl && cartelUrl !== cartelNoDisponible()) {
-        <img
-          class="tarjeta-pelicula_imagen"
-          [src]="cartelUrl"
-          alt=""
-          loading="lazy"
-          decoding="async"
-          (error)="cartelNoDisponible.set(cartelUrl)"
-        />
-      } @else {
+@let datos = pelicula();
+@if (vistaPrevia()) {
+  <ng-container [ngTemplateOutlet]="contenido" />
+} @else {
+  <a [routerLink]="['/peliculas', datos.id]" [attr.aria-label]="'Ver detalles de ' + datos.titulo"
+     class="tarjeta-pelicula_enlace">
+    <ng-container [ngTemplateOutlet]="contenido" />
+  </a>
+}
+
+<ng-template #contenido>
+  <article class="tarjeta-pelicula" [class.tarjeta-pelicula--previa]="vistaPrevia()">
+    <div class="tarjeta-pelicula_cartel" [style.background]="fondoCartel()">
+      @if (estadoImagen() !== 'error') {
+        @for (url of imagenes(); track url) {
+          <img
+            class="tarjeta-pelicula_imagen"
+            [class.tarjeta-pelicula_imagen--lista]="estadoImagen() === 'lista'"
+            [src]="url"
+            alt=""
+            [loading]="vistaPrevia() ? 'eager' : 'lazy'"
+            decoding="async"
+            (load)="actualizarImagen(url, 'lista')"
+            (error)="actualizarImagen(url, 'error')"
+          />
+        }
+      }
+      @if (!datos.cartelUrl || estadoImagen() === 'error' || (vistaPrevia() && estadoImagen() !== 'lista')) {
         <span class="tarjeta-pelicula_marca-agua" aria-hidden="true">CINETOWN</span>
       }
       <div class="tarjeta-pelicula_detalles">
-        <h3 class="tarjeta-pelicula_titulo">{{ pelicula.titulo }}</h3>
-        <span class="tarjeta-pelicula_anio">Año {{ pelicula.anio }}</span>
-        <ul class="tarjeta-pelicula_generos" aria-label="Géneros">
-          @for (genero of pelicula.generos; track genero) {
-            <li class="tarjeta-pelicula_genero">{{ genero }}</li>
-          }
-        </ul>
+        <h3 class="tarjeta-pelicula_titulo">{{ datos.titulo }}</h3>
+        @if (datos.anio !== null) {
+          <span class="tarjeta-pelicula_anio">Año {{ datos.anio }}</span>
+        }
+        @if (datos.generos.length) {
+          <ul class="tarjeta-pelicula_generos" aria-label="Géneros">
+            @for (genero of datos.generos; track genero) {
+              <li class="tarjeta-pelicula_genero">{{ genero }}</li>
+            }
+          </ul>
+        }
       </div>
     </div>
   </article>
-</a>
+</ng-template>

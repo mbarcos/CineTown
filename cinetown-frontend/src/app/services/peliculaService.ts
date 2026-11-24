@@ -15,6 +15,8 @@ export interface PeliculaRequest {
   generos: string[];
 }
 
+export type BusquedaCartel = Pick<PeliculaRequest, 'titulo' | 'anio' | 'sinopsis'>;
+
 export interface RecaudacionPelicula {
   peliculaId: number;
   titulo: string;
@@ -35,6 +37,9 @@ export class PeliculaService {
   }
   getPeliculasParaGestion(): Observable<PeliculaResponse[]> {
     return this.http.get<PeliculaResponse[]>(`${this.apiUrl}/peliculas/gestion`);
+  }
+  previsualizarCartel(datos: BusquedaCartel): Observable<{ cartelUrl: string | null }> {
+    return this.http.post<{ cartelUrl: string | null }>(`${this.apiUrl}/peliculas/gestion/cartel`, datos);
   }
   getGeneros(): Observable<string[]> {
     return this.http.get<string[]>(`${this.apiUrl}/generos/catalogo`);

@@ -42,11 +42,11 @@
         <p class="sinopsis">{{ p.sinopsis }}</p>
       }
 
-      <section class="sesiones" aria-labelledby="titulo-sesiones">
+      <section class="sesiones vidrio-panel" aria-labelledby="titulo-sesiones">
         <div class="sesiones_cabecera">
           <h2 id="titulo-sesiones">Próximas sesiones</h2>
           @if (sesionesPorDia().length) {
-            <a class="sesiones_ver-todas" [routerLink]="['/peliculas', p.id, 'sesiones']">
+            <a class="sesiones_ver-todas vidrio-control vidrio-primario" [routerLink]="['/peliculas', p.id, 'sesiones']">
               Ver todas las sesiones
             </a>
           }

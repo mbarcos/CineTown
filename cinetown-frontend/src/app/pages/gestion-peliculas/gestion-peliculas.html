@@ -1,13 +1,13 @@
 <main class="gestion">
   <header class="cabecera">
     <h1>Gestión de películas</h1>
-    <button #nuevaPelicula class="boton boton-primario" type="button" (click)="iniciarNuevaPelicula(nuevaPelicula)">
+    <button #nuevaPelicula class="boton vidrio-control vidrio-primario" type="button" (click)="iniciarNuevaPelicula(nuevaPelicula)">
       Nueva película
     </button>
   </header>
 
   @if (formularioVisible()) {
-    <section class="formulario-panel" aria-labelledby="titulo-formulario">
+    <section class="formulario-panel vidrio-panel" aria-labelledby="titulo-formulario">
       <h2 #tituloFormulario id="titulo-formulario" tabindex="-1">{{ peliculaEditadaId() !== null ? 'Editar película' : 'Nueva película' }}</h2>
       <form #editor [formGroup]="formulario" (ngSubmit)="guardar()">
         @let controles = formulario.controls;
@@ -19,7 +19,7 @@
           <div class="campos">
             <div class="campo campo-ancho">
               <label for="pelicula-titulo">Título</label>
-              <input id="pelicula-titulo" formControlName="titulo" required autocomplete="off"
+              <input id="pelicula-titulo" class="vidrio-campo" formControlName="titulo" required autocomplete="off"
                 [attr.aria-invalid]="tituloInvalido || null" [attr.aria-describedby]="tituloInvalido ? 'error-titulo' : null" />
               @if (tituloInvalido) {
                 <p id="error-titulo" class="error-campo">Introduce un título de hasta 255 caracteres.</p>
@@ -27,7 +27,7 @@
             </div>
             <div class="campo">
               <label for="pelicula-duracion">Duración (min)</label>
-              <input id="pelicula-duracion" type="number" formControlName="duracion" required min="1" max="300"
+              <input id="pelicula-duracion" class="vidrio-campo" type="number" formControlName="duracion" required min="1" max="300"
                 [attr.aria-invalid]="duracionInvalida || null" [attr.aria-describedby]="duracionInvalida ? 'error-duracion' : null" />
               @if (duracionInvalida) {
                 <p id="error-duracion" class="error-campo">Introduce una duración de 1 a 300 minutos.</p>
@@ -35,7 +35,7 @@
             </div>
             <div class="campo">
               <label for="pelicula-anio">Año</label>
-              <input id="pelicula-anio" type="number" formControlName="anio" required min="1888" max="2100"
+              <input id="pelicula-anio" class="vidrio-campo" type="number" formControlName="anio" required min="1888" max="2100"
                 [attr.aria-invalid]="anioInvalido || null" [attr.aria-describedby]="anioInvalido ? 'error-anio' : null" />
               @if (anioInvalido) {
                 <p id="error-anio" class="error-campo">Introduce un año entre 1888 y 2100.</p>
@@ -43,7 +43,7 @@
             </div>
             <div class="campo">
               <label for="pelicula-clasificacion">Clasificación</label>
-              <select id="pelicula-clasificacion" formControlName="clasificacion" required>
+              <select id="pelicula-clasificacion" class="vidrio-campo" formControlName="clasificacion" required>
                 <option value="TP">TP</option>
                 <option value="P7">P7</option>
                 <option value="P12">P12</option>
@@ -53,7 +53,7 @@
             </div>
             <div class="campo campo-ancho">
               <label for="pelicula-sinopsis">Sinopsis <span class="opcional">(opcional)</span></label>
-              <textarea id="pelicula-sinopsis" formControlName="sinopsis" rows="3"></textarea>
+              <textarea id="pelicula-sinopsis" class="vidrio-campo" formControlName="sinopsis" rows="3"></textarea>
             </div>
           </div>
           <fieldset class="generos" [attr.aria-describedby]="generosInvalidos ? 'error-generos' : null">
@@ -76,11 +76,16 @@
               <p id="error-generos" class="error-campo" tabindex="-1">Selecciona al menos un género para guardar la película.</p>
             }
           </fieldset>
+          <div class="vista-previa">
+            <p class="vista-previa-etiqueta">Vista previa en cartelera</p>
+            <app-pelicula-card [pelicula]="tarjetaPrevia()" [vistaPrevia]="true" />
+            <p class="ayuda" role="status">{{ avisoCartel() }}</p>
+          </div>
         </div>
         @if (mensajeError()) { <p class="error" role="alert">{{ mensajeError() }}</p> }
         <div class="acciones-formulario">
-          <button class="boton" type="button" (click)="cancelarEdicion()">Cancelar</button>
-          <button class="boton boton-primario" type="submit" [disabled]="guardando()">
+          <button class="boton vidrio-control" type="button" (click)="cancelarEdicion()">Cancelar</button>
+          <button class="boton vidrio-control vidrio-primario" type="submit" [disabled]="guardando()">
             {{ guardando() ? 'Guardando…' : 'Guardar película' }}
           </button>
         </div>
@@ -88,17 +93,17 @@
     </section>
   }
 
-  <section class="listado" aria-label="Catálogo de películas">
+  <section class="listado vidrio-panel" aria-label="Catálogo de películas">
     @let resultados = peliculasFiltradas();
     <div class="barra-herramientas">
       <div class="controles-catalogo">
         <label class="buscador">
           <span>Buscar películas</span>
-          <input #buscador type="search" placeholder="Título o género" [value]="busqueda()" (input)="actualizarBusqueda($event)" />
+          <input #buscador class="vidrio-campo" type="search" placeholder="Título o género" [value]="busqueda()" (input)="actualizarBusqueda($event)" />
         </label>
         <label class="campo">
           <span>Estado de cartelera</span>
-          <select #estadoCartelera [value]="filtroCartelera()" (change)="filtroCartelera.set(estadoCartelera.value)">
+          <select #estadoCartelera class="vidrio-campo" [value]="filtroCartelera()" (change)="filtroCartelera.set(estadoCartelera.value)">
             <option value="todas">Todas las películas</option>
             <option value="activas">En cartelera</option>
             <option value="inactivas">Fuera de cartelera</option>
@@ -148,7 +153,7 @@
               </td>
               <td role="cell" class="columna-acciones">
                 <div class="acciones">
-                  <button #editarPelicula class="boton" type="button" [attr.aria-label]="'Editar ' + pelicula.titulo"
+                  <button #editarPelicula class="boton vidrio-control" type="button" [attr.aria-label]="'Editar ' + pelicula.titulo"
                     (click)="editar(pelicula, editarPelicula)">Editar</button>
                   <button #cambiarEstado class="accion-texto" type="button" [attr.aria-label]="accionCartelera + ': ' + pelicula.titulo"
                     (click)="cambiarCartelera(pelicula, cambiarEstado)">{{ accionCartelera }}</button>

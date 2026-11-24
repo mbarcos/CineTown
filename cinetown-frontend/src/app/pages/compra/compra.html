@@ -18,7 +18,7 @@
   </header>
 
   @if (compraRealizada(); as compra) {
-    <section class="panel confirmacion" aria-labelledby="titulo-confirmacion">
+    <section class="vidrio-panel panel confirmacion" aria-labelledby="titulo-confirmacion">
       <h2 class="text-18 font-semibold" id="titulo-confirmacion">Detalles de la compra</h2>
       <dl>
         <div class="linea">
@@ -37,20 +37,20 @@
       <p class="mt-4 text-14 text-texto-secundario">Enviaremos los detalles a {{ correoConfirmacion() }}. Guarda también el código de compra por si el correo tarda en llegar.</p>
     </section>
   } @else if (cargandoSesion()) {
-    <p class="panel estado" role="status">Cargando sesión…</p>
+    <p class="vidrio-panel panel estado" role="status">Cargando sesión…</p>
   } @else if (!sesion()) {
-    <div class="panel estado" role="alert">
+    <div class="vidrio-panel panel estado" role="alert">
       <h2 class="text-18 font-semibold">No se pudo cargar la sesión</h2>
       <p class="mt-2 text-texto-secundario">Vuelve a la cartelera para consultar las sesiones disponibles.</p>
     </div>
   } @else if (!maxEntradas()) {
-    <div class="panel estado" role="status">
+    <div class="vidrio-panel panel estado" role="status">
       <h2 class="text-18 font-semibold">Entradas agotadas</h2>
       <p class="mt-2 text-texto-secundario">Consulta otros horarios en la cartelera.</p>
     </div>
   } @else {
     <form class="compra-layout" aria-label="Compra de entradas" (submit)="confirmarCompra($event, correo)" novalidate>
-      <div class="panel">
+      <div class="vidrio-panel panel">
         <section class="bloque" aria-labelledby="titulo-entradas">
           <h2 class="text-18 font-semibold" id="titulo-entradas">Entradas</h2>
           <div class="cantidad">
@@ -60,7 +60,7 @@
             </div>
             <div class="selector" role="group" aria-labelledby="etiqueta-cantidad" aria-describedby="limite-entradas">
               <button
-                class="control touch-manipulation aria-[disabled=false]:cursor-pointer"
+                class="control vidrio-control touch-manipulation aria-[disabled=false]:cursor-pointer"
                 type="button"
                 aria-label="Quitar una entrada"
                 [attr.aria-disabled]="enviando() || cantidad() <= 1"
@@ -68,7 +68,7 @@
               >−</button>
               <span class="numero" aria-hidden="true">{{ cantidad() }}</span>
               <button
-                class="control touch-manipulation aria-[disabled=false]:cursor-pointer"
+                class="control vidrio-control touch-manipulation aria-[disabled=false]:cursor-pointer"
                 type="button"
                 aria-label="Añadir una entrada"
                 [attr.aria-disabled]="enviando() || cantidad() >= maxEntradas()"
@@ -82,7 +82,7 @@
           <h2 class="text-18 font-semibold" id="titulo-contacto">Contacto</h2>
           <p class="mt-2 text-14 text-texto-secundario">Te enviaremos la confirmación y el código de compra a este correo.</p>
           <label class="mt-4 block text-14 font-medium" for="correo-compra">Correo electrónico</label>
-          <input
+          <input class="vidrio-campo"
             #correo
             id="correo-compra"
             type="email"
@@ -97,7 +97,7 @@
         </section>
       </div>
 
-      <section class="panel resumen" aria-labelledby="titulo-resumen">
+      <section class="vidrio-panel panel resumen" aria-labelledby="titulo-resumen">
         <h2 class="text-18 font-semibold" id="titulo-resumen">Resumen de compra</h2>
         <dl class="desglose" aria-live="polite" aria-atomic="true">
           <div class="linea">
@@ -112,7 +112,7 @@
         @if (errorCompra(); as error) {
           <p class="mensaje-error mt-4" role="alert">{{ error }}</p>
         }
-        <button class="btn-primary confirmar touch-manipulation aria-[disabled=false]:cursor-pointer motion-reduce:transition-none" type="submit" [attr.aria-disabled]="enviando()">
+        <button class="btn-primary confirmar touch-manipulation aria-[disabled=false]:cursor-pointer" type="submit" [attr.aria-disabled]="enviando()">
           {{ enviando() ? 'Confirmando compra…' : 'Confirmar compra' }}
         </button>
         <span class="sr-only" role="status">{{ enviando() ? 'Confirmando compra…' : '' }}</span>

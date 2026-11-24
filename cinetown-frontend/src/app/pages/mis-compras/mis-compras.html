@@ -6,7 +6,7 @@
   <div class="aviso aviso-carga">
     <p class="texto-error" role="alert">{{ error() }}</p>
     @if (error()) {
-      <button class="accion" type="button" [disabled]="compraCancelando() !== null" (click)="reintentarCarga()">
+      <button class="accion vidrio-control" type="button" [disabled]="compraCancelando() !== null" (click)="reintentarCarga()">
         Volver a cargar
       </button>
     }
@@ -22,16 +22,16 @@
   </p>
 
   @if (cargando()) {
-    <p class="estado" aria-hidden="true">Cargando compras…</p>
+    <p class="estado vidrio-panel" aria-hidden="true">Cargando compras…</p>
   } @else if (!compras().length && !error()) {
-    <section class="estado" aria-labelledby="titulo-vacio">
+    <section class="estado vidrio-panel" aria-labelledby="titulo-vacio">
       <h2 id="titulo-vacio">Aún no hay compras</h2>
       @if (!esPersonal()) {
         <p>Tus entradas y sus detalles aparecerán aquí después de comprar.</p>
       }
     </section>
   } @else if (compras().length > 0) {
-    <section class="historial" aria-label="Historial de compras">
+    <section class="historial vidrio-panel" aria-label="Historial de compras">
       <div class="columnas" aria-hidden="true">
         <span>Sesión</span>
         <span>Película y entradas</span>
@@ -69,15 +69,15 @@
               }
 
               @if (confirmando) {
-                <div class="confirmacion" role="group"
+                <div class="confirmacion vidrio-superficie" role="group"
                   [id]="'confirmar-' + compra.codCompra"
                   [attr.aria-labelledby]="'pregunta-' + compra.codCompra"
                   (keydown.escape)="conservarCompra()">
                   <p [id]="'pregunta-' + compra.codCompra">¿Cancelar la compra {{ compra.codCompra }}?</p>
                   <div class="confirmacion-acciones">
-                    <button #conservar class="accion" type="button" [disabled]="compraCancelando() !== null"
+                    <button #conservar class="accion vidrio-control" type="button" [disabled]="compraCancelando() !== null"
                       (click)="conservarCompra()">Conservar compra</button>
-                    <button class="accion accion-peligro" type="button" [attr.aria-disabled]="compraCancelando() !== null"
+                    <button class="accion accion-peligro vidrio-control vidrio-primario" type="button" [attr.aria-disabled]="compraCancelando() !== null"
                       (click)="cancelarCompra(compra)">
                       {{ compraCancelando() === compra.codCompra ? 'Cancelando…' : 'Confirmar cancelación' }}
                     </button>
@@ -95,9 +95,9 @@
         @if (totalPaginas() > 1) {
           <nav class="paginacion" aria-label="Páginas de compras">
             <span>Página {{ pagina() + 1 }} de {{ totalPaginas() }}</span>
-            <button type="button" class="accion" [disabled]="pagina() === 0 || compraCancelando() !== null"
+            <button type="button" class="accion vidrio-control" [disabled]="pagina() === 0 || compraCancelando() !== null"
               (click)="cambiarPagina(-1)">Anterior</button>
-            <button type="button" class="accion" [disabled]="pagina() + 1 >= totalPaginas() || compraCancelando() !== null"
+            <button type="button" class="accion vidrio-control" [disabled]="pagina() + 1 >= totalPaginas() || compraCancelando() !== null"
               (click)="cambiarPagina(1)">Siguiente</button>
           </nav>
         }

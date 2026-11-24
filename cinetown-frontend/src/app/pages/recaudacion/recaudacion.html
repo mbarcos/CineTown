@@ -1,13 +1,12 @@
 <main class="pagina-recaudacion">
   <header class="cabecera">
     <div>
-      <p class="sobretitulo">CINETOWN · INFORMES</p>
       <h1>Recaudación por película</h1>
       <p class="descripcion">Consulta las entradas vendidas y los ingresos de cada película.</p>
     </div>
     <label class="selector-pelicula">
       <span>Película</span>
-      <select [value]="peliculaId() ?? ''" (change)="seleccionarPelicula($event)" [disabled]="cargandoPeliculas() || peliculas().length === 0">
+      <select class="vidrio-campo" [value]="peliculaId() ?? ''" (change)="seleccionarPelicula($event)" [disabled]="cargandoPeliculas() || peliculas().length === 0">
         <option value="" disabled>Selecciona una película</option>
         @for (pelicula of peliculas(); track pelicula.id) {
           <option [value]="pelicula.id">{{ pelicula.titulo }}</option>
@@ -17,48 +16,40 @@
   </header>
 
   @if (error()) {
-    <div class="aviso aviso-error" role="alert">
+    <div class="aviso vidrio-superficie" role="alert">
       <span>{{ error() }}</span>
       @if (peliculaId() !== null) {
-        <button type="button" (click)="cargarRecaudacion()">Reintentar</button>
+        <button class="vidrio-control" type="button" (click)="cargarRecaudacion()">Reintentar</button>
       } @else {
-        <button type="button" (click)="cargarPeliculas()">Reintentar</button>
+        <button class="vidrio-control" type="button" (click)="cargarPeliculas()">Reintentar</button>
       }
     </div>
   }
 
   @if (cargandoPeliculas() || cargandoRecaudacion()) {
-    <section class="estado" role="status">
+    <section class="estado vidrio-panel" role="status">
       <span class="indicador-carga" aria-hidden="true"></span>
       {{ cargandoPeliculas() ? 'Cargando películas…' : 'Consultando recaudación…' }}
     </section>
   } @else if (peliculas().length === 0 && !error()) {
-    <section class="vacio">
-      <span class="icono-vacio" aria-hidden="true">▤</span>
+    <section class="vacio vidrio-panel">
       <h2>No hay películas disponibles</h2>
       <p>Cuando se registren películas, podrás consultar sus cifras aquí.</p>
     </section>
   } @else if (recaudacion(); as datos) {
-    <section class="informe" aria-label="Resultados de recaudación">
+    <section class="informe vidrio-panel" aria-label="Resultados de recaudación">
       <div class="resumen-pelicula">
-        <span class="etiqueta">PELÍCULA SELECCIONADA</span>
         <h2>{{ datos.titulo }}</h2>
         <span class="id-pelicula">ID {{ datos.peliculaId }}</span>
       </div>
       <div class="metricas">
-        <article class="metrica metrica-principal">
-          <span class="metrica-icono" aria-hidden="true">€</span>
-          <div>
-            <p>Recaudación total</p>
-            <strong>{{ dinero(datos.recaudacionTotal) }}</strong>
-          </div>
+        <article class="metrica metrica-principal vidrio-superficie">
+          <p>Recaudación total</p>
+          <strong>{{ dinero(datos.recaudacionTotal) }}</strong>
         </article>
-        <article class="metrica">
-          <span class="metrica-icono entradas-icono" aria-hidden="true">▣</span>
-          <div>
-            <p>Entradas vendidas</p>
-            <strong>{{ datos.entradasVendidas.toLocaleString('es-ES') }}</strong>
-          </div>
+        <article class="metrica vidrio-superficie">
+          <p>Entradas vendidas</p>
+          <strong>{{ datos.entradasVendidas.toLocaleString('es-ES') }}</strong>
         </article>
       </div>
       <p class="nota">El total considera únicamente compras activas.</p>

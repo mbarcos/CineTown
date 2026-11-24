@@ -2,8 +2,7 @@
 
 :host {
   display: block;
-  --divisor: color-mix(in srgb, var(--color-texto) 16%, var(--color-fondo));
-  --borde-control: color-mix(in srgb, var(--color-texto-secundario) 66%, var(--color-superficie));
+  --divisor: rgb(255 255 255 / 11%);
   --texto-error: color-mix(in srgb, theme(--color-error) 55%, var(--color-texto));
   --texto-exito: color-mix(in srgb, theme(--color-exito) 70%, var(--color-texto));
 }
@@ -42,30 +41,15 @@ h2 {
   min-height: 2.75rem;
   font-size: var(--text-14);
   font-weight: 550;
-  cursor: pointer;
   touch-action: manipulation;
 }
 
 .boton {
-  border: 1px solid var(--borde-control);
-  border-radius: 0.5rem;
   padding: 0.5rem 0.875rem;
   color: var(--color-texto);
 }
 
-.boton-primario {
-  border-color: transparent;
-  background-color: var(--color-primario);
-}
-
-.boton:disabled { opacity: 0.55; cursor: not-allowed; }
-.boton:active:enabled { background-color: theme(--color-superficie-2); }
-.boton-primario:active:enabled { background-color: var(--color-primario-hover); }
-
-.listado {
-  border: 1px solid var(--divisor);
-  border-radius: 0.75rem;
-}
+.boton:enabled, .accion-texto { cursor: pointer; }
 
 .barra-herramientas {
   display: flex;
@@ -73,9 +57,7 @@ h2 {
   align-items: end;
   justify-content: space-between;
   gap: 0.5rem 1.5rem;
-  border-radius: 0.75rem 0.75rem 0 0;
   padding: 1rem clamp(0.875rem, 2vw, 1.5rem);
-  background: var(--color-superficie);
 }
 
 .controles-catalogo {
@@ -106,17 +88,11 @@ input:not([type='checkbox']), select, textarea {
   width: 100%;
   min-width: 0;
   min-height: 2.75rem;
-  border: 1px solid var(--borde-control);
-  border-radius: 0.5rem;
   padding: 0.5rem 0.75rem;
-  background: var(--color-fondo);
   color: var(--color-texto);
   font-size: var(--text-16);
   font-weight: 400;
 }
-
-input::placeholder { color: var(--color-texto-secundario); }
-input[aria-invalid='true'] { border-color: var(--texto-error); }
 
 .contador, .estado, thead, td, .anio, .ayuda, .opcional, .accion-texto {
   color: var(--color-texto-secundario);
@@ -135,7 +111,7 @@ table {
 }
 
 tr { border-block-start: 1px solid var(--divisor); }
-thead { background: var(--color-superficie); }
+thead { background: var(--vidrio-franja); }
 
 th, td {
   padding: 0.75rem clamp(0.875rem, 1.6vw, 1.25rem);
@@ -172,11 +148,10 @@ thead th { font-weight: 600; }
 }
 
 .accion-texto:active { color: var(--color-texto); }
-tbody tr:has(:focus-visible) { background: var(--color-superficie); }
+tbody tr:has(:focus-visible) { background: var(--vidrio-fila); }
 
 @media (hover: hover) and (pointer: fine) {
-  .boton:hover:enabled { background-color: theme(--color-superficie-2); }
-  .boton-primario:hover:enabled { background-color: var(--color-primario-hover); }
+  tbody tr:hover { background: var(--vidrio-fila); }
   .accion-texto:hover { color: var(--color-texto); }
 }
 
@@ -196,10 +171,7 @@ tbody tr:has(:focus-visible) { background: var(--color-superficie); }
 
 .formulario-panel {
   margin-block-end: 1.75rem;
-  border: 1px solid var(--divisor);
-  border-radius: 0.75rem;
   padding: clamp(1rem, 2.5vw, 1.5rem);
-  background: var(--color-superficie);
 }
 
 .contenido-formulario, .campos {
@@ -208,9 +180,17 @@ tbody tr:has(:focus-visible) { background: var(--color-superficie); }
 }
 
 .contenido-formulario {
-  grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr);
-  gap: 1.5rem clamp(1.25rem, 3vw, 2.5rem);
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) minmax(10rem, 13rem);
+  gap: 1.5rem clamp(1rem, 2vw, 2rem);
 }
+
+.vista-previa {
+  display: grid;
+  gap: 0.5rem;
+  width: min(100%, 13rem);
+}
+
+.vista-previa-etiqueta { font-size: var(--text-14); font-weight: 550; }
 
 .campos {
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -265,6 +245,11 @@ textarea { resize: vertical; }
   margin-block-start: 1.25rem;
   border-block-start: 1px solid var(--divisor);
   padding-block-start: 1rem;
+}
+
+@media (50rem < width <= 62rem) {
+  .contenido-formulario { grid-template-columns: minmax(0, 1fr) minmax(10rem, 13rem); }
+  .vista-previa { grid-area: 1 / 2 / span 2; }
 }
 
 @media (width <= 50rem) {

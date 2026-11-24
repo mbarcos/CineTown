@@ -28,13 +28,13 @@
     }
 
     @if (estadoCarga() === 'cargando') {
-      <div class="cartelera_estado" role="status">
+      <div class="cartelera_estado vidrio-panel" role="status">
         <p>Cargando películas…</p>
       </div>
     } @else if (estadoCarga() === 'error') {
-      <div class="cartelera_estado" role="alert">
+      <div class="cartelera_estado vidrio-panel" role="alert">
         <p>No se pudo cargar la cartelera. Comprueba la conexión e inténtalo de nuevo.</p>
-        <button class="cartelera_reintentar" type="button" (click)="reintentarCarga()">
+        <button class="cartelera_reintentar vidrio-control" type="button" (click)="reintentarCarga()">
           Intentar de nuevo
         </button>
       </div>
@@ -45,10 +45,10 @@
         }
       </ul>
     } @else {
-      <div class="cartelera_estado" role="status">
+      <div class="cartelera_estado vidrio-panel" role="status">
         @if (generoSeleccionado()) {
           <p>No hay películas disponibles del género seleccionado.</p>
-          <button class="cartelera_reintentar" type="button" (click)="generoSeleccionado.set(null)">
+          <button class="cartelera_reintentar vidrio-control" type="button" (click)="generoSeleccionado.set(null)">
             Ver todas las películas
           </button>
         } @else {
