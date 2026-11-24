@@ -50,8 +50,7 @@
 }
 
 .encabezado_enlace,
-.encabezado_cuenta,
-.encabezado_boton {
+.encabezado_cuenta {
   display: inline-flex;
   min-height: 44px;
   align-items: center;
@@ -59,6 +58,10 @@
   font-size: var(--text-14);
   text-decoration: none;
   touch-action: manipulation;
+
+  &:focus-visible {
+    color: var(--color-texto);
+  }
 
   @media (hover: hover) and (pointer: fine) {
     &:hover {
@@ -81,16 +84,15 @@
   margin-inline-start: auto;
 }
 
-.encabezado_cuenta,
-.encabezado_boton {
-  border-radius: 999px;
-  padding-inline: 0.75rem;
+.encabezado_cuenta {
+  min-inline-size: 44px;
   color: var(--color-texto);
   white-space: nowrap;
-}
-
-.encabezado_boton {
   cursor: pointer;
+
+  &:active {
+    color: var(--color-texto-secundario);
+  }
 }
 
 .encabezado_usuario {
@@ -118,10 +120,6 @@
   .encabezado_enlaces {
     gap: 0 0.75rem;
   }
-
-  .encabezado_cuenta {
-    padding-inline: 0.625rem;
-  }
 }
 
 @media (max-width: 21rem) {
@@ -136,12 +134,7 @@
   }
 
   .encabezado_enlace,
-  .encabezado_cuenta,
-  .encabezado_boton {
-    font-size: 0.8125rem;
-  }
-
   .encabezado_cuenta {
-    padding-inline: 0.5rem;
+    font-size: 0.8125rem;
   }
 }
