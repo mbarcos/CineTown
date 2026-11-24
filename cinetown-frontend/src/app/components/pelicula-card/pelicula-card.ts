@@ -1,6 +1,6 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, signal } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { obtienePeliculasDto } from '../../models/dto/peliculaDTO';
-import {RouterLink} from '@angular/router';
 import { obtenerFondoPoster } from '../../shared/utils/pelicula-poster';
 
 @Component({
@@ -15,7 +15,9 @@ import { obtenerFondoPoster } from '../../shared/utils/pelicula-poster';
 export class PeliculaCardComponent {
   @Input({ required: true }) pelicula!: obtienePeliculasDto;
 
-  get posterBackground(): string {
-    return obtenerFondoPoster(this.pelicula?.id ?? 0);
+  protected readonly cartelNoDisponible = signal<string | null>(null);
+
+  protected get fondoCartel(): string {
+    return obtenerFondoPoster(this.pelicula.id);
   }
 }

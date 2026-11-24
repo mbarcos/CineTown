@@ -8,5 +8,6 @@ export interface obtienePeliculasDto {
   anio: number,
   clasificacion: ClasificacionEdad,
   activo: boolean,
-  generos: string[]
+  generos: string[],
+  cartelUrl: string | null
 }

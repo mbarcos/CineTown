@@ -4,8 +4,20 @@
   class="tarjeta-pelicula_enlace"
 >
   <article class="tarjeta-pelicula">
-    <div class="tarjeta-pelicula_cartel" [style.background]="posterBackground">
-      <span class="tarjeta-pelicula_marca-agua" aria-hidden="true">CINETOWN</span>
+    <div class="tarjeta-pelicula_cartel" [style.background]="fondoCartel">
+      @let cartelUrl = pelicula.cartelUrl;
+      @if (cartelUrl && cartelUrl !== cartelNoDisponible()) {
+        <img
+          class="tarjeta-pelicula_imagen"
+          [src]="cartelUrl"
+          alt=""
+          loading="lazy"
+          decoding="async"
+          (error)="cartelNoDisponible.set(cartelUrl)"
+        />
+      } @else {
+        <span class="tarjeta-pelicula_marca-agua" aria-hidden="true">CINETOWN</span>
+      }
       <div class="tarjeta-pelicula_detalles">
         <h3 class="tarjeta-pelicula_titulo">{{ pelicula.titulo }}</h3>
         <span class="tarjeta-pelicula_anio">Año {{ pelicula.anio }}</span>

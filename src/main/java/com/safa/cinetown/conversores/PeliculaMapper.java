@@ -20,11 +20,13 @@ public interface PeliculaMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "activo", ignore = true)
     @Mapping(target = "generos", ignore = true)
+    @Mapping(target = "cartelUrl", ignore = true)
     Pelicula aEntidad(PeliculaRequest dto);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "activo", ignore = true)
     @Mapping(target = "generos", ignore = true)
+    @Mapping(target = "cartelUrl", ignore = true)
     void actualizarEntidad(PeliculaRequest dto, @MappingTarget Pelicula pelicula);
 
     @AfterMapping

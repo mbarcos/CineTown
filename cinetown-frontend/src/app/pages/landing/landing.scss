@@ -2,6 +2,17 @@
   color: var(--color-texto);
 }
 
+.creditos-cartelera {
+  padding: 0 20px 32px;
+  color: var(--color-texto-secundario);
+  font-size: var(--text-12);
+  text-align: center;
+
+  p {
+    margin: 8px 0 0;
+  }
+}
+
 .salto-contenido {
   position: fixed;
   z-index: 20;

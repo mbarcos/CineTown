@@ -32,13 +32,15 @@ class PeliculaControllerTest {
 
     @Test
     void consultaPeliculasActivasConSusGeneros() throws Exception {
+        String cartelUrl = "https://image.tmdb.org/t/p/w500/cartel.jpg";
         when(service.consultarTodasPeliculasActivas()).thenReturn(List.of(new PeliculaResponse(
                 1, "Película de prueba", "Sinopsis", 120, 2025,
-                ClasificacionEdad.P12, true, Set.of("Drama", "Comedia"))));
+                ClasificacionEdad.P12, true, Set.of("Drama", "Comedia"), cartelUrl)));
 
         mockMvc.perform(get("/peliculas"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].titulo").value("Película de prueba"))
+                .andExpect(jsonPath("$[0].cartelUrl").value(cartelUrl))
                 .andExpect(jsonPath("$[0].activo").value(true))
                 .andExpect(jsonPath("$[0].generos.length()").value(2))
                 .andExpect(jsonPath("$[0].generos").isArray());
@@ -50,7 +52,7 @@ class PeliculaControllerTest {
     void consultaUnaPeliculaPorId() throws Exception {
         when(service.consultarPeliculaPorId(1)).thenReturn(new PeliculaResponse(
                 1, "Película de prueba", "Sinopsis", 120, 2025,
-                ClasificacionEdad.P12, true, Set.of("Drama")));
+                ClasificacionEdad.P12, true, Set.of("Drama"), null));
 
         mockMvc.perform(get("/peliculas/1"))
                 .andExpect(status().isOk())

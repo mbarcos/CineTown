@@ -38,6 +38,9 @@ public class Pelicula {
     @Column(nullable = false)
     private Boolean activo = true;
 
+    @Column(name = "cartel_url")
+    private String cartelUrl;
+
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "pelicula_genero",

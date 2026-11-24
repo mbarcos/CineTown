@@ -12,6 +12,7 @@ public record PeliculaResponse(
         Integer anio,
         ClasificacionEdad clasificacion,
         Boolean activo,
-        Set<String> generos
+        Set<String> generos,
+        String cartelUrl
 ) {
 }

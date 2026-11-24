@@ -8,7 +8,7 @@ Necesitas Docker con el plugin Compose. Prepara la configuración local y edita 
 cp .env_example .env
 ```
 
-El esquema de PostgreSQL y los datos de prueba se crean automáticamente cuando se inicializa un volumen de datos vacío. Compose ejecuta `ScriptsSQL/CrearBDcine - Máximo Barcos.sql` primero y `ScriptsSQL/Cargar_datos.sql` después. Los scripts de inicialización de PostgreSQL solo se ejecutan cuando el volumen de datos está vacío.
+El esquema de PostgreSQL y los datos de prueba se crean automáticamente cuando se inicializa un volumen de datos vacío. Compose ejecuta `ScriptsSQL/CrearBDcine - Máximo Barcos.sql`, `ScriptsSQL/Cargar_datos.sql` y `ScriptsSQL/Agregar_carteles_cartelera.sql` en ese orden. Los scripts de inicialización de PostgreSQL solo se ejecutan cuando el volumen de datos está vacío.
 
 Arranca todos los servicios desde la raíz del proyecto:
 
@@ -21,6 +21,17 @@ docker compose up --build
 - PostgreSQL: `localhost:5432`
 
 El backend usa el esquema `cine` y espera que sus tablas ya existan (`ddl-auto=validate`). Para detener los servicios, ejecuta `docker compose down`; los datos siguen guardados en el volumen `postgres_data`. Para borrar también la base persistida y volver a cargar el esquema y los datos de prueba, ejecuta `docker compose down -v`.
+
+## Carteles de la cartelera
+
+Para actualizar una base existente, ejecuta `ScriptsSQL/Agregar_carteles_cartelera.sql` antes de arrancar el backend actualizado. Con Docker Compose, desde la raíz del proyecto:
+
+```bash
+docker compose up -d db
+docker compose exec -T db sh -c 'psql -v ON_ERROR_STOP=1 -U "$POSTGRES_USER" -d "$POSTGRES_DB"' < ScriptsSQL/Agregar_carteles_cartelera.sql
+```
+
+El script guarda las URLs de TMDB de las películas activas identificadas por título y año y se puede volver a ejecutar. Si recargas los datos de ejemplo, ejecútalo después de `Cargar_datos.sql`. La cartelera lee las URLs desde CineTown y el navegador carga los carteles desde el CDN de TMDB.
 
 ## Correo de confirmación
 

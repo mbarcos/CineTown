@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 import { of } from 'rxjs';
 import { obtienePeliculasDto } from '../../models/dto/peliculaDTO';
 import { ClasificacionEdad } from '../../models/enums';
@@ -18,6 +19,7 @@ describe('Landing', () => {
       clasificacion: ClasificacionEdad.TP,
       activo: true,
       generos: ['Acción', 'Drama'],
+      cartelUrl: 'https://image.tmdb.org/t/p/w500/cartel.jpg',
     },
     {
       id: 2,
@@ -28,6 +30,7 @@ describe('Landing', () => {
       clasificacion: ClasificacionEdad.TP,
       activo: true,
       generos: ['Comedia'],
+      cartelUrl: null,
     },
   ];
 
@@ -35,6 +38,7 @@ describe('Landing', () => {
     await TestBed.configureTestingModule({
       imports: [Landing],
       providers: [
+        provideRouter([]),
         {
           provide: PeliculaService,
           useValue: { getPeliculas: () => of(peliculas) },
@@ -50,6 +54,21 @@ describe('Landing', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('shows the stored poster and keeps the fallback if the image fails', () => {
+    const tarjetas = (fixture.nativeElement as HTMLElement).querySelectorAll('app-pelicula-card');
+    const cartel = tarjetas[0].querySelector('img')!;
+
+    expect(cartel.getAttribute('src')).toBe(peliculas[0].cartelUrl);
+    expect(tarjetas[1].querySelector('img')).toBeNull();
+    expect(tarjetas[1].textContent).toContain('CINETOWN');
+
+    cartel.dispatchEvent(new Event('error'));
+    fixture.detectChanges();
+
+    expect(tarjetas[0].querySelector('img')).toBeNull();
+    expect(tarjetas[0].textContent).toContain('CINETOWN');
   });
 
   it('filters movies by genre and returns to all movies', () => {
