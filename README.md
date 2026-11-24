@@ -33,6 +33,10 @@ docker compose exec -T db sh -c 'psql -v ON_ERROR_STOP=1 -U "$POSTGRES_USER" -d 
 
 El script guarda las URLs de TMDB de las películas activas identificadas por título y año y se puede volver a ejecutar. Si recargas los datos de ejemplo, ejecútalo después de `Cargar_datos.sql`. La cartelera lee las URLs desde CineTown y el navegador carga los carteles desde el CDN de TMDB.
 
+Para obtener carteles automáticamente, configura el **API Read Access Token** como `TMDB_API_TOKEN` o la **clave API v3** como `TMDB_API_KEY` en `config.properties` o en `.env` si usas Docker Compose. Si configuras ambos, CineTown usa el token de lectura. Reinicia el backend para cargar la configuración. Con Compose, ejecuta `docker compose up -d --build backend`. [Configuración de la API en TMDB](https://www.themoviedb.org/settings/api)
+
+El backend busca por título y año de estreno al dar de alta una película o al poner en cartelera una que aún no tiene cartel. Si hay varias coincidencias, usa la sinopsis para identificar una sola. Si falta la credencial, la búsqueda falla o la identidad sigue siendo ambigua, el alta o la activación se completan y la cartelera muestra su fondo habitual.
+
 ## Correo de confirmación
 
 Para ejecutar el backend localmente, configura `MAIL_HOST`, `MAIL_PORT`, `MAIL_USERNAME`, `MAIL_PASSWORD` y `MAIL_FROM` en `config.properties` (cargado desde la raíz del proyecto). Si lo ejecutas con Docker Compose, configura esas mismas variables en `.env`. Ambos archivos están ignorados por Git. `MAIL_FROM` debe ser una dirección autorizada para esa cuenta. El backend usa SMTP autenticado con STARTTLS y envía al correo indicado en el formulario un resumen con el código de compra después de confirmar la transacción. Si SMTP falla, la compra permanece confirmada y el fallo se registra en los logs del backend; el código también se muestra en pantalla. No repitas una compra confirmada para intentar reenviar el mensaje.

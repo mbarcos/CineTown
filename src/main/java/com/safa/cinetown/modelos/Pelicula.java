@@ -38,7 +38,7 @@ public class Pelicula {
     @Column(nullable = false)
     private Boolean activo = true;
 
-    @Column(name = "cartel_url")
+    @Column(name = "cartel_url", updatable = false)
     private String cartelUrl;
 
     @ManyToMany(fetch = FetchType.LAZY)

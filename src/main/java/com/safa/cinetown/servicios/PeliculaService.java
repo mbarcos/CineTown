@@ -5,6 +5,7 @@ import com.safa.cinetown.dtos.PeliculaResponse;
 import com.safa.cinetown.dtos.RecaudacionPelicula;
 import com.safa.cinetown.dtos.request.PeliculaRequest;
 import com.safa.cinetown.excepciones.RecursoNoEncontradoException;
+import com.safa.cinetown.integraciones.tmdb.TmdbClient;
 import com.safa.cinetown.modelos.Genero;
 import com.safa.cinetown.modelos.Pelicula;
 import com.safa.cinetown.repositorios.IGeneroRepository;
@@ -14,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.validation.annotation.Validated;
 
 import java.util.HashSet;
@@ -31,6 +33,8 @@ public class PeliculaService {
     private final IPeliculaRepository repository;
     private final PeliculaMapper mapper;
     private final IGeneroRepository generoRepository;
+    private final TmdbClient tmdbClient;
+    private final TransactionTemplate transactionTemplate;
 
     @Transactional(readOnly = true)
     public List<PeliculaResponse> consultarTodasPeliculas() {
@@ -55,15 +59,16 @@ public class PeliculaService {
                 .orElseThrow(() -> new RecursoNoEncontradoException(PELICULA_NO_ENCONTRADA));
     }
 
-    @Transactional
     public PeliculaResponse crearPelicula(@Valid PeliculaRequest dto) {
-        List<Genero> generos = buscarGeneros(dto.generos());
+        String cartelUrl = tmdbClient.buscarCartel(dto.titulo(), dto.anio(), dto.sinopsis()).orElse(null);
         Pelicula pelicula = mapper.aEntidad(dto);
         pelicula.setActivo(dto.activo() == null || dto.activo());
-        pelicula.setGeneros(new HashSet<>(generos));
+        pelicula.setCartelUrl(cartelUrl);
 
-        Pelicula guardada = repository.save(pelicula);
-        return mapper.toResponse(guardada);
+        return transactionTemplate.execute(status -> {
+            pelicula.setGeneros(new HashSet<>(buscarGeneros(dto.generos())));
+            return mapper.toResponse(repository.save(pelicula));
+        });
     }
 
     @Transactional
@@ -79,14 +84,22 @@ public class PeliculaService {
         return mapper.toResponse(guardada);
     }
 
-    @Transactional
     public void cambiarEstadoCartelera(Integer id) {
-        Pelicula pelicula = repository.findById(id)
-                .orElseThrow(() -> new RecursoNoEncontradoException(PELICULA_NO_ENCONTRADA));
+        Pelicula pelicula = transactionTemplate.execute(status -> {
+            Pelicula encontrada = repository.findByIdParaCambiarCartelera(id)
+                    .orElseThrow(() -> new RecursoNoEncontradoException(PELICULA_NO_ENCONTRADA));
+            encontrada.setActivo(!Boolean.TRUE.equals(encontrada.getActivo()));
+            return encontrada;
+        });
 
-        pelicula.setActivo(!Boolean.TRUE.equals(pelicula.getActivo()));
-        repository.save(pelicula);
         log.info("Estado de cartelera modificado: id={} activo={}", id, pelicula.getActivo());
+        String cartelGuardado = pelicula.getCartelUrl();
+        if (Boolean.TRUE.equals(pelicula.getActivo())
+                && (cartelGuardado == null || cartelGuardado.trim().isEmpty())) {
+            tmdbClient.buscarCartel(pelicula.getTitulo(), pelicula.getAnio(), pelicula.getSinopsis())
+                    .ifPresent(cartelUrl -> repository.guardarCartelSiFalta(
+                            id, pelicula.getTitulo(), pelicula.getAnio(), pelicula.getSinopsis(), cartelUrl));
+        }
     }
 
     private List<Genero> buscarGeneros(Set<String> nombresGeneros) {
