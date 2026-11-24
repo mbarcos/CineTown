@@ -6,11 +6,20 @@
       [style.background]="fondoPoster(p.id)"
       aria-hidden="true"
     >
-      <span class="poster_marca">CINETOWN</span>
-      <div class="poster_detalles">
-        <span class="poster_titulo">{{ p.titulo }}</span>
-        <span>{{ p.anio }}</span>
-      </div>
+      @if (p.cartelUrl && p.cartelUrl !== cartelNoDisponible()) {
+        <img
+          class="poster_imagen"
+          [src]="p.cartelUrl"
+          alt=""
+          (error)="cartelNoDisponible.set(p.cartelUrl)"
+        />
+      } @else {
+        <span class="poster_marca">CINETOWN</span>
+        <div class="poster_detalles">
+          <span class="poster_titulo">{{ p.titulo }}</span>
+          <span>{{ p.anio }}</span>
+        </div>
+      }
     </aside>
 
     <section class="contenido" [attr.aria-labelledby]="'titulo-pelicula-' + p.id">

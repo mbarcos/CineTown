@@ -38,6 +38,14 @@
   }
 }
 
+.poster_imagen {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
 .poster_marca {
   align-self: flex-end;
   color: rgb(255 255 255 / 70%);

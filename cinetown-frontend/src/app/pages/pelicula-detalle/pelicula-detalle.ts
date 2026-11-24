@@ -1,4 +1,4 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
 import { RouterLink } from '@angular/router';
@@ -36,6 +36,7 @@ export class PeliculaDetalle {
   private readonly route = inject(ActivatedRoute);
   private readonly peliculaService = inject(PeliculaService);
   private readonly sesionService = inject(SesionService);
+  protected readonly cartelNoDisponible = signal<string | null>(null);
 
   private readonly fechaHoraActualMadrid = new Intl.DateTimeFormat('en-GB', {
     timeZone: 'Europe/Madrid',

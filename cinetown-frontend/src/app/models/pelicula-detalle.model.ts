@@ -9,4 +9,5 @@ export interface PeliculaResponse {
   clasificacion: Clasificacion;
   activo: boolean;
   generos: string[];
+  cartelUrl: string | null;
 }
