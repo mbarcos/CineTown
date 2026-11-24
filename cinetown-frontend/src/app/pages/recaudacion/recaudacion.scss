@@ -23,12 +23,6 @@ h1 {
   line-height: 1.2;
 }
 
-.descripcion {
-  margin-block-start: 0.5rem;
-  color: var(--color-texto-secundario);
-  font-size: var(--text-14);
-}
-
 .selector-pelicula {
   display: grid;
   flex: 0 1 19rem;
@@ -86,18 +80,17 @@ h2 {
 .metricas {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 1rem;
   padding: 1.5rem;
 }
 
 .metrica {
   min-inline-size: 0;
-  padding: 1.25rem;
   overflow-wrap: anywhere;
 }
 
-.metrica-principal {
-  --vidrio-reflejo: linear-gradient(145deg, rgb(236 133 158 / 16%), transparent 64%);
+.metrica + .metrica {
+  border-inline-start: 1px solid rgb(255 255 255 / 13%);
+  padding-inline-start: 1.5rem;
 }
 
 .metrica p {
@@ -194,7 +187,13 @@ h2 {
 @media (max-width: 38.75rem) {
   .metricas {
     grid-template-columns: minmax(0, 1fr);
-    gap: 0.75rem;
+    gap: 1rem;
+  }
+
+  .metrica + .metrica {
+    border-inline-start: 0;
+    border-block-start: 1px solid rgb(255 255 255 / 13%);
+    padding: 1rem 0 0;
   }
 
   .resumen-pelicula,

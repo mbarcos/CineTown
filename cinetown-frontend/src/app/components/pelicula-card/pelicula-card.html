@@ -26,21 +26,21 @@
         }
       }
       @if (!datos.cartelUrl || estadoImagen() === 'error' || (vistaPrevia() && estadoImagen() !== 'lista')) {
-        <span class="tarjeta-pelicula_marca-agua" aria-hidden="true">CINETOWN</span>
+        <span class="tarjeta-pelicula_sin-cartel" aria-hidden="true">Sin cartel</span>
       }
-      <div class="tarjeta-pelicula_detalles">
-        <h3 class="tarjeta-pelicula_titulo">{{ datos.titulo }}</h3>
-        @if (datos.anio !== null) {
-          <span class="tarjeta-pelicula_anio">Año {{ datos.anio }}</span>
-        }
-        @if (datos.generos.length) {
-          <ul class="tarjeta-pelicula_generos" aria-label="Géneros">
-            @for (genero of datos.generos; track genero) {
-              <li class="tarjeta-pelicula_genero">{{ genero }}</li>
-            }
-          </ul>
-        }
-      </div>
+    </div>
+    <div class="tarjeta-pelicula_detalles">
+      <h2 class="tarjeta-pelicula_titulo">{{ datos.titulo }}</h2>
+      @if (datos.anio !== null || datos.generos.length) {
+        <p class="tarjeta-pelicula_datos">
+          @if (datos.anio !== null) {
+            {{ datos.anio }}@if (datos.generos.length) {&nbsp;·&nbsp;}
+          }
+          @if (datos.generos.length) {
+            {{ datos.generos.join(', ') }}
+          }
+        </p>
+      }
     </div>
   </article>
 </ng-template>

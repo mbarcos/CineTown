@@ -1,10 +1,8 @@
-import { NgClass } from '@angular/common';
 import { Component, computed, input, model } from '@angular/core';
 
 @Component({
   selector: 'app-filtro-genero',
   standalone: true,
-  imports: [NgClass],
   templateUrl: './filtro-genero.html',
   styleUrl: './filtro-genero.scss',
 })

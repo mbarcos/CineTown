@@ -9,15 +9,15 @@
 
 @theme {
   /* --- Color · roles semánticos -------------------------------------- */
-  --color-fondo: #0b0b0f;
-  --color-superficie: #15151b;
-  --color-superficie-2: #202028;
+  --color-fondo: #100f11;
+  --color-superficie: #191719;
+  --color-superficie-2: #242124;
 
   --color-primario: #8a0009;
   --color-primario-hover: #a5000b;
 
-  --color-texto: #f5f5f7;
-  --color-texto-secundario: #a5a5b0;
+  --color-texto: #f5f1f0;
+  --color-texto-secundario: #bab0b2;
 
   --color-exito: #35C759;
   --color-aviso: #F5C451;
@@ -44,12 +44,14 @@
   html {
     color-scheme: dark;
     scroll-behavior: smooth;
+    scrollbar-color: #665b60 var(--color-fondo);
   }
 
   :root {
-    --vidrio-luz: radial-gradient(ellipse at 17% 17%, #451622 0%, transparent 56%),
-      radial-gradient(ellipse at 86% 26%, #29263f 0%, transparent 58%);
-    --vidrio-solido: #1c1922;
+    --ancho-pagina: min(82rem, calc(100% - 2 * clamp(1rem, 4vw, 4rem)));
+    --linea-superficie: rgb(245 231 233 / 14%);
+    --vidrio-luz: radial-gradient(ellipse at 22% 0%, #281b1e, transparent 67%);
+    --vidrio-solido: #201c20;
     --vidrio-panel-fondo: var(--vidrio-solido);
     --vidrio-modal-fondo: #211c27;
     --vidrio-superficie-fondo: #282330;
@@ -66,25 +68,27 @@
     --vidrio-seleccion-fondo: #542632;
     --vidrio-seleccion-hover: #66303e;
     --vidrio-seleccion-activo: #703542;
+    --vidrio-navegacion-fondo: #262024;
     --vidrio-desenfoque: none;
   }
 
   @supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
     @media not (prefers-reduced-transparency: reduce) {
       :root {
-        --vidrio-panel-fondo: rgb(27 24 34 / 54%);
-        --vidrio-modal-fondo: rgb(29 24 36 / 84%);
-        --vidrio-superficie-fondo: rgb(232 208 249 / 8%);
-        --vidrio-control-fondo: rgb(236 217 250 / 10%);
-        --vidrio-control-hover: rgb(238 220 252 / 17%);
-        --vidrio-control-activo: rgb(238 220 252 / 23%);
-        --vidrio-campo-fondo: rgb(11 8 15 / 38%);
-        --vidrio-franja: rgb(239 212 248 / 7%);
-        --vidrio-fila: rgb(239 212 248 / 6%);
+        --vidrio-panel-fondo: rgb(34 29 33 / 72%);
+        --vidrio-modal-fondo: rgb(27 24 29 / 86%);
+        --vidrio-superficie-fondo: rgb(246 231 233 / 7%);
+        --vidrio-control-fondo: rgb(246 231 233 / 7%);
+        --vidrio-control-hover: rgb(246 231 233 / 13%);
+        --vidrio-control-activo: rgb(246 231 233 / 19%);
+        --vidrio-campo-fondo: rgb(11 9 12 / 44%);
+        --vidrio-franja: rgb(246 231 233 / 6%);
+        --vidrio-fila: rgb(246 231 233 / 5%);
         --vidrio-seleccion-fondo: rgb(166 47 74 / 42%);
         --vidrio-seleccion-hover: rgb(177 55 81 / 52%);
         --vidrio-seleccion-activo: rgb(177 55 81 / 62%);
-        --vidrio-desenfoque: blur(18px) saturate(135%);
+        --vidrio-navegacion-fondo: rgb(32 28 32 / 83%);
+        --vidrio-desenfoque: blur(22px) saturate(135%);
       }
     }
   }
@@ -94,7 +98,7 @@
     min-block-size: 100svh;
     background-image: var(--vidrio-luz);
     background-repeat: no-repeat;
-    background-size: 100% min(56rem, 110vh);
+    background-size: 100% min(32rem, 80vh);
     font-size: var(--text-16);
     line-height: 1.5;
   }
@@ -111,6 +115,18 @@
   ::selection {
     background: var(--color-primario-hover);
     color: var(--color-texto);
+  }
+}
+
+app-root:has(> app-landing) > app-header {
+  position: sticky;
+  z-index: 10;
+  inset-block-start: 0;
+}
+
+@media (max-width: 44rem) {
+  app-root:has(> app-landing) > app-header:has(.encabezado_usuario) {
+    position: static;
   }
 }
 
@@ -163,39 +179,30 @@ app-root:has(> app-gestion-sesiones) {
 @layer components {
   .vidrio-panel,
   .vidrio-superficie {
-    border: 1px solid var(--vidrio-ribete, rgb(246 225 255 / 17%));
-    border-block-start-color: var(--vidrio-ribete, rgb(246 225 255 / 29%));
+    border: 1px solid var(--linea-superficie);
     border-radius: 1rem;
-    background-image: var(--vidrio-reflejo, linear-gradient(145deg, rgb(247 222 255 / 10%), transparent 58%));
   }
 
   .vidrio-panel {
     background-color: var(--vidrio-tinte, var(--vidrio-panel-fondo));
-    -webkit-backdrop-filter: var(--vidrio-desenfoque);
-    backdrop-filter: var(--vidrio-desenfoque);
-    box-shadow: 0 16px 44px rgb(0 0 0 / 24%), inset 0 1px rgb(255 255 255 / 6%),
-      inset 0 -1px rgb(0 0 0 / 16%);
   }
 
   .vidrio-panel:modal {
     background-color: var(--vidrio-modal-fondo);
+    -webkit-backdrop-filter: var(--vidrio-desenfoque);
+    backdrop-filter: var(--vidrio-desenfoque);
+    box-shadow: 0 18px 44px rgb(0 0 0 / 32%);
   }
 
   .vidrio-superficie {
     background-color: var(--vidrio-tinte, var(--vidrio-superficie-fondo));
-    box-shadow: 0 5px 14px rgb(0 0 0 / 14%), inset 0 1px rgb(255 255 255 / 5%);
   }
 
   :is(.vidrio-control, .btn-primary, .btn-secondary, .vidrio-campo) {
-    border: 1px solid var(--vidrio-borde, rgb(242 222 252 / 40%));
+    border: 1px solid var(--vidrio-borde, rgb(246 231 233 / 36%));
     border-radius: 0.5rem;
     background-color: var(--vidrio-relleno, var(--vidrio-control-fondo));
     transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease;
-  }
-
-  :is(.vidrio-control, .btn-primary, .btn-secondary) {
-    background-image: linear-gradient(165deg, rgb(255 240 249 / 12%), transparent 78%);
-    box-shadow: 0 2px 5px rgb(0 0 0 / 16%), inset 0 1px rgb(255 255 255 / 11%);
   }
 
   .vidrio-campo {
@@ -226,7 +233,7 @@ app-root:has(> app-gestion-sesiones) {
   @media (hover: hover) and (pointer: fine) {
     :is(.vidrio-control, .btn-primary, .btn-secondary):hover:not(:disabled, [aria-disabled='true']) {
       background-color: var(--vidrio-hover, var(--vidrio-control-hover));
-      border-color: var(--vidrio-borde, rgb(242 222 252 / 52%));
+      border-color: var(--vidrio-borde, rgb(246 231 233 / 48%));
     }
 
     .vidrio-campo:hover:not(:disabled, [aria-invalid='true'], :focus) {
@@ -268,6 +275,16 @@ app-root:has(> app-gestion-sesiones) {
   /* Estado "loading" — deja el contenido en opacidad reducida */
   .is-loading {
     @apply opacity-60 pointer-events-none animate-pulse;
+  }
+}
+
+@media (prefers-contrast: more) {
+  :root {
+    --linea-superficie: #a1969a;
+    --vidrio-navegacion-fondo: var(--vidrio-solido);
+    --vidrio-panel-fondo: var(--vidrio-solido);
+    --vidrio-modal-fondo: var(--vidrio-solido);
+    --vidrio-desenfoque: none;
   }
 }
 

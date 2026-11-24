@@ -62,13 +62,13 @@ describe('Landing', () => {
 
     expect(cartel.getAttribute('src')).toBe(peliculas[0].cartelUrl);
     expect(tarjetas[1].querySelector('img')).toBeNull();
-    expect(tarjetas[1].textContent).toContain('CINETOWN');
+    expect(tarjetas[1].textContent).toContain('Sin cartel');
 
     cartel.dispatchEvent(new Event('error'));
     fixture.detectChanges();
 
     expect(tarjetas[0].querySelector('img')).toBeNull();
-    expect(tarjetas[0].textContent).toContain('CINETOWN');
+    expect(tarjetas[0].textContent).toContain('Sin cartel');
   });
 
   it('filters movies by genre and returns to all movies', () => {

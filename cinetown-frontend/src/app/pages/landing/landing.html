@@ -1,11 +1,9 @@
 <a class="salto-contenido" href="#titulo-peliculas">Saltar a las películas</a>
 
 <main id="cartelera" class="pagina-cartelera">
-  <app-titular />
-
   <section id="lista-peliculas" class="cartelera" aria-labelledby="titulo-peliculas">
     <div class="cartelera_cabecera">
-      <h2 id="titulo-peliculas" tabindex="-1">Películas disponibles</h2>
+      <app-titular />
       @if (estadoCarga() === 'listo') {
         <p aria-live="polite" aria-atomic="true">
           @if (peliculasFiltradas().length === 1) {
@@ -14,13 +12,13 @@
             {{ peliculasFiltradas().length }} películas
           }
           @if (generoSeleccionado(); as genero) {
-            · Género: {{ genero }}
+            <span class="sr-only">, género {{ genero }}</span>
           }
         </p>
       }
     </div>
 
-    @if (estadoCarga() === 'listo') {
+    @if (estadoCarga() === 'listo' && generosDisponibles().length) {
       <app-filtro-genero
         [generos]="generosDisponibles()"
         [(generoSeleccionado)]="generoSeleccionado"
@@ -28,11 +26,11 @@
     }
 
     @if (estadoCarga() === 'cargando') {
-      <div class="cartelera_estado vidrio-panel" role="status">
+      <div class="cartelera_estado" role="status">
         <p>Cargando películas…</p>
       </div>
     } @else if (estadoCarga() === 'error') {
-      <div class="cartelera_estado vidrio-panel" role="alert">
+      <div class="cartelera_estado" role="alert">
         <p>No se pudo cargar la cartelera. Comprueba la conexión e inténtalo de nuevo.</p>
         <button class="cartelera_reintentar vidrio-control" type="button" (click)="reintentarCarga()">
           Intentar de nuevo
@@ -45,7 +43,7 @@
         }
       </ul>
     } @else {
-      <div class="cartelera_estado vidrio-panel" role="status">
+      <div class="cartelera_estado" role="status">
         @if (generoSeleccionado()) {
           <p>No hay películas disponibles del género seleccionado.</p>
           <button class="cartelera_reintentar vidrio-control" type="button" (click)="generoSeleccionado.set(null)">

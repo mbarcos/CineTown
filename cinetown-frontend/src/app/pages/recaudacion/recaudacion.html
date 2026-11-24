@@ -1,9 +1,6 @@
 <main class="pagina-recaudacion">
   <header class="cabecera">
-    <div>
-      <h1>Recaudación por película</h1>
-      <p class="descripcion">Consulta las entradas vendidas y los ingresos de cada película.</p>
-    </div>
+    <h1>Recaudación por película</h1>
     <label class="selector-pelicula">
       <span>Película</span>
       <select class="vidrio-campo" [value]="peliculaId() ?? ''" (change)="seleccionarPelicula($event)" [disabled]="cargandoPeliculas() || peliculas().length === 0">
@@ -43,14 +40,14 @@
         <span class="id-pelicula">ID {{ datos.peliculaId }}</span>
       </div>
       <div class="metricas">
-        <article class="metrica metrica-principal vidrio-superficie">
+        <div class="metrica">
           <p>Recaudación total</p>
           <strong>{{ dinero(datos.recaudacionTotal) }}</strong>
-        </article>
-        <article class="metrica vidrio-superficie">
+        </div>
+        <div class="metrica">
           <p>Entradas vendidas</p>
           <strong>{{ datos.entradasVendidas.toLocaleString('es-ES') }}</strong>
-        </article>
+        </div>
       </div>
       <p class="nota">El total considera únicamente compras activas.</p>
     </section>
