@@ -1,3 +1,5 @@
+@reference "../../../styles.scss";
+
 :host {
   display: block;
   --divisor: color-mix(in srgb, var(--color-texto) 16%, var(--color-fondo));
@@ -58,9 +60,9 @@ h2 {
 
 .columnas, .compra {
   display: grid;
-  grid-template-columns: 9rem minmax(0, 1fr) 7rem 10rem;
+  grid-template-columns: 8.5rem minmax(0, 1fr) 6rem 5rem 9.5rem;
   align-items: center;
-  gap: 0.5rem clamp(1rem, 3vw, 2rem);
+  gap: 0.5rem clamp(1rem, 2vw, 2rem);
   padding-inline: clamp(0.75rem, 2.25vw, 1.5rem);
 }
 
@@ -74,11 +76,11 @@ h2 {
   font-weight: 600;
 }
 
-.columnas span:last-child { text-align: end; }
+.columna-total, .columna-acciones, .importe { text-align: end; }
 .compra { padding-block: 0.875rem; }
 .compra + .compra { border-block-start: 1px solid var(--divisor); }
 
-.fecha, .detalle, .importe-acciones {
+.fecha, .detalle {
   display: grid;
   min-width: 0;
   gap: 0.25rem;
@@ -93,35 +95,40 @@ h2 {
 .estado-cancelado, .texto-error { color: var(--texto-error); }
 .texto-exito { color: var(--texto-exito); }
 
-.importe-acciones { justify-items: end; }
 .importe { font-size: var(--text-18); font-weight: 650; white-space: nowrap; }
 
-.accion {
+.accion, .accion-cancelar {
   min-height: 2.75rem;
-  border: 1px solid var(--borde-control);
-  border-radius: 0.5rem;
-  padding: 0.5rem 0.875rem;
-  color: var(--color-texto);
   font-weight: 550;
   cursor: pointer;
   touch-action: manipulation;
 }
 
-.accion-peligro { background: var(--color-primario); border-color: transparent; }
+.accion {
+  border: 1px solid var(--borde-control);
+  border-radius: 0.5rem;
+  padding: 0.5rem 0.875rem;
+  color: var(--color-texto);
+}
+
 .accion-cancelar {
-  border-color: transparent;
-  padding-inline: 0.375rem;
+  justify-self: end;
+  color: var(--color-texto-secundario);
   font-size: var(--text-14);
   text-decoration: underline;
   text-underline-offset: 0.2em;
 }
-.accion:disabled, .accion[aria-disabled='true'] { opacity: 0.55; cursor: not-allowed; }
-.accion:active:not(:disabled, [aria-disabled='true']) { background: var(--color-superficie-2); }
+
+.accion-peligro { background: var(--color-primario); border-color: transparent; }
+.accion:disabled, .accion[aria-disabled='true'], .accion-cancelar:disabled { opacity: 0.55; cursor: not-allowed; }
+.accion:active:not(:disabled, [aria-disabled='true']) { background: theme(--color-superficie-2); }
+.accion-cancelar:active:enabled, .accion-cancelar[aria-expanded='true'] { color: var(--color-texto); }
 .accion-peligro:active:not([aria-disabled='true']) { background: var(--color-primario-hover); }
 
 @media (hover: hover) and (pointer: fine) {
-  .accion:hover:not(:disabled, [aria-disabled='true']) { background: var(--color-superficie-2); }
+  .accion:hover:not(:disabled, [aria-disabled='true']) { background: theme(--color-superficie-2); }
   .accion-peligro:hover:not([aria-disabled='true']) { background: var(--color-primario-hover); }
+  .accion-cancelar:hover:enabled { color: var(--color-texto); }
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -138,7 +145,7 @@ h2 {
   column-gap: 1rem;
   border-radius: 0.5rem;
   padding: 0.875rem 1rem;
-  background: var(--color-superficie-2);
+  background: theme(--color-superficie-2);
 }
 
 .confirmacion-acciones, .paginacion {
@@ -172,9 +179,7 @@ h2 {
 .paginacion { align-items: center; }
 .paginacion span { margin-inline-end: 0.375rem; }
 
-@media (width <= 44rem) {
-  .pagina-compras { padding-block-start: 1.75rem; }
-  h1 { font-size: var(--text-24, 1.5rem); }
+@media (width <= 52rem) {
   .columnas { display: none; }
 
   .compra {
@@ -184,8 +189,14 @@ h2 {
 
   .fecha { grid-area: fecha; display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.25rem 0.625rem; }
   .detalle { grid-area: detalle; }
-  .estado-compra { grid-area: estado; align-self: start; }
-  .importe-acciones { grid-area: total; }
+  .estado-compra { grid-area: estado; }
+  .importe { grid-area: total; }
+  .accion-cancelar { grid-column: 1 / -1; }
+}
+
+@media (width <= 44rem) {
+  .pagina-compras { padding-block-start: 1.75rem; }
+  h1 { font-size: var(--text-24, 1.5rem); }
 }
 
 @media (height < 32rem) {

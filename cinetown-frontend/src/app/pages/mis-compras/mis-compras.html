@@ -36,7 +36,8 @@
         <span>Sesión</span>
         <span>Película y entradas</span>
         <span>Estado</span>
-        <span>Total</span>
+        <span class="columna-total">Total</span>
+        <span class="columna-acciones">Acciones</span>
       </div>
       <div class="desplazamiento" role="group" aria-label="Lista de compras" tabindex="0">
         <ul class="lista" role="list" aria-label="Listado de compras">
@@ -55,19 +56,17 @@
               <span class="estado-compra" [class.estado-cancelado]="!compra.estado">
                 {{ compra.estado ? 'Confirmada' : 'Cancelada' }}
               </span>
-              <div class="importe-acciones">
-                <p class="importe"><span class="sr-only">Total </span>{{ precioLegible(compra.precioTotal) }}</p>
-                @if (confirmando || esCancelable(compra)) {
-                  <button #origen type="button" class="accion accion-cancelar"
-                    [disabled]="compraCancelando() !== null"
-                    [attr.aria-label]="'Cancelar compra de ' + compra.titulo + ', código ' + compra.codCompra"
-                    [attr.aria-expanded]="confirmando"
-                    [attr.aria-controls]="confirmando ? 'confirmar-' + compra.codCompra : null"
-                    (click)="pedirCancelacion(compra.codCompra, origen)">
-                    Cancelar compra
-                  </button>
-                }
-              </div>
+              <p class="importe"><span class="sr-only">Total </span>{{ precioLegible(compra.precioTotal) }}</p>
+              @if (confirmando || esCancelable(compra)) {
+                <button #origen type="button" class="accion-cancelar"
+                  [disabled]="compraCancelando() !== null"
+                  [attr.aria-label]="'Cancelar compra de ' + compra.titulo + ', código ' + compra.codCompra"
+                  [attr.aria-expanded]="confirmando"
+                  [attr.aria-controls]="confirmando ? 'confirmar-' + compra.codCompra : null"
+                  (click)="pedirCancelacion(compra.codCompra, origen)">
+                  Cancelar compra
+                </button>
+              }
 
               @if (confirmando) {
                 <div class="confirmacion" role="group"
