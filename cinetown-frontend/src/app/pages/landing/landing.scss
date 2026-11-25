@@ -4,23 +4,7 @@
   margin-inline: auto;
 }
 
-.salto-contenido {
-  position: fixed;
-  z-index: 30;
-  inset-block-start: 0.75rem;
-  inset-inline-start: 0.75rem;
-  transform: translateY(calc(-100% - 1rem));
-  border-radius: 0.5rem;
-  background: var(--color-texto);
-  padding: 0.625rem 0.875rem;
-  color: var(--color-fondo);
-  font-size: var(--text-14);
-  font-weight: 600;
 
-  &:focus-visible {
-    transform: none;
-  }
-}
 
 .cartelera {
   padding-block: clamp(2rem, 5vw, 4.5rem) clamp(3rem, 7vw, 6rem);

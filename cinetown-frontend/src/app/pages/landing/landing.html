@@ -1,9 +1,6 @@
-<a class="salto-contenido" href="#titulo-peliculas">Saltar a las películas</a>
-
 <main id="cartelera" class="pagina-cartelera">
   <section id="lista-peliculas" class="cartelera" aria-labelledby="titulo-peliculas">
     <app-titular [peliculas]="estadoCarga() === 'listo' ? peliculas() : []" />
-
     <div class="cartelera_cabecera">
       @if (estadoCarga() === 'listo') {
         <p aria-live="polite" aria-atomic="true">
