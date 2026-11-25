@@ -23,24 +23,15 @@ import { PeliculaResponse } from '../../models/pelicula-detalle.model';
 export class TitularComponent {
   private readonly destroyRef = inject(DestroyRef);
   protected readonly rotacionDisponible = signal(false);
-
-  /** Listado de películas disponibles en cartelera. */
   readonly peliculas = input<readonly PeliculaResponse[]>([]);
-
-  /** Tiempo en milisegundos entre cambios automáticos. */
   readonly intervaloMs = input<number>(5000);
-
-  /** Título visible de la sección. */
   readonly titulo = input<string>('Cartelera');
-
-  /** Filtra solo películas activas que dispongan de cartel válido. */
   protected readonly peliculasValidas = computed(() =>
     this.peliculas().filter(
       (pelicula) =>
         (pelicula.activo ?? true) && Boolean(pelicula.cartelUrl?.trim())
     )
   );
-
   private readonly indiceActual = signal(0);
   private readonly reinicioTemporizador = signal(0);
   private readonly enHover = signal(false);
