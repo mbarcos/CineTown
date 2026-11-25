@@ -3,13 +3,13 @@
 /* --- Página: centra la tarjeta en pantalla ----------------------------- */
 :host {
   @apply flex items-center justify-center;
-  padding: clamp(1.5rem, 5vh, 3rem) 1.25rem;
+  padding: clamp(0.75rem, 4svh, 3rem) clamp(1rem, 4vw, 1.5rem);
 }
 
 /* --- Tarjeta ----------------------------------------------------------- */
 .auth-card {
   width: min(100%, 26rem);
-  padding: clamp(1.5rem, 5vw, 2.25rem);
+  padding: clamp(1rem, 5vw, 2.25rem);
 }
 
 .auth-card h1 {

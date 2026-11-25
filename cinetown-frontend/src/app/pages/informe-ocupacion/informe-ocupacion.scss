@@ -23,12 +23,6 @@ h1 {
   line-height: 1.2;
 }
 
-.descripcion {
-  margin-block-start: 0.5rem;
-  color: var(--color-texto-secundario);
-  font-size: var(--text-14);
-}
-
 .campo-fecha {
   display: grid;
   min-inline-size: min(100%, 12rem);
@@ -48,44 +42,21 @@ input {
 }
 
 .resumen {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.75rem 1.5rem;
-  margin-block-end: 1rem;
-  padding: 1rem 1.5rem;
-}
-
-.resumen > div:first-child {
-  display: grid;
-  gap: 0.25rem;
-}
-
-.resumen-etiqueta,
-.resumen-meta {
+  margin-block: 1.5rem 1rem;
   color: var(--color-texto-secundario);
-  font-size: var(--text-14);
+  font-variant-numeric: tabular-nums;
 }
 
-.resumen-valor {
+.resumen strong {
   color: var(--color-texto);
   font-size: var(--text-32, 2rem);
   font-weight: 650;
   letter-spacing: -0.03em;
-  font-variant-numeric: tabular-nums;
-  line-height: 1.15;
 }
 
-.resumen-meta {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.125rem 1rem;
-}
-
-.fecha-resumen {
-  color: var(--color-texto);
+.resumen p + p {
+  margin-block-start: 0.25rem;
+  font-size: var(--text-14);
 }
 
 .tabla-panel {
@@ -181,14 +152,15 @@ tbody tr:last-child td {
 
 .alto { color: #64d89a; }
 .medio { color: #f0b85b; }
-.bajo { color: #f07878; }
+.bajo { color: #efa0a8; }
+.sin-ventas .porcentaje { color: var(--color-texto-secundario); }
 
 .barra {
   overflow: hidden;
   flex: 1;
   block-size: 0.5rem;
   border-radius: 999px;
-  background: var(--color-superficie-2);
+  background: rgb(255 255 255 / 14%);
 }
 
 .barra-valor {
@@ -196,13 +168,6 @@ tbody tr:last-child td {
   block-size: 100%;
   border-radius: inherit;
   background: currentColor;
-}
-
-.pie-tabla {
-  border-block-start: 1px solid rgb(255 255 255 / 10%);
-  padding: 0.75rem 1.25rem;
-  color: var(--color-texto-secundario);
-  font-size: var(--text-14);
 }
 
 .estado-carga,
@@ -253,10 +218,6 @@ tbody tr:last-child td {
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .barra-valor {
-    transition: width 200ms ease-out;
-  }
-
   .spinner {
     animation: girar 0.8s linear infinite;
   }
@@ -277,13 +238,8 @@ tbody tr:last-child td {
     font-size: var(--text-24);
   }
 
-  .resumen {
-    padding: 1rem;
-  }
-
   th,
-  td,
-  .pie-tabla {
+  td {
     padding-inline: 0.875rem;
   }
 }

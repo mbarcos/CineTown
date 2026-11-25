@@ -3,7 +3,7 @@
 }
 
 .pagina-sesiones {
-  width: min(calc(100% - 40px), 52rem);
+  width: min(var(--ancho-pagina), 52rem);
   margin-inline: auto;
   padding-block: 24px 64px;
 }

@@ -50,8 +50,9 @@ app-filtro-genero {
 
 .cartelera_lista {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: clamp(1.625rem, 3vw, 2.5rem) clamp(0.875rem, 2vw, 1.5rem);
+  --separacion: clamp(0.875rem, 2vw, 1.5rem);
+  grid-template-columns: repeat(auto-fill, minmax(min(13.5rem, calc((100% - var(--separacion)) / 2)), 1fr));
+  gap: clamp(1.625rem, 3vw, 2.5rem) var(--separacion);
   margin: 0;
   padding: 0;
   list-style: none;
@@ -98,23 +99,5 @@ app-filtro-genero {
 
   p {
     margin: 0;
-  }
-}
-
-@media (min-width: 38rem) {
-  .cartelera_lista {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-}
-
-@media (min-width: 56rem) {
-  .cartelera_lista {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-  }
-}
-
-@media (min-width: 74rem) {
-  .cartelera_lista {
-    grid-template-columns: repeat(5, minmax(0, 1fr));
   }
 }

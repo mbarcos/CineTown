@@ -30,13 +30,10 @@ export class InformeOcupacion {
     if (sesiones.length === 0) return 0;
     return sesiones.reduce((suma, sesion) => suma + sesion.porcentajeOcupacion, 0) / sesiones.length;
   });
-  readonly fechaLegible = computed(() => {
-    const fecha = this.fechaConsultada();
-    if (!fecha) return '';
-    const [anio, mes, dia] = fecha.split('-').map(Number);
-    return new Intl.DateTimeFormat('es-ES', { day: 'numeric', month: 'long', year: 'numeric' })
-      .format(new Date(anio, mes - 1, dia, 12));
-  });
+  readonly entradasVendidas = computed(() =>
+    this.sesiones().reduce((total, sesion) => total + sesion.entradasVendidas, 0));
+  readonly aforoTotal = computed(() =>
+    this.sesiones().reduce((total, sesion) => total + sesion.capacidad, 0));
 
   constructor() { void this.cargarInforme(this.fecha()); }
 

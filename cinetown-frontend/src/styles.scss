@@ -149,15 +149,17 @@ app-root:has(> :is(app-login, app-registro)) {
   > router-outlet { display: none; }
 }
 
-html:has(app-root > app-gestion-sesiones) { overflow: clip; }
+@media (min-height: 32rem) {
+  html:has(app-root > app-gestion-sesiones) { overflow: clip; }
 
-app-root:has(> app-gestion-sesiones) {
-  display: grid;
-  grid-template-rows: auto minmax(0, 1fr);
-  block-size: 100dvh;
-  overflow: clip;
+  app-root:has(> app-gestion-sesiones) {
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr);
+    block-size: 100dvh;
+    overflow: clip;
 
-  > router-outlet { display: none; }
+    > router-outlet { display: none; }
+  }
 }
 
 @media (height >= 32rem) {

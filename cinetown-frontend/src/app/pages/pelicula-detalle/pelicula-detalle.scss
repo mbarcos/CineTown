@@ -1,14 +1,14 @@
 :host {
   display: block;
-  min-height: calc(100vh - 68px);
+  min-height: calc(100svh - 4.25rem);
 }
 
 .detalle {
   display: grid;
-  grid-template-columns: minmax(240px, 320px) minmax(0, 1fr);
+  grid-template-columns: clamp(11rem, 25vw, 20rem) minmax(0, 1fr);
   align-items: start;
-  gap: clamp(40px, 7vw, 104px);
-  width: min(calc(100% - 64px), 1120px);
+  gap: clamp(1.5rem, 5vw, 5rem);
+  width: min(var(--ancho-pagina), 70rem);
   margin-inline: auto;
   padding-block: 12px 80px;
   color: var(--color-texto);
@@ -167,48 +167,8 @@
   text-align: center;
 }
 
-@media (max-width: 48rem) {
-  .detalle {
-    grid-template-columns: minmax(0, 1fr);
-    width: min(calc(100% - 44px), 680px);
-    gap: 36px;
-    padding-block: 32px 72px;
-  }
-
-  .poster {
-    position: relative;
-    top: auto;
-    width: min(58%, 300px);
-    justify-self: center;
-  }
-
-}
-
-@media (max-width: 34rem) {
-  .detalle {
-    width: calc(100% - 40px);
-    gap: 32px;
-    padding-block: 24px 56px;
-  }
-
-  .poster {
-    width: min(68%, 260px);
-    padding: 18px;
-  }
-
-  .pelicula_cabecera {
-    padding-bottom: 0;
-
-    h1 {
-      font-size: clamp(32px, 9vw, 44px);
-    }
-  }
-
-}
-
-
 .volver {
-  width: min(calc(100% - 64px), 1120px);
+  width: min(var(--ancho-pagina), 70rem);
   margin: 24px auto 12px;
   a { display: inline-flex; min-height: 44px; align-items: center; color: var(--color-texto-secundario); font-size: 14px; }
 }
@@ -222,8 +182,22 @@
   .sesiones { padding: 1.125rem 1.25rem; }
   .sesiones_cabecera { margin-bottom: 0.75rem; }
 }
-@media (max-width: 48rem) {
-  .volver { width: calc(100% - 40px); margin-block: 16px 0; }
-  .poster { width: min(45%, 220px); }
-  .detalle { gap: 24px; padding-top: 16px; }
+@media (max-width: 39rem) {
+  .volver { margin-block: 0.5rem 0; }
+
+  .detalle {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.25rem;
+    padding-block: 0.75rem 3rem;
+  }
+
+  .poster {
+    position: relative;
+    top: auto;
+    width: min(45%, 11rem);
+    justify-self: center;
+    padding: 1rem;
+  }
+
+  .pelicula_cabecera h1 { font-size: clamp(2rem, 8vw, 2.75rem); }
 }

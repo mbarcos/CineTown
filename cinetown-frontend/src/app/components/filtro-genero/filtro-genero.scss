@@ -1,6 +1,7 @@
 .filtro-genero {
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
   gap: 0.25rem;
 }
 
@@ -44,6 +45,7 @@
     display: flex;
     width: fit-content;
     max-width: 100%;
+    margin-inline: auto;
     align-items: center;
     gap: 0.625rem;
     color: var(--color-texto-secundario);

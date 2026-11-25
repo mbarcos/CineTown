@@ -1,9 +1,6 @@
 <main class="pagina-informe">
   <header class="cabecera">
-    <div>
-      <h1>Ocupación de sesiones</h1>
-      <p class="descripcion">Consulta diaria de entradas vendidas y aforo por sesión.</p>
-    </div>
+    <h1>Ocupación de sesiones</h1>
     <label class="campo-fecha">
       <span>Fecha del informe</span>
       <input class="vidrio-campo" type="date" [value]="fecha()" (input)="actualizarFecha($event)" />
@@ -24,17 +21,11 @@
       <h2>No hay sesiones para esta fecha</h2>
       <p>Prueba con otro día para consultar su ocupación.</p>
     </section>
-  } @else if (fechaConsultada(); as fechaInforme) {
-    <section class="resumen vidrio-panel" aria-label="Resumen del informe">
-      <div>
-        <span class="resumen-etiqueta">Ocupación media</span>
-        <strong class="resumen-valor">{{ porcentaje(ocupacionMedia()) }}</strong>
-      </div>
-      <div class="resumen-meta">
-        <span class="fecha-resumen">{{ fechaLegible() }}</span>
-        <span>{{ sesiones().length }} {{ sesiones().length === 1 ? 'sesión' : 'sesiones' }}</span>
-      </div>
-    </section>
+  } @else if (fechaConsultada()) {
+    <div class="resumen">
+      <p><strong>{{ porcentaje(ocupacionMedia()) }}</strong> de ocupación media</p>
+      <p>{{ entradasVendidas() }} {{ entradasVendidas() === 1 ? 'entrada vendida' : 'entradas vendidas' }} · Aforo total de {{ aforoTotal() }} · {{ sesiones().length }} {{ sesiones().length === 1 ? 'sesión' : 'sesiones' }}</p>
+    </div>
 
     <section class="tabla-panel vidrio-panel">
       <div class="tabla-scroll" role="region" aria-label="Ocupación por sesión" tabindex="0">
@@ -61,7 +52,7 @@
                 <td class="numerico">{{ sesion.capacidad }}</td>
                 <td class="numerico vendidas">{{ sesion.entradasVendidas }}</td>
                 <td class="ocupacion-celda">
-                  <div class="ocupacion-valor">
+                  <div class="ocupacion-valor" [class.sin-ventas]="sesion.entradasVendidas === 0">
                     <span class="porcentaje" [class]="'porcentaje ' + nivelOcupacion(sesion.porcentajeOcupacion)">
                       {{ porcentaje(sesion.porcentajeOcupacion) }}
                     </span>
@@ -79,9 +70,6 @@
           </tbody>
         </table>
       </div>
-      <footer class="pie-tabla">
-        Informe agregado con datos activos de ocupación por sesión.
-      </footer>
     </section>
   }
 </main>
