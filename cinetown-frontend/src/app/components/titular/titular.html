@@ -1,1 +1,144 @@
-<h1 id="titulo-peliculas" class="titular_titulo" tabindex="-1">Cartelera</h1>
+<header class="titular">
+  <div class="titular__cabecera">
+    <h1 id="titulo-peliculas" class="titular_titulo" tabindex="-1">
+      {{ titulo() }}
+    </h1>
+
+    @if (rotacionDisponible() && peliculasValidas().length > 1) {
+        <button
+          type="button"
+          class="titular__btn-control vidrio-control"
+          (click)="alternarPausa()"
+          [attr.aria-label]="
+            pausaManual()
+              ? 'Reanudar cambio automático del carrusel'
+              : 'Pausar cambio automático del carrusel'
+          "
+        >
+          {{ pausaManual() ? 'Reanudar' : 'Pausar' }}
+        </button>
+    }
+  </div>
+
+  @if (peliculasValidas().length > 0) {
+    <section
+      class="carrusel"
+      aria-roledescription="carrusel"
+      aria-label="Películas disponibles en cartelera"
+      (mouseenter)="alEntrarRaton()"
+      (mouseleave)="alSalirRaton()"
+      (focusin)="alRecibirFoco()"
+      (focusout)="alPerderFoco($event)"
+      (touchstart)="alIniciarTouch($event)"
+      (touchend)="alFinalizarTouch($event)"
+    >
+      <div class="carrusel__ventana">
+        <div
+          class="carrusel__pista"
+          [style.transform]="desplazamientoTrack()"
+          aria-live="off"
+        >
+          @for (pelicula of peliculasValidas(); track pelicula.id; let i = $index) {
+            <article
+              class="carrusel__diapositiva"
+              role="group"
+              aria-roledescription="diapositiva"
+              [attr.aria-label]="
+                i + 1 + ' de ' + peliculasValidas().length + ': ' + pelicula.titulo
+              "
+              [attr.aria-hidden]="i !== indiceSeguro()"
+              [attr.inert]="i !== indiceSeguro() ? '' : null"
+            >
+              <img
+                class="carrusel__fondo"
+                [src]="pelicula.cartelUrl"
+                alt=""
+                aria-hidden="true"
+                width="500"
+                height="750"
+                [attr.loading]="i === 0 ? 'eager' : 'lazy'"
+              />
+
+              <div class="carrusel__contenido">
+                <figure class="carrusel__poster-marco">
+                  <img
+                    class="carrusel__poster"
+                    [src]="pelicula.cartelUrl"
+                    [alt]="'Cartel de ' + pelicula.titulo"
+                    width="500"
+                    height="750"
+                    [attr.loading]="i === 0 ? 'eager' : 'lazy'"
+                    [attr.fetchpriority]="i === 0 ? 'high' : 'auto'"
+                  />
+                </figure>
+
+                <div class="carrusel__detalles">
+                  <div class="carrusel__metadatos">
+                    <span class="carrusel__badge">{{ pelicula.clasificacion }}</span>
+                    <span>{{ pelicula.anio }}</span>
+                    <span aria-hidden="true">·</span>
+                    <span>{{ formatearDuracion(pelicula.duracion) }}</span>
+                  </div>
+
+                  <h2 class="carrusel__titulo">{{ pelicula.titulo }}</h2>
+
+                  @if (pelicula.sinopsis) {
+                    <p class="carrusel__sinopsis">{{ pelicula.sinopsis }}</p>
+                  }
+
+                  <a
+                    class="carrusel__cta"
+                    [routerLink]="['/peliculas', pelicula.id, 'sesiones']"
+                    [attr.aria-label]="'Ver sesiones de ' + pelicula.titulo"
+                  >
+                    Ver sesiones
+                  </a>
+                </div>
+              </div>
+            </article>
+          }
+        </div>
+      </div>
+
+      @if (peliculasValidas().length > 1) {
+        <div
+          class="carrusel__controles"
+          role="group"
+          aria-label="Seleccionar película"
+          (keydown.arrowleft)="anterior()"
+          (keydown.arrowright)="siguiente()"
+        >
+          <button
+            type="button"
+            class="carrusel__flecha carrusel__flecha--anterior vidrio-control"
+            (click)="anterior()"
+            aria-label="Película anterior"
+          >
+            <span aria-hidden="true"></span>
+          </button>
+
+          <div class="carrusel__indicadores">
+            @for (pelicula of peliculasValidas(); track pelicula.id; let i = $index) {
+              <button
+                type="button"
+                class="carrusel__punto"
+                [attr.aria-current]="i === indiceSeguro() ? 'true' : null"
+                [attr.aria-label]="'Ir a ' + pelicula.titulo"
+                (click)="irA(i)"
+              ></button>
+            }
+          </div>
+
+          <button
+            type="button"
+            class="carrusel__flecha vidrio-control"
+            (click)="siguiente()"
+            aria-label="Siguiente película"
+          >
+            <span aria-hidden="true"></span>
+          </button>
+        </div>
+      }
+    </section>
+  }
+</header>

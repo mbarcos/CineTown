@@ -1,3 +1,16 @@
+:host {
+  display: block;
+  min-inline-size: 0;
+}
+
+.titular__cabecera {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem 1rem;
+}
+
 .titular_titulo {
   margin: 0;
   color: var(--color-texto);
@@ -6,4 +19,204 @@
   letter-spacing: -0.04em;
   line-height: 1.05;
   scroll-margin-block-start: var(--desplazamiento-cartelera);
+}
+
+.titular__btn-control,
+.carrusel__cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-block-size: 44px;
+  padding-inline: 1rem;
+  font-size: var(--text-16);
+  font-weight: 600;
+}
+
+.carrusel {
+  margin-block-start: 1rem;
+}
+
+.carrusel__ventana {
+  overflow: hidden;
+  border: 1px solid var(--linea-superficie);
+  border-radius: 0.875rem;
+  background: var(--color-superficie);
+}
+
+.carrusel__pista {
+  display: flex;
+  touch-action: pan-y pinch-zoom;
+
+  @media (prefers-reduced-motion: no-preference) {
+    transition: transform 340ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+}
+
+.carrusel__diapositiva {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  flex: 0 0 100%;
+  min-inline-size: 0;
+  align-items: center;
+  overflow: hidden;
+
+  &::before,
+  .carrusel__fondo {
+    position: absolute;
+    inset: 0;
+    inline-size: 100%;
+    block-size: 100%;
+  }
+
+  &::before {
+    z-index: -1;
+    background: linear-gradient(90deg, var(--color-superficie) 5%, transparent 100%);
+    content: '';
+  }
+}
+
+.carrusel__fondo {
+  z-index: -2;
+  object-fit: cover;
+  object-position: center 38%;
+  opacity: 0.22;
+}
+
+.carrusel__contenido {
+  display: grid;
+  grid-template-columns: clamp(4.5rem, 20vw, 12rem) minmax(0, 1fr);
+  align-items: start;
+  gap: clamp(1rem, 4vw, 3rem);
+  padding: clamp(1rem, 4vw, 3rem);
+
+  @media (min-width: 44rem) {
+    align-items: center;
+  }
+}
+
+.carrusel__poster-marco {
+  aspect-ratio: 2 / 3;
+  overflow: hidden;
+  border: 1px solid var(--linea-superficie);
+  border-radius: 0.75rem;
+  background: var(--color-superficie-2);
+}
+
+.carrusel__poster {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+}
+
+.carrusel__detalles {
+  display: grid;
+  justify-items: start;
+  gap: 0.75rem;
+  overflow-wrap: anywhere;
+}
+
+.carrusel__metadatos {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem 0.625rem;
+  color: var(--color-texto-secundario);
+  font-size: var(--text-14);
+  font-variant-numeric: tabular-nums;
+}
+
+.carrusel__badge {
+  border: 1px solid var(--linea-superficie);
+  border-radius: 0.25rem;
+  padding-inline: 0.375rem;
+  color: var(--color-texto);
+  font-weight: 600;
+}
+
+.carrusel__titulo {
+  font-size: clamp(1.375rem, 1rem + 3vw, 3.5rem);
+  font-weight: 650;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  text-wrap: balance;
+}
+
+.carrusel__sinopsis {
+  display: -webkit-box;
+  max-inline-size: 62ch;
+  overflow: hidden;
+  color: var(--color-texto);
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
+}
+
+.carrusel__cta {
+  border-radius: 0.5rem;
+  background: var(--color-primario);
+  color: var(--color-texto);
+
+  &:is(:hover, :active) {
+    background: var(--color-primario-hover);
+  }
+}
+
+.carrusel__controles {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.5rem;
+  padding-block-start: 0.625rem;
+}
+
+.carrusel__flecha {
+  display: grid;
+  inline-size: 44px;
+  block-size: 44px;
+  place-items: center;
+
+  span {
+    inline-size: 0.625rem;
+    block-size: 0.625rem;
+    border-block-start: 2px solid currentColor;
+    border-inline-end: 2px solid currentColor;
+    transform: rotate(45deg);
+  }
+}
+
+.carrusel__flecha--anterior span {
+  transform: rotate(-135deg);
+}
+
+.carrusel__indicadores {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.carrusel__punto {
+  display: grid;
+  inline-size: 28px;
+  block-size: 32px;
+  place-items: center;
+  border-radius: 0.375rem;
+  cursor: pointer;
+
+  &::before {
+    inline-size: 0.5rem;
+    block-size: 0.5rem;
+    border: 1px solid var(--color-texto-secundario);
+    border-radius: 999px;
+    content: '';
+  }
+
+  &:is(:hover, [aria-current])::before {
+    background: var(--color-texto-secundario);
+  }
+
+  &[aria-current]::before {
+    inline-size: 1rem;
+    border-color: var(--color-texto);
+    background: var(--color-texto);
+  }
 }
