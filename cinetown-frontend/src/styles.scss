@@ -175,6 +175,16 @@ app-root:has(> :is(app-login, app-registro)) {
   }
 }
 
+@media (height >= 32rem) {
+  app-root:has(> app-gestion-peliculas):not(:has(.formulario-panel)) {
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr);
+    block-size: 100dvh;
+
+    > router-outlet { display: none; }
+  }
+}
+
 @utility btn-primary {
   @apply text-texto font-medium text-16 px-5 py-2.5 rounded-lg;
 }

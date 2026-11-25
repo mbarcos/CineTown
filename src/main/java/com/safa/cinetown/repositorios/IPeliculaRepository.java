@@ -1,5 +1,8 @@
 package com.safa.cinetown.repositorios;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import com.safa.cinetown.modelos.ClasificacionEdad;
 import com.safa.cinetown.dtos.RecaudacionPelicula;
 import com.safa.cinetown.modelos.Pelicula;
 import jakarta.persistence.LockModeType;
@@ -15,6 +18,19 @@ import java.util.Optional;
 
 @Repository
 public interface IPeliculaRepository extends JpaRepository <Pelicula, Integer> {
+    @Query("""
+        select p from Pelicula p
+        where (:activo is null or p.activo = :activo)
+          and (:duracionMax is null or p.duracion <= :duracionMax)
+          and p.clasificacion = coalesce(:clasificacion, p.clasificacion)
+          and (:genero = '' or exists (select g.id from p.generos g where g.nombre = :genero))
+          and (:texto = '' or locate(lower(:texto), lower(p.titulo)) > 0
+               or exists (select g.id from p.generos g where locate(lower(:texto), lower(g.nombre)) > 0))
+        order by p.titulo, p.id
+        """)
+    Page<Pelicula> buscarCatalogo(String texto, String genero, Boolean activo,
+                                  ClasificacionEdad clasificacion, Integer duracionMax, Pageable pageable);
+
     List<Pelicula> findByTituloContainingIgnoreCase(String titulo);
 
     @Query("SELECT DISTINCT p FROM Pelicula p LEFT JOIN FETCH p.generos WHERE p.activo = true ORDER BY p.titulo ASC")

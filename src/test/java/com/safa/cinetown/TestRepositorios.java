@@ -44,6 +44,21 @@ public class TestRepositorios {
         resultado.forEach(p -> System.out.println(p.getTitulo()));
     }
 
+    @Test
+    void paginaElCatalogoSinDuplicadosYCombinaFiltros() {
+        PageRequest primera = PageRequest.of(0, 1);
+        Page<Pelicula> pagina = peliculaRepository.buscarCatalogo("", "", null, null, null, primera);
+        Page<Pelicula> siguiente = peliculaRepository.buscarCatalogo("", "", null, null, null, primera.next());
+        assertThat(pagina.getTotalElements()).isGreaterThan(1);
+        Pelicula pelicula = pagina.getContent().getFirst();
+        assertThat(siguiente.getContent().getFirst().getId()).isNotEqualTo(pelicula.getId());
+
+        String genero = pelicula.getGeneros().iterator().next().getNombre();
+        Page<Pelicula> filtradas = peliculaRepository.buscarCatalogo(genero, genero, pelicula.getActivo(),
+                pelicula.getClasificacion(), pelicula.getDuracion(), primera);
+        assertThat(filtradas.getContent()).extracting(Pelicula::getId).containsExactly(pelicula.getId());
+    }
+
     // consulta para /pelicula/id, muestra tambien los generos de la pelicula
     @Test
     void encuentraUnaPeliculaConSusGeneros() {

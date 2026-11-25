@@ -1,5 +1,8 @@
 package com.safa.cinetown.controladores;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import com.safa.cinetown.modelos.ClasificacionEdad;
 import com.safa.cinetown.dtos.PeliculaResponse;
 import com.safa.cinetown.dtos.RecaudacionPelicula;
 import com.safa.cinetown.dtos.request.PeliculaRequest;
@@ -28,6 +31,17 @@ public class PeliculaController {
     @GetMapping("/gestion")
     public List<PeliculaResponse> consultarPeliculasParaGestion() {
         return service.consultarTodasPeliculas();
+    }
+
+    @GetMapping(value = "/gestion", params = "page")
+    public Page<PeliculaResponse> buscarCatalogo(
+            @RequestParam(defaultValue = "") String texto,
+            @RequestParam(defaultValue = "") String genero,
+            @RequestParam(required = false) Boolean activo,
+            @RequestParam(required = false) ClasificacionEdad clasificacion,
+            @RequestParam(required = false) @Min(1) Integer duracionMax,
+            Pageable pageable) {
+        return service.buscarCatalogo(texto, genero, activo, clasificacion, duracionMax, pageable);
     }
 
     @PostMapping("/gestion/cartel")

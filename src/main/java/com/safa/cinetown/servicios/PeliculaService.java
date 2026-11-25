@@ -1,5 +1,8 @@
 package com.safa.cinetown.servicios;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import com.safa.cinetown.modelos.ClasificacionEdad;
 import com.safa.cinetown.conversores.PeliculaMapper;
 import com.safa.cinetown.dtos.PeliculaResponse;
 import com.safa.cinetown.dtos.RecaudacionPelicula;
@@ -36,6 +39,13 @@ public class PeliculaService {
     private final IGeneroRepository generoRepository;
     private final TmdbClient tmdbClient;
     private final TransactionTemplate transactionTemplate;
+
+    @Transactional(readOnly = true)
+    public Page<PeliculaResponse> buscarCatalogo(String texto, String genero, Boolean activo,
+            ClasificacionEdad clasificacion, Integer duracionMax, Pageable pageable) {
+        return repository.buscarCatalogo(texto.trim(), genero, activo, clasificacion, duracionMax, pageable)
+                .map(mapper::toResponse);
+    }
 
     @Transactional(readOnly = true)
     public List<PeliculaResponse> consultarTodasPeliculas() {

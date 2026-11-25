@@ -1,7 +1,7 @@
-import { afterNextRender, Component, computed, ElementRef, inject, Injector, signal, viewChild } from '@angular/core';
+import { afterNextRender, Component, computed, DestroyRef, ElementRef, inject, Injector, signal, viewChild } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { catchError, finalize, map, Observable, of, switchMap, timer } from 'rxjs';
+import { catchError, finalize, map, Observable, of, Subscription, switchMap, timer } from 'rxjs';
 import { PeliculaCardComponent } from '../../components/pelicula-card/pelicula-card';
 import { PeliculaResponse } from '../../models/pelicula-detalle.model';
 import { BusquedaCartel, PeliculaRequest, PeliculaService } from '../../services/peliculaService';
@@ -18,7 +18,6 @@ export class GestionPeliculas {
   private readonly nuevaPelicula = viewChild<ElementRef<HTMLButtonElement>>('nuevaPelicula');
   private readonly editor = viewChild<ElementRef<HTMLFormElement>>('editor');
   private readonly buscador = viewChild<ElementRef<HTMLInputElement>>('buscador');
-  private readonly selectorCartelera = viewChild<ElementRef<HTMLSelectElement>>('estadoCartelera');
   private readonly injector = inject(Injector);
   private readonly peliculasApi = inject(PeliculaService);
   private readonly formBuilder = inject(FormBuilder);
@@ -27,24 +26,28 @@ export class GestionPeliculas {
   readonly peliculas = signal<PeliculaResponse[]>([]);
   readonly generos = signal<string[]>([]);
   readonly busqueda = signal('');
+  readonly filtroGenero = signal('');
+  readonly clasificacion = signal('');
+  readonly duracionMax = signal('');
+  readonly pagina = signal(0);
+  readonly totalPaginas = signal(0);
+  readonly total = signal(0);
+  private consulta?: Subscription;
+  readonly estadosCartelera = [
+    { valor: 'todas', nombre: 'Todas' },
+    { valor: 'activas', nombre: 'En cartelera' },
+    { valor: 'inactivas', nombre: 'Fuera de cartelera' },
+  ];
   readonly filtroCartelera = signal('todas');
   readonly cargando = signal(true);
   readonly guardando = signal(false);
   readonly mensajeError = signal('');
   readonly formularioVisible = signal(false);
-  readonly peliculaEditadaId = signal<number | null>(null);
+  private readonly peliculaEditada = signal<PeliculaResponse | null>(null);
+  readonly peliculaEditadaId = computed(() => this.peliculaEditada()?.id ?? null);
 
-  readonly peliculasFiltradas = computed(() => {
-    const termino = this.busqueda().trim().toLocaleLowerCase();
-    const filtro = this.filtroCartelera();
-    return this.peliculas().filter(pelicula => {
-      const coincideCartelera = filtro === 'todas' || pelicula.activo === (filtro === 'activas');
-      return coincideCartelera && (!termino || pelicula.titulo.toLocaleLowerCase().includes(termino) ||
-        pelicula.generos.some(genero => genero.toLocaleLowerCase().includes(termino)));
-    });
-  });
-
-  readonly hayFiltros = computed(() => !!this.busqueda().trim() || this.filtroCartelera() !== 'todas');
+  readonly hayFiltros = computed(() => !!this.busqueda().trim() || !!this.filtroGenero()
+    || !!this.clasificacion() || !!this.duracionMax() || this.filtroCartelera() !== 'todas');
 
   readonly formulario = this.formBuilder.nonNullable.group({
     titulo: ['', [Validators.required, Validators.maxLength(255)]],
@@ -56,9 +59,6 @@ export class GestionPeliculas {
   });
 
   private readonly borrador = toSignal(this.formulario.valueChanges, { initialValue: this.formulario.getRawValue() });
-  private readonly peliculaEditada = computed(() =>
-    this.peliculas().find(pelicula => pelicula.id === this.peliculaEditadaId()),
-  );
   private readonly cartelGuardado = computed(() => {
     const original = this.peliculaEditada();
     const { titulo, anio } = this.borrador();
@@ -108,34 +108,59 @@ export class GestionPeliculas {
   });
 
   constructor() {
+    inject(DestroyRef).onDestroy(() => this.consulta?.unsubscribe());
     this.cargarDatos();
-  }
-
-  cargarDatos(origen?: HTMLButtonElement): void {
-    this.cargando.set(true);
-    this.mensajeError.set('');
-    this.peliculasApi.getPeliculasParaGestion().pipe(
-      finalize(() => this.cargando.set(false))
-    ).subscribe({
-      next: peliculas => {
-        const teniaFoco = origen && origen.ownerDocument.activeElement === origen;
-        this.peliculas.set(peliculas);
-        if (teniaFoco) {
-          afterNextRender({ write: () => {
-            if (!origen.isConnected) this.enfocar(this.selectorCartelera()?.nativeElement);
-          } }, { injector: this.injector });
-        }
-      },
-      error: () => this.mensajeError.set('No se pudieron cargar las películas. Inténtalo de nuevo.'),
-    });
     this.peliculasApi.getGeneros().subscribe({
       next: generos => this.generos.set(generos),
       error: () => this.mensajeError.set('No se pudieron cargar los géneros disponibles.'),
     });
   }
 
+  cargarDatos(origen?: HTMLButtonElement): void {
+    this.consulta?.unsubscribe();
+    this.cargando.set(true);
+    this.mensajeError.set('');
+    const params: Record<string, string | number | boolean> = {
+      page: this.pagina(), size: 10, texto: this.busqueda().trim(), genero: this.filtroGenero(),
+    };
+    if (this.filtroCartelera() !== 'todas') params['activo'] = this.filtroCartelera() === 'activas';
+    if (this.clasificacion()) params['clasificacion'] = this.clasificacion();
+    if (this.duracionMax()) params['duracionMax'] = this.duracionMax();
+    this.consulta = this.peliculasApi.consultarPagina(params).subscribe({
+      next: resultado => {
+        const ultima = Math.max(0, resultado.totalPages - 1);
+        if (this.pagina() > ultima) {
+          this.irAPagina(ultima);
+          return;
+        }
+        const teniaFoco = origen && origen.ownerDocument.activeElement === origen;
+        this.peliculas.set(resultado.content);
+        this.total.set(resultado.totalElements);
+        this.totalPaginas.set(resultado.totalPages);
+        this.cargando.set(false);
+        if (teniaFoco) {
+          afterNextRender({ write: () => {
+            if (!origen.isConnected) this.enfocar(this.buscador()?.nativeElement);
+          } }, { injector: this.injector });
+        }
+      },
+      error: () => {
+        this.peliculas.set([]);
+        this.total.set(0);
+        this.totalPaginas.set(0);
+        this.cargando.set(false);
+        this.mensajeError.set('No se pudieron cargar las películas. Inténtalo de nuevo.');
+      },
+    });
+  }
+
+  irAPagina(pagina: number): void {
+    this.pagina.set(pagina);
+    this.cargarDatos();
+  }
+
   iniciarNuevaPelicula(origen: HTMLButtonElement): void {
-    this.peliculaEditadaId.set(null);
+    this.peliculaEditada.set(null);
     this.formulario.reset({
       titulo: '',
       sinopsis: '',
@@ -148,7 +173,7 @@ export class GestionPeliculas {
   }
 
   editar(pelicula: PeliculaResponse, origen: HTMLButtonElement): void {
-    this.peliculaEditadaId.set(pelicula.id);
+    this.peliculaEditada.set(pelicula);
     this.formulario.reset({
       titulo: pelicula.titulo,
       sinopsis: pelicula.sinopsis ?? '',
@@ -191,9 +216,7 @@ export class GestionPeliculas {
 
     const datos: PeliculaRequest = {
       ...this.formulario.getRawValue(),
-      activo: this.peliculaEditadaId() === null
-        ? true
-        : this.peliculas().find(pelicula => pelicula.id === this.peliculaEditadaId())?.activo ?? true,
+      activo: this.peliculaEditada()?.activo ?? true,
     };
     const id = this.peliculaEditadaId();
     this.guardando.set(true);
@@ -221,7 +244,7 @@ export class GestionPeliculas {
 
   cancelarEdicion(): void {
     this.cerrarFormulario(this.origenEdicion);
-    this.peliculaEditadaId.set(null);
+    this.peliculaEditada.set(null);
     this.mensajeError.set('');
   }
 
@@ -240,11 +263,16 @@ export class GestionPeliculas {
 
   actualizarBusqueda(evento: Event): void {
     this.busqueda.set((evento.target as HTMLInputElement).value);
+    this.irAPagina(0);
   }
 
   limpiarFiltros(): void {
     this.busqueda.set('');
+    this.filtroGenero.set('');
     this.filtroCartelera.set('todas');
+    this.clasificacion.set('');
+    this.duracionMax.set('');
+    this.irAPagina(0);
     this.enfocar(this.buscador()?.nativeElement);
   }
 }

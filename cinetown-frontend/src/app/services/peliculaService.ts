@@ -5,6 +5,12 @@ import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 import {PeliculaResponse} from '../models/pelicula-detalle.model';
 
+export interface PaginaPeliculas {
+  content: PeliculaResponse[];
+  totalElements: number;
+  totalPages: number;
+}
+
 export interface PeliculaRequest {
   titulo: string;
   sinopsis: string;
@@ -37,6 +43,9 @@ export class PeliculaService {
   }
   getPeliculasParaGestion(): Observable<PeliculaResponse[]> {
     return this.http.get<PeliculaResponse[]>(`${this.apiUrl}/peliculas/gestion`);
+  }
+  consultarPagina(params: Record<string, string | number | boolean>): Observable<PaginaPeliculas> {
+    return this.http.get<PaginaPeliculas>(`${this.apiUrl}/peliculas/gestion`, { params });
   }
   previsualizarCartel(datos: BusquedaCartel): Observable<{ cartelUrl: string | null }> {
     return this.http.post<{ cartelUrl: string | null }>(`${this.apiUrl}/peliculas/gestion/cartel`, datos);
