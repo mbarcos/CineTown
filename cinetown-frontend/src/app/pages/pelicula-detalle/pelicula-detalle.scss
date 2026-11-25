@@ -76,14 +76,13 @@
 
 .contenido {
   min-width: 0;
-  padding-top: clamp(16px, 3vw, 42px);
 }
 
 .pelicula_cabecera {
   padding-bottom: 0;
 
   h1 {
-    max-width: 15ch;
+    overflow-wrap: anywhere;
     margin: 0;
     color: var(--color-texto);
     font-size: clamp(36px, 4vw, 52px);
@@ -98,26 +97,26 @@
   display: flex;
   flex-wrap: wrap;
   gap: 6px 10px;
-  margin: 20px 0 0;
+  margin: 0.75rem 0 0;
   color: #c4c0c2;
   font-size: 14px;
   line-height: 1.6;
 
   [aria-hidden="true"] {
-    color: var(--color-primario-hover);
+    color: var(--color-texto-secundario);
   }
 }
 
 .sinopsis {
   max-width: 62ch;
-  margin: 26px 0 0;
+  margin: 1rem 0 0;
   color: #d7d4d6;
   font-size: 17px;
   line-height: 1.65;
 }
 
 .sesiones {
-  margin-top: 36px;
+  margin-top: 1.5rem;
   padding: clamp(1rem, 3vw, 1.5rem);
 
   h2 {
@@ -183,9 +182,6 @@
     justify-self: center;
   }
 
-  .contenido {
-    padding-top: 0;
-  }
 }
 
 @media (max-width: 34rem) {
@@ -215,6 +211,16 @@
   width: min(calc(100% - 64px), 1120px);
   margin: 24px auto 12px;
   a { display: inline-flex; min-height: 44px; align-items: center; color: var(--color-texto-secundario); font-size: 14px; }
+}
+@media (min-width: 48.01rem) and (max-height: 50rem) {
+  .volver { margin-block: 0.5rem 0; }
+  .detalle {
+    grid-template-columns: clamp(15rem, 38vh, 20rem) minmax(0, 1fr);
+    gap: clamp(2rem, 5vw, 4rem);
+    padding-block: 0.5rem 2rem;
+  }
+  .sesiones { padding: 1.125rem 1.25rem; }
+  .sesiones_cabecera { margin-bottom: 0.75rem; }
 }
 @media (max-width: 48rem) {
   .volver { width: calc(100% - 40px); margin-block: 16px 0; }

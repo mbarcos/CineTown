@@ -75,23 +75,25 @@ legend {
 }
 
 .horarios_opciones {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
+  display: grid;
 }
 
 .horario {
-  display: inline-flex;
+  display: flex;
   min-height: 44px;
   max-width: 100%;
   flex-wrap: wrap;
   align-items: baseline;
   align-content: center;
   gap: 4px 12px;
-  padding: 0.5rem 0.75rem;
+  padding-block: 0.5rem;
   color: var(--color-texto);
   text-decoration: none;
   touch-action: manipulation;
+
+  & + & {
+    border-block-start: 1px solid var(--linea-superficie);
+  }
 
   time {
     font-size: 20px;
@@ -118,7 +120,8 @@ legend {
 }
 
 .horario_accion {
-  color: #f1b9bc;
+  margin-inline-start: auto;
+  color: var(--color-texto-secundario);
   font-size: 14px;
   text-decoration: underline;
 }

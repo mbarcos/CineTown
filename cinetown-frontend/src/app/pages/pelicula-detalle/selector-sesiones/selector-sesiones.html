@@ -26,7 +26,7 @@
     <div class="horarios_opciones">
       @for (sesion of dia.sesiones; track sesion.id) {
         <a
-          class="horario vidrio-control"
+          class="horario"
           [routerLink]="['/sesiones', sesion.id]"
           [attr.aria-label]="'Elegir asientos: ' + dia.etiqueta + ' a las ' + sesion.horaLegible + ', ' + sesion.precioLegible"
         >
