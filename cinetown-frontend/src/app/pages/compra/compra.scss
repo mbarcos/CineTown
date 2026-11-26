@@ -2,66 +2,105 @@
 
 :host {
   display: block;
-  --borde-panel: color-mix(in srgb, var(--color-texto) 13%, transparent);
   --texto-error: color-mix(in srgb, theme(--color-error) 57%, var(--color-texto));
 }
 
 .pagina-compra {
-  width: min(var(--ancho-pagina), 70rem);
+  inline-size: min(var(--ancho-pagina), 52rem);
   margin-inline: auto;
-  padding-block: 1.5rem 5rem;
+  padding-block: 0.75rem 3rem;
 }
 
 .volver {
   display: inline-flex;
-  min-height: 2.75rem;
+  min-block-size: 2.75rem;
   align-items: center;
   gap: 0.5rem;
   color: var(--color-texto-secundario);
-  @apply text-14;
+  font-size: var(--text-14);
+  text-decoration: underline;
+  touch-action: manipulation;
 
-  svg {
-    flex-shrink: 0;
+  &:is(:active, :focus-visible) { color: var(--color-texto); }
+
+  @media (hover: hover) and (pointer: fine) {
+    &:hover { color: var(--color-texto); }
   }
 }
 
+.icono {
+  flex: none;
+  inline-size: 1rem;
+  block-size: 1rem;
+}
+
 .cabecera {
-  margin-block: 1rem 2rem;
+  margin-block: 0.75rem 1.75rem;
+}
+
+.cabecera-titulo {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
 
   h1 {
-    @apply text-32;
+    font-size: clamp(1.75rem, 1.25rem + 2.8vw, 3.5rem);
     font-weight: 650;
-    line-height: 1.15;
+    line-height: 1.1;
     letter-spacing: -0.03em;
   }
+}
+
+.icono-confirmacion {
+  flex: none;
+  inline-size: 1.5em;
+  block-size: 1.5em;
+}
+
+.pelicula {
+  margin-block-start: 0.75rem;
+  font-size: var(--text-18);
+  font-weight: 600;
 }
 
 .sesion {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.125rem 1rem;
-  margin-top: 0.25rem;
+  align-items: center;
+  gap: 0.25rem 1rem;
+  margin-block-start: 0.25rem;
   color: var(--color-texto-secundario);
-  @apply text-14;
+  font-size: var(--text-14);
+
+  time {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.5rem;
+  }
+
+  .icono {
+    align-self: start;
+    margin-block-start: 0.125rem;
+  }
 }
 
 .compra-layout {
   display: grid;
-  grid-template-columns: minmax(0, 1.65fr) minmax(18rem, 1fr);
+  grid-template-columns: minmax(0, 1.45fr) minmax(14rem, 1fr);
   align-items: start;
-  gap: 1.5rem;
+  gap: clamp(1.5rem, 5vw, 3.5rem);
 }
 
-.panel {
-  min-width: 0;
-  padding: 1.75rem;
-  overflow-wrap: anywhere;
+.bloque,
+.resumen,
+.confirmacion,
+.estado {
+  border-block-start: 1px solid var(--linea-superficie);
+  padding-block-start: 1rem;
 }
 
 .bloque + .bloque {
-  margin-top: 1.5rem;
-  padding-top: 1.5rem;
-  border-top: 1px solid var(--borde-panel);
+  margin-block-start: 1rem;
 }
 
 .cantidad {
@@ -69,26 +108,42 @@
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: 0.75rem 1rem;
-  margin-top: 1rem;
+  gap: 0.5rem 1rem;
 }
 
 .selector {
   display: inline-grid;
-  grid-template-columns: auto minmax(2.5rem, auto) auto;
+  grid-template-columns: auto minmax(2rem, auto) auto;
   align-items: center;
 }
 
 .control {
   display: grid;
-  width: 2.75rem;
-  height: 2.75rem;
+  inline-size: 2.75rem;
+  block-size: 2.75rem;
   place-items: center;
-  font-size: 1.5rem;
-  line-height: 1;
+  border-radius: 50%;
+  color: var(--color-texto);
+  touch-action: manipulation;
 
   &[aria-disabled='true'] {
-    --vidrio-borde: var(--borde-panel);
+    color: var(--color-texto-secundario);
+    opacity: 0.55;
+  }
+
+  &[aria-disabled='false'] {
+    cursor: pointer;
+
+    @media (hover: hover) and (pointer: fine) {
+      &:hover { background-color: var(--vidrio-control-hover); }
+    }
+
+    &:active { background-color: var(--vidrio-control-activo); }
+  }
+
+  .icono {
+    inline-size: 1.25rem;
+    block-size: 1.25rem;
   }
 }
 
@@ -100,12 +155,12 @@
 
 input {
   inline-size: 100%;
-  margin-block-start: 0.5rem;
+  margin-block-start: 0.625rem;
 }
 
 .desglose,
 .confirmacion dl {
-  margin-top: 1.125rem;
+  margin-block-start: 0.875rem;
 }
 
 .linea {
@@ -115,39 +170,38 @@ input {
   justify-content: space-between;
   gap: 0.25rem 0.75rem;
   color: var(--color-texto-secundario);
-  @apply text-14;
+  font-size: var(--text-14);
 }
 
 .total {
-  margin-top: 1rem;
-  padding-top: 1rem;
-  border-top: 1px solid var(--borde-panel);
+  margin-block-start: 0.625rem;
+  padding-block-start: 0.75rem;
+  border-block-start: 1px solid var(--linea-superficie);
   color: var(--color-texto);
   font-weight: 650;
 }
 
 .confirmar {
-  width: 100%;
-  min-height: 3rem;
-  margin-top: 1.25rem;
+  inline-size: 100%;
+  min-block-size: 3rem;
+  margin-block-start: 1rem;
 
-  &[aria-disabled='true'] {
-    cursor: wait;
-  }
+  &[aria-disabled='true'] { cursor: wait; }
 }
 
 .mensaje-error {
   color: var(--texto-error);
-  @apply text-14;
+  font-size: var(--text-14);
 }
 
 .estado,
 .confirmacion {
-  max-width: 41rem;
+  max-inline-size: 41rem;
+  overflow-wrap: anywhere;
 }
 
 .confirmacion .linea + .linea {
-  margin-top: 0.625rem;
+  margin-block-start: 0.625rem;
 }
 
 .confirmacion dd {
@@ -155,38 +209,14 @@ input {
 }
 
 .codigo {
-  padding-top: 1rem;
-  border-top: 1px solid var(--borde-panel);
+  padding-block-start: 0.75rem;
+  border-block-start: 1px solid var(--linea-superficie);
 
-  dd {
-    font-weight: 700;
-    letter-spacing: 0.04em;
-  }
+  dd { font-weight: 700; }
 }
 
-@media (hover: hover) and (pointer: fine) {
-  .volver:hover {
-    color: var(--color-texto);
-    text-decoration: underline;
-  }
-}
-
-@media (max-width: 48rem) {
-  .pagina-compra {
-    width: min(var(--ancho-pagina), 42rem);
-    padding-block: 0.75rem 3rem;
-  }
-
-  .cabecera {
-    margin-block: 0.75rem 1.5rem;
-  }
-
+@media (width <= 44rem) {
   .compra-layout {
     grid-template-columns: minmax(0, 1fr);
-    gap: 1rem;
-  }
-
-  .panel {
-    padding: clamp(1rem, 3vw, 1.25rem);
   }
 }

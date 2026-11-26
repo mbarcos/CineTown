@@ -1,13 +1,14 @@
 <main class="gestion">
-  <header class="cabecera flex flex-wrap items-center justify-between gap-x-6 gap-y-3 mb-6">
-    <h1 class="text-32 font-bold leading-[1.2] tracking-[-0.025em] [@media(width<=50rem)]:text-24">Gestión de películas</h1>
-    <button #nuevaPelicula class="boton vidrio-control vidrio-primario" type="button" (click)="iniciarNuevaPelicula(nuevaPelicula)">
+  <header class="cabecera flex flex-wrap items-center justify-between gap-x-6 gap-y-1 mb-3">
+    <h1>Gestión de películas</h1>
+    <button #nuevaPelicula class="accion-texto nueva-pelicula" type="button" (click)="iniciarNuevaPelicula(nuevaPelicula)">
+      <svg lucidePlus class="size-4 shrink-0" aria-hidden="true"></svg>
       Nueva película
     </button>
   </header>
 
   @if (formularioVisible()) {
-    <section class="formulario-panel vidrio-panel mb-7 p-[clamp(1rem,2.5vw,1.5rem)]" aria-labelledby="titulo-formulario">
+    <section class="formulario-panel mb-7 border-t border-(--divisor) pt-4" aria-labelledby="titulo-formulario">
       <h2 class="w-fit mb-5 text-18 font-[650] leading-[1.35]" #tituloFormulario id="titulo-formulario" tabindex="-1">{{ peliculaEditadaId() !== null ? 'Editar película' : 'Nueva película' }}</h2>
       <form #editor [formGroup]="formulario" (ngSubmit)="guardar()">
         @let controles = formulario.controls;
@@ -17,7 +18,7 @@
         @let generosInvalidos = controles.generos.touched && controles.generos.invalid;
         <div class="contenido-formulario grid items-start">
           <div class="campos grid items-start">
-            <div class="campo campo-ancho grid min-w-0 gap-1.5 text-14 font-[550] col-span-full">
+            <div class="campo grid min-w-0 gap-1.5 text-14 font-[550]">
               <label for="pelicula-titulo">Título</label>
               <input id="pelicula-titulo" class="vidrio-campo w-full" formControlName="titulo" required autocomplete="off"
                 [attr.aria-invalid]="tituloInvalido || null" [attr.aria-describedby]="tituloInvalido ? 'error-titulo' : null" />
@@ -25,33 +26,35 @@
                 <p id="error-titulo" class="error-campo">Introduce un título de hasta 255 caracteres.</p>
               }
             </div>
-            <div class="campo grid min-w-0 gap-1.5 text-14 font-[550]">
-              <label for="pelicula-duracion">Duración (min)</label>
-              <input id="pelicula-duracion" class="vidrio-campo w-full" type="number" formControlName="duracion" required min="1" max="300"
-                [attr.aria-invalid]="duracionInvalida || null" [attr.aria-describedby]="duracionInvalida ? 'error-duracion' : null" />
-              @if (duracionInvalida) {
-                <p id="error-duracion" class="error-campo">Introduce una duración de 1 a 300 minutos.</p>
-              }
+            <div class="campos-ficha">
+              <div class="campo grid min-w-0 gap-1.5 text-14 font-[550]">
+                <label for="pelicula-duracion">Duración (min)</label>
+                <input id="pelicula-duracion" class="vidrio-campo w-full" type="number" formControlName="duracion" required min="1" max="300"
+                  [attr.aria-invalid]="duracionInvalida || null" [attr.aria-describedby]="duracionInvalida ? 'error-duracion' : null" />
+                @if (duracionInvalida) {
+                  <p id="error-duracion" class="error-campo">Introduce una duración de 1 a 300 minutos.</p>
+                }
+              </div>
+              <div class="campo grid min-w-0 gap-1.5 text-14 font-[550]">
+                <label for="pelicula-anio">Año</label>
+                <input id="pelicula-anio" class="vidrio-campo w-full" type="number" formControlName="anio" required min="1888" max="2100"
+                  [attr.aria-invalid]="anioInvalido || null" [attr.aria-describedby]="anioInvalido ? 'error-anio' : null" />
+                @if (anioInvalido) {
+                  <p id="error-anio" class="error-campo">Introduce un año entre 1888 y 2100.</p>
+                }
+              </div>
+              <div class="campo grid min-w-0 gap-1.5 text-14 font-[550]">
+                <label for="pelicula-clasificacion">Clasificación</label>
+                <select id="pelicula-clasificacion" class="vidrio-campo w-full" formControlName="clasificacion" required>
+                  <option value="TP">TP</option>
+                  <option value="P7">P7</option>
+                  <option value="P12">P12</option>
+                  <option value="P16">P16</option>
+                  <option value="P18">P18</option>
+                </select>
+              </div>
             </div>
             <div class="campo grid min-w-0 gap-1.5 text-14 font-[550]">
-              <label for="pelicula-anio">Año</label>
-              <input id="pelicula-anio" class="vidrio-campo w-full" type="number" formControlName="anio" required min="1888" max="2100"
-                [attr.aria-invalid]="anioInvalido || null" [attr.aria-describedby]="anioInvalido ? 'error-anio' : null" />
-              @if (anioInvalido) {
-                <p id="error-anio" class="error-campo">Introduce un año entre 1888 y 2100.</p>
-              }
-            </div>
-            <div class="campo grid min-w-0 gap-1.5 text-14 font-[550]">
-              <label for="pelicula-clasificacion">Clasificación</label>
-              <select id="pelicula-clasificacion" class="vidrio-campo w-full" formControlName="clasificacion" required>
-                <option value="TP">TP</option>
-                <option value="P7">P7</option>
-                <option value="P12">P12</option>
-                <option value="P16">P16</option>
-                <option value="P18">P18</option>
-              </select>
-            </div>
-            <div class="campo campo-ancho grid min-w-0 gap-1.5 text-14 font-[550] col-span-full">
               <label for="pelicula-sinopsis">Sinopsis <span class="opcional font-normal">(opcional)</span></label>
               <textarea id="pelicula-sinopsis" class="resize-y vidrio-campo w-full" formControlName="sinopsis" rows="3"></textarea>
             </div>
@@ -84,7 +87,7 @@
         </div>
         @if (mensajeError()) { <p class="error my-3" role="alert">{{ mensajeError() }}</p> }
         <div class="acciones-formulario flex flex-wrap justify-end gap-2.5 mt-5 border-t border-(--divisor) pt-4">
-          <button class="boton vidrio-control" type="button" (click)="cancelarEdicion()">Cancelar</button>
+          <button class="accion-texto" type="button" (click)="cancelarEdicion()">Cancelar</button>
           <button class="boton vidrio-control vidrio-primario" type="submit" [disabled]="guardando()">
             {{ guardando() ? 'Guardando…' : 'Guardar película' }}
           </button>
@@ -93,45 +96,58 @@
     </section>
   }
 
-  <section class="listado vidrio-panel" aria-label="Catálogo de películas">
+  <section class="listado" aria-label="Catálogo de películas">
     @let resultados = peliculas();
-    <div class="barra-herramientas flex flex-wrap items-end justify-between gap-x-6 gap-y-1 px-[clamp(0.875rem,2vw,1.5rem)]">
+    <div class="barra-herramientas flex flex-wrap items-center justify-between gap-x-6 gap-y-2">
       <div class="controles-catalogo">
-        <label class="buscador grid min-w-0 gap-1.5 text-14 font-[550]">
-          <span>Buscar películas</span>
-          <input #buscador class="vidrio-campo w-full" type="search" placeholder="Título o género" [value]="busqueda()" (input)="actualizarBusqueda($event)" />
+        <label class="buscador grid min-w-0">
+          <span class="sr-only">Buscar películas</span>
+          <span class="entrada-busqueda">
+            <svg lucideSearch aria-hidden="true"></svg>
+            <input #buscador class="vidrio-campo w-full" type="search" placeholder="Título o género" [value]="busqueda()" (input)="actualizarBusqueda($event)" />
+          </span>
         </label>
-        <label class="campo filtro-genero-catalogo grid min-w-0 gap-1.5 text-14 font-[550]">
-          <span>Género</span>
-          <select #generoCatalogo class="vidrio-campo w-full" [value]="filtroGenero()" (change)="filtroGenero.set(generoCatalogo.value); irAPagina(0)">
-            <option value="">Todos los géneros</option>
-            @for (genero of generos(); track genero) {
-              <option [value]="genero">{{ genero }}</option>
-            }
-          </select>
-        </label>
-        <label class="campo grid min-w-0 gap-1.5 text-14 font-[550]">
-          <span>Clasificación</span>
-          <select #edad class="vidrio-campo w-full" [value]="clasificacion()" (change)="clasificacion.set(edad.value); irAPagina(0)">
-            <option value="">Cualquiera</option>
-            @for (valor of ['TP', 'P7', 'P12', 'P16', 'P18']; track valor) {
-              <option [value]="valor">{{ valor }}</option>
-            }
-          </select>
-        </label>
-        <label class="campo grid min-w-0 gap-1.5 text-14 font-[550]">
-          <span>Duración máxima</span>
-          <select #duracion class="vidrio-campo w-full" [value]="duracionMax()" (change)="duracionMax.set(duracion.value); irAPagina(0)">
-            <option value="">Sin límite</option>
-            @for (minutos of [90, 120, 150]; track minutos) {
-              <option [value]="minutos">{{ minutos }} min</option>
-            }
-          </select>
-        </label>
+        <button class="filtros-boton chip-filtro vidrio-control" type="button" aria-controls="filtros-catalogo"
+          [attr.aria-expanded]="filtrosVisibles()" (click)="filtrosVisibles.set(!filtrosVisibles())">
+          <svg lucideSlidersHorizontal class="size-4 shrink-0" aria-hidden="true"></svg>
+          Filtros
+          @if (filtroGenero() || clasificacion() || duracionMax()) {
+            <span class="sr-only">activos</span>
+          }
+        </button>
+        <div id="filtros-catalogo" class="filtros-catalogo" role="group" aria-label="Filtros del catálogo">
+          <label class="filtro-genero-catalogo">
+            <span>Género</span>
+            <select #generoCatalogo class="vidrio-campo w-full" [value]="filtroGenero()" (change)="filtroGenero.set(generoCatalogo.value); irAPagina(0)">
+              <option value="">Todos los géneros</option>
+              @for (genero of generos(); track genero) {
+                <option [value]="genero">{{ genero }}</option>
+              }
+            </select>
+          </label>
+          <label>
+            <span>Clasificación</span>
+            <select #edad class="vidrio-campo w-full" [value]="clasificacion()" (change)="clasificacion.set(edad.value); irAPagina(0)">
+              <option value="">Cualquiera</option>
+              @for (valor of ['TP', 'P7', 'P12', 'P16', 'P18']; track valor) {
+                <option [value]="valor">{{ valor }}</option>
+              }
+            </select>
+          </label>
+          <label>
+            <span>Duración máxima</span>
+            <select #duracion class="vidrio-campo w-full" [value]="duracionMax()" (change)="duracionMax.set(duracion.value); irAPagina(0)">
+              <option value="">Sin límite</option>
+              @for (minutos of [90, 120, 150]; track minutos) {
+                <option [value]="minutos">{{ minutos }} min</option>
+              }
+            </select>
+          </label>
+        </div>
       </div>
       <div class="estados-cartelera flex flex-wrap gap-1" role="group" aria-label="Estado de cartelera">
         @for (estado of estadosCartelera; track estado.valor) {
-          <button type="button" class="chip vidrio-control" [attr.aria-pressed]="filtroCartelera() === estado.valor"
+          <button type="button" class="chip-filtro vidrio-control" [attr.aria-pressed]="filtroCartelera() === estado.valor"
             (click)="filtroCartelera.set(estado.valor); irAPagina(0)">{{ estado.nombre }}</button>
         }
       </div>
@@ -146,61 +162,66 @@
     </div>
 
     @if (mensajeError() && !formularioVisible()) { <p class="error my-3" role="alert">{{ mensajeError() }}</p> }
-    @if (cargando()) {
-      <p class="estado border-t border-(--divisor) py-4 px-[clamp(0.875rem,2vw,1.5rem)]" role="status">Cargando películas…</p>
-    } @else if (resultados.length === 0) {
-      @if (!mensajeError()) {
-        <p class="estado border-t border-(--divisor) py-4 px-[clamp(0.875rem,2vw,1.5rem)]">{{ hayFiltros() ? 'No se encontraron películas con estos filtros.' : 'El catálogo está vacío.' }}</p>
-      }
-    } @else {
-      <div class="tabla-scroll overflow-auto overscroll-y-contain [scrollbar-gutter:stable] scroll-pt-9 focus-visible:-outline-offset-3" role="region" aria-label="Listado de películas" tabindex="0">
-        <table class="w-full border-collapse text-start" role="table" aria-label="Películas">
-          <thead role="rowgroup">
-            <tr role="row">
-              <th scope="col" role="columnheader">Película</th>
-              <th scope="col" role="columnheader" class="duracion">Duración</th>
-              <th scope="col" role="columnheader">Cartelera</th>
-              <th scope="col" role="columnheader" class="columna-acciones">Acciones</th>
-            </tr>
-          </thead>
-          <tbody role="rowgroup">
-            @for (pelicula of resultados; track pelicula.id) {
-              @let accionCartelera = pelicula.activo ? 'Quitar de cartelera' : 'Poner en cartelera';
+    <div class="tabla-catalogo vidrio-panel">
+      @if (cargando()) {
+        <p class="estado p-4" role="status">Cargando películas…</p>
+      } @else if (resultados.length === 0) {
+        @if (!mensajeError()) {
+          <p class="estado p-4">{{ hayFiltros() ? 'No se encontraron películas con estos filtros.' : 'El catálogo está vacío.' }}</p>
+        }
+      } @else {
+        <div class="tabla-scroll overflow-auto overscroll-y-contain scroll-pt-9 focus-visible:-outline-offset-3" role="region" aria-label="Listado de películas" tabindex="0">
+          <table class="w-full border-collapse text-start" role="table" aria-label="Películas">
+            <thead role="rowgroup">
               <tr role="row">
-                <th scope="row" role="rowheader" class="identidad">
-                  <span class="titulo block wrap-anywhere text-16 font-[650]">{{ pelicula.titulo }}</span>
-                  <span class="anio block wrap-anywhere font-normal tabular-nums">{{ pelicula.anio }} · {{ pelicula.clasificacion }} · {{ pelicula.generos.join(' · ') }}</span>
-                </th>
-                <td role="cell" class="duracion">{{ pelicula.duracion }} min</td>
-                <td role="cell">
-                  <span [class.en-cartelera]="pelicula.activo">{{ pelicula.activo ? 'En cartelera' : 'Fuera de cartelera' }}</span>
-                </td>
-                <td role="cell" class="columna-acciones">
-                  <div class="acciones">
-                    <button #editarPelicula class="boton vidrio-control" type="button" [attr.aria-label]="'Editar ' + pelicula.titulo"
-                      (click)="editar(pelicula, editarPelicula)">Editar</button>
-                    <button #cambiarEstado class="accion-texto" type="button" [attr.aria-label]="accionCartelera + ': ' + pelicula.titulo"
-                      (click)="cambiarCartelera(pelicula, cambiarEstado)">{{ accionCartelera }}</button>
-                  </div>
-                </td>
+                <th scope="col" role="columnheader">Película</th>
+                <th scope="col" role="columnheader" class="duracion">Duración</th>
+                <th scope="col" role="columnheader">Cartelera</th>
+                <th scope="col" role="columnheader" class="columna-acciones">Acciones</th>
               </tr>
-            }
-          </tbody>
-        </table>
-      </div>
-    }
-    @if (totalPaginas() > 1) {
-      <nav class="paginacion flex flex-wrap items-center justify-center gap-3 px-3.5 border-t border-(--divisor) text-texto-secundario text-14 tabular-nums" aria-label="Páginas del catálogo">
-        <button type="button" class="place-items-center touch-manipulation text-texto enabled:cursor-pointer disabled:opacity-50"
-          aria-label="Página anterior" [disabled]="pagina() === 0" (click)="irAPagina(pagina() - 1)">
-          <svg lucideArrowLeft class="size-5" aria-hidden="true"></svg>
-        </button>
-        <span role="status">Página {{ pagina() + 1 }} de {{ totalPaginas() }}</span>
-        <button type="button" class="place-items-center touch-manipulation text-texto enabled:cursor-pointer disabled:opacity-50"
-          aria-label="Página siguiente" [disabled]="pagina() + 1 >= totalPaginas()" (click)="irAPagina(pagina() + 1)">
-          <svg lucideArrowRight class="size-5" aria-hidden="true"></svg>
-        </button>
-      </nav>
-    }
+            </thead>
+            <tbody role="rowgroup">
+              @for (pelicula of resultados; track pelicula.id) {
+                @let accionCartelera = pelicula.activo ? 'Quitar de cartelera' : 'Poner en cartelera';
+                <tr role="row">
+                  <th scope="row" role="rowheader" class="identidad">
+                    <span class="titulo block wrap-anywhere text-18 font-[650]">{{ pelicula.titulo }}</span>
+                    <span class="anio block wrap-anywhere font-normal tabular-nums">{{ pelicula.anio }} · {{ pelicula.clasificacion }} · {{ pelicula.generos.join(' · ') }}</span>
+                  </th>
+                  <td role="cell" class="duracion">{{ pelicula.duracion }} min</td>
+                  <td role="cell">
+                    <span [class.en-cartelera]="pelicula.activo">{{ pelicula.activo ? 'En cartelera' : 'Fuera de cartelera' }}</span>
+                  </td>
+                  <td role="cell" class="columna-acciones">
+                    <div class="acciones">
+                      <button #editarPelicula class="accion-texto" type="button" [attr.aria-label]="'Editar ' + pelicula.titulo"
+                        (click)="editar(pelicula, editarPelicula)">
+                        <svg lucidePencil class="size-4 shrink-0" aria-hidden="true"></svg>
+                        Editar
+                      </button>
+                      <button #cambiarEstado class="accion-texto" type="button" [attr.aria-label]="accionCartelera + ': ' + pelicula.titulo"
+                        (click)="cambiarCartelera(pelicula, cambiarEstado)">{{ accionCartelera }}</button>
+                    </div>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+      @if (totalPaginas() > 1) {
+        <nav class="paginacion flex flex-wrap items-center justify-center gap-3 px-3.5 border-t border-(--divisor) text-texto-secundario text-14 tabular-nums" aria-label="Páginas del catálogo">
+          <button type="button" class="place-items-center touch-manipulation text-texto enabled:cursor-pointer disabled:opacity-50"
+            aria-label="Página anterior" [disabled]="pagina() === 0" (click)="irAPagina(pagina() - 1)">
+            <svg lucideArrowLeft class="size-5" aria-hidden="true"></svg>
+          </button>
+          <span role="status">Página {{ pagina() + 1 }} de {{ totalPaginas() }}</span>
+          <button type="button" class="place-items-center touch-manipulation text-texto enabled:cursor-pointer disabled:opacity-50"
+            aria-label="Página siguiente" [disabled]="pagina() + 1 >= totalPaginas()" (click)="irAPagina(pagina() + 1)">
+            <svg lucideArrowRight class="size-5" aria-hidden="true"></svg>
+          </button>
+        </nav>
+      }
+    </div>
   </section>
 </main>

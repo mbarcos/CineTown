@@ -1,24 +1,30 @@
 <main class="pagina-compra">
   <a class="volver" routerLink="/">
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-      <path d="M13 8H3m0 0 4-4M3 8l4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-    </svg>
+    <svg lucideArrowLeft class="icono" aria-hidden="true"></svg>
     Volver a la cartelera
   </a>
 
   <header class="cabecera wrap-anywhere">
-    <h1 #tituloCompra tabindex="-1">{{ compraRealizada() ? 'Compra confirmada' : 'Completa tu compra' }}</h1>
+    <div class="cabecera-titulo">
+      @if (compraRealizada()) {
+        <svg lucideCheck class="icono-confirmacion text-exito" aria-hidden="true"></svg>
+      }
+      <h1 #tituloCompra tabindex="-1">{{ compraRealizada() ? 'Compra confirmada' : 'Completa tu compra' }}</h1>
+    </div>
     @if (sesion(); as s) {
-      <p class="mt-3.5 text-18 font-semibold">{{ s.titulo }}</p>
+      <p class="pelicula">{{ s.titulo }}</p>
       <p class="sesion">
-        <time [attr.datetime]="s.fechaHoraInicio">{{ fechaLegible() }}</time>
+        <time [attr.datetime]="s.fechaHoraInicio">
+          <svg lucideCalendarDays class="icono" aria-hidden="true"></svg>
+          {{ fechaLegible() }}
+        </time>
         <span>Sala {{ s.numeroSala }}</span>
       </p>
     }
   </header>
 
   @if (compraRealizada(); as compra) {
-    <section class="vidrio-panel panel confirmacion" aria-labelledby="titulo-confirmacion">
+    <section class="confirmacion" aria-labelledby="titulo-confirmacion">
       <h2 class="text-18 font-semibold" id="titulo-confirmacion">Detalles de la compra</h2>
       <dl>
         <div class="linea">
@@ -37,51 +43,53 @@
       <p class="mt-4 text-14 text-texto-secundario">Enviaremos los detalles a {{ correoConfirmacion() }}. Guarda también el código de compra por si el correo tarda en llegar.</p>
     </section>
   } @else if (cargandoSesion()) {
-    <p class="vidrio-panel panel estado" role="status">Cargando sesión…</p>
+    <p class="estado text-texto-secundario" role="status">Cargando sesión…</p>
   } @else if (!sesion()) {
-    <div class="vidrio-panel panel estado" role="alert">
+    <div class="estado" role="alert">
       <h2 class="text-18 font-semibold">No se pudo cargar la sesión</h2>
       <p class="mt-2 text-texto-secundario">Vuelve a la cartelera para consultar las sesiones disponibles.</p>
     </div>
   } @else if (!maxEntradas()) {
-    <div class="vidrio-panel panel estado" role="status">
+    <div class="estado" role="status">
       <h2 class="text-18 font-semibold">Entradas agotadas</h2>
       <p class="mt-2 text-texto-secundario">Consulta otros horarios en la cartelera.</p>
     </div>
   } @else {
     <form class="compra-layout" aria-label="Compra de entradas" (submit)="confirmarCompra($event, correo)" novalidate>
-      <div class="vidrio-panel panel">
+      <div class="datos-compra">
         <section class="bloque" aria-labelledby="titulo-entradas">
-          <h2 class="text-18 font-semibold" id="titulo-entradas">Entradas</h2>
           <div class="cantidad">
             <div>
-              <p id="etiqueta-cantidad" class="text-14 font-medium">Cantidad</p>
+              <h2 class="text-18 font-semibold" id="titulo-entradas">Entradas</h2>
               <p class="text-14 text-texto-secundario" id="limite-entradas">{{ limiteEntradas() }}</p>
             </div>
-            <div class="selector" role="group" aria-labelledby="etiqueta-cantidad" aria-describedby="limite-entradas">
+            <div class="selector" role="group" aria-labelledby="titulo-entradas" aria-describedby="limite-entradas">
               <button
-                class="control vidrio-control touch-manipulation aria-[disabled=false]:cursor-pointer"
+                class="control"
                 type="button"
                 aria-label="Quitar una entrada"
                 [attr.aria-disabled]="enviando() || cantidad() <= 1"
                 (click)="cambiarCantidad(-1)"
-              >−</button>
+              >
+                <svg lucideMinus class="icono" aria-hidden="true"></svg>
+              </button>
               <span class="numero" aria-hidden="true">{{ cantidad() }}</span>
               <button
-                class="control vidrio-control touch-manipulation aria-[disabled=false]:cursor-pointer"
+                class="control"
                 type="button"
                 aria-label="Añadir una entrada"
                 [attr.aria-disabled]="enviando() || cantidad() >= maxEntradas()"
                 (click)="cambiarCantidad(1)"
-              >+</button>
+              >
+                <svg lucidePlus class="icono" aria-hidden="true"></svg>
+              </button>
             </div>
           </div>
         </section>
 
-        <section class="bloque" aria-labelledby="titulo-contacto">
-          <h2 class="text-18 font-semibold" id="titulo-contacto">Contacto</h2>
-          <p class="mt-2 text-14 text-texto-secundario">Te enviaremos la confirmación y el código de compra a este correo.</p>
-          <label class="mt-4 block text-14 font-medium" for="correo-compra">Correo electrónico</label>
+        <div class="bloque">
+          <label class="block text-18 font-semibold" for="correo-compra">Correo electrónico</label>
+          <p class="text-14 text-texto-secundario" id="correo-ayuda">Te enviaremos aquí la confirmación y el código de compra.</p>
           <input class="vidrio-campo"
             #correo
             id="correo-compra"
@@ -89,15 +97,15 @@
             autocomplete="email"
             [formField]="formulario.email"
             [attr.aria-invalid]="errorCorreo() ? 'true' : null"
-            [attr.aria-describedby]="errorCorreo() ? 'correo-error' : null"
+            [attr.aria-describedby]="errorCorreo() ? 'correo-ayuda correo-error' : 'correo-ayuda'"
           />
           @if (errorCorreo(); as error) {
             <p id="correo-error" class="mensaje-error mt-2" aria-live="polite">{{ error }}</p>
           }
-        </section>
+        </div>
       </div>
 
-      <section class="vidrio-panel panel resumen" aria-labelledby="titulo-resumen">
+      <section class="resumen" aria-labelledby="titulo-resumen">
         <h2 class="text-18 font-semibold" id="titulo-resumen">Resumen de compra</h2>
         <dl class="desglose" aria-live="polite" aria-atomic="true">
           <div class="linea">

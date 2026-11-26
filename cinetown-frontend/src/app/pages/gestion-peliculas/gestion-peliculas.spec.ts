@@ -19,6 +19,6 @@ it('conserva los criterios al avanzar y vuelve a la primera página al filtrar',
   vista.querySelector<HTMLButtonElement>('.paginacion button:last-child')!.click();
   expect(consultarPagina).toHaveBeenLastCalledWith(expect.objectContaining({ page: 1, genero: 'Drama' }));
 
-  vista.querySelector<HTMLButtonElement>('.chip:last-child')!.click();
+  vista.querySelector<HTMLButtonElement>('.estados-cartelera button:last-child')!.click();
   expect(consultarPagina).toHaveBeenLastCalledWith(expect.objectContaining({ page: 0, genero: 'Drama', activo: false }));
 });

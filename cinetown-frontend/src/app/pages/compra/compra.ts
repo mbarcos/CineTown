@@ -12,6 +12,7 @@ import {
 import { HttpErrorResponse } from '@angular/common/http';
 import { FormField, email, form, readonly, required, submit } from '@angular/forms/signals';
 import { ActivatedRoute, RouterLink } from '@angular/router';
+import { LucideArrowLeft, LucideCalendarDays, LucideCheck, LucideMinus, LucidePlus } from '@lucide/angular';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { catchError, distinctUntilChanged, firstValueFrom, map, of, startWith, switchMap } from 'rxjs';
 import { CompraResponse, CompraService } from '../../services/compraService';
@@ -21,7 +22,7 @@ const MAX_ENTRADAS_POR_COMPRA = 10;
 
 @Component({
   selector: 'app-compra',
-  imports: [FormField, RouterLink],
+  imports: [FormField, RouterLink, LucideArrowLeft, LucideCalendarDays, LucideCheck, LucideMinus, LucidePlus],
   templateUrl: './compra.html',
   styleUrl: './compra.scss',
 })
