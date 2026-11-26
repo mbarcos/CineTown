@@ -37,6 +37,11 @@
 }
 
 .carrusel__ventana {
+  --carrusel-relleno: clamp(1rem, 4vw, 3rem);
+
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto auto;
   overflow: hidden;
   border: 1px solid var(--linea-superficie);
   border-radius: 0.875rem;
@@ -44,7 +49,11 @@
 }
 
 .carrusel__pista {
-  display: flex;
+  display: grid;
+  grid-area: 1 / 1 / -1;
+  grid-template-rows: subgrid;
+  grid-auto-flow: column;
+  grid-auto-columns: 100%;
   touch-action: pan-y pinch-zoom;
 
   @media (prefers-reduced-motion: no-preference) {
@@ -56,7 +65,8 @@
   position: relative;
   isolation: isolate;
   display: grid;
-  flex: 0 0 100%;
+  grid-row: 1 / -1;
+  grid-template-rows: subgrid;
   min-inline-size: 0;
   align-items: center;
   overflow: hidden;
@@ -85,10 +95,11 @@
 
 .carrusel__contenido {
   display: grid;
+  grid-row: 1;
   grid-template-columns: clamp(4.5rem, 20vw, 12rem) minmax(0, 1fr);
   align-items: start;
   gap: clamp(1rem, 4vw, 3rem);
-  padding: clamp(1rem, 4vw, 3rem);
+  padding: var(--carrusel-relleno);
 
   @media (min-width: 44rem) {
     align-items: center;
@@ -162,11 +173,15 @@
 }
 
 .carrusel__controles {
+  z-index: 1;
   display: grid;
+  grid-area: 2 / 1;
   grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
   gap: 0.5rem;
-  padding-block-start: 0.625rem;
+  padding-block-end: 0.625rem;
+  padding-inline: var(--carrusel-relleno);
+  background: linear-gradient(to bottom, transparent, var(--color-fondo));
 }
 
 .carrusel__flecha {

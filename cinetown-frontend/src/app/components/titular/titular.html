@@ -83,47 +83,47 @@
             </article>
           }
         </div>
-      </div>
 
-      @if (peliculasValidas().length > 1) {
-        <div
-          class="carrusel__controles"
-          role="group"
-          aria-label="Seleccionar película"
-          (keydown.arrowleft)="anterior()"
-          (keydown.arrowright)="siguiente()"
-        >
-          <button
-            type="button"
-            class="carrusel__flecha"
-            (click)="anterior()"
-            aria-label="Película anterior"
+        @if (peliculasValidas().length > 1) {
+          <div
+            class="carrusel__controles"
+            role="group"
+            aria-label="Seleccionar película"
+            (keydown.arrowleft)="anterior()"
+            (keydown.arrowright)="siguiente()"
           >
-            <svg lucideArrowLeft class="carrusel__icono" aria-hidden="true"></svg>
-          </button>
+            <button
+              type="button"
+              class="carrusel__flecha"
+              (click)="anterior()"
+              aria-label="Película anterior"
+            >
+              <svg lucideArrowLeft class="carrusel__icono" aria-hidden="true"></svg>
+            </button>
 
-          <div class="carrusel__indicadores">
-            @for (pelicula of peliculasValidas(); track pelicula.id; let i = $index) {
-              <button
-                type="button"
-                class="carrusel__punto"
-                [attr.aria-current]="i === indiceSeguro() ? 'true' : null"
-                [attr.aria-label]="'Ir a ' + pelicula.titulo"
-                (click)="irA(i)"
-              ></button>
-            }
+            <div class="carrusel__indicadores">
+              @for (pelicula of peliculasValidas(); track pelicula.id; let i = $index) {
+                <button
+                  type="button"
+                  class="carrusel__punto"
+                  [attr.aria-current]="i === indiceSeguro() ? 'true' : null"
+                  [attr.aria-label]="'Ir a ' + pelicula.titulo"
+                  (click)="irA(i)"
+                ></button>
+              }
+            </div>
+
+            <button
+              type="button"
+              class="carrusel__flecha"
+              (click)="siguiente()"
+              aria-label="Siguiente película"
+            >
+              <svg lucideArrowRight class="carrusel__icono" aria-hidden="true"></svg>
+            </button>
           </div>
-
-          <button
-            type="button"
-            class="carrusel__flecha"
-            (click)="siguiente()"
-            aria-label="Siguiente película"
-          >
-            <svg lucideArrowRight class="carrusel__icono" aria-hidden="true"></svg>
-          </button>
-        </div>
-      }
+        }
+      </div>
     </section>
   }
 </header>
