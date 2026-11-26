@@ -191,9 +191,15 @@
     }
     @if (totalPaginas() > 1) {
       <nav class="paginacion flex flex-wrap items-center justify-center gap-3 p-3.5 border-t border-(--divisor) text-texto-secundario text-14 tabular-nums" aria-label="Páginas del catálogo">
-        <button type="button" class="boton vidrio-control disabled:opacity-50" [disabled]="pagina() === 0" (click)="irAPagina(pagina() - 1)">Anterior</button>
+        <button type="button" class="place-items-center touch-manipulation text-texto enabled:cursor-pointer disabled:opacity-50"
+          aria-label="Página anterior" [disabled]="pagina() === 0" (click)="irAPagina(pagina() - 1)">
+          <svg lucideArrowLeft class="size-5" aria-hidden="true"></svg>
+        </button>
         <span role="status">Página {{ pagina() + 1 }} de {{ totalPaginas() }}</span>
-        <button type="button" class="boton vidrio-control disabled:opacity-50" [disabled]="pagina() + 1 >= totalPaginas()" (click)="irAPagina(pagina() + 1)">Siguiente</button>
+        <button type="button" class="place-items-center touch-manipulation text-texto enabled:cursor-pointer disabled:opacity-50"
+          aria-label="Página siguiente" [disabled]="pagina() + 1 >= totalPaginas()" (click)="irAPagina(pagina() + 1)">
+          <svg lucideArrowRight class="size-5" aria-hidden="true"></svg>
+        </button>
       </nav>
     }
   </section>

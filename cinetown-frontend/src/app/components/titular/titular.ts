@@ -10,12 +10,13 @@ import {
   signal,
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { LucideArrowLeft, LucideArrowRight } from '@lucide/angular';
 import { PeliculaResponse } from '../../models/pelicula-detalle.model';
 
 @Component({
   selector: 'app-titular',
   standalone: true,
-  imports: [RouterLink],
+  imports: [RouterLink, LucideArrowLeft, LucideArrowRight],
   templateUrl: './titular.html',
   styleUrl: './titular.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

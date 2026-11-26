@@ -1,11 +1,13 @@
 import { afterNextRender, Component, computed, ElementRef, inject, Injector, signal, viewChild, viewChildren } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
+import { LucideArrowLeft, LucideArrowRight } from '@lucide/angular';
 import { firstValueFrom } from 'rxjs';
 import { AuthService } from '../../services/authService';
 import { CompraResumen, CompraService } from '../../services/compraService';
 
 @Component({
   selector: 'app-mis-compras', standalone: true,
+  imports: [LucideArrowLeft, LucideArrowRight],
   templateUrl: './mis-compras.html', styleUrl: './mis-compras.scss',
 })
 export class MisCompras {

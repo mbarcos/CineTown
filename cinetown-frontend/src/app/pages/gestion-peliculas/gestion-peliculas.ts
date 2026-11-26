@@ -1,6 +1,7 @@
 import { afterNextRender, Component, computed, DestroyRef, ElementRef, inject, Injector, signal, viewChild } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { LucideArrowLeft, LucideArrowRight } from '@lucide/angular';
 import { catchError, finalize, map, Observable, of, Subscription, switchMap, timer } from 'rxjs';
 import { PeliculaCardComponent } from '../../components/pelicula-card/pelicula-card';
 import { PeliculaResponse } from '../../models/pelicula-detalle.model';
@@ -9,7 +10,7 @@ import { BusquedaCartel, PeliculaRequest, PeliculaService } from '../../services
 @Component({
   selector: 'app-gestion-peliculas',
   standalone: true,
-  imports: [ReactiveFormsModule, PeliculaCardComponent],
+  imports: [ReactiveFormsModule, PeliculaCardComponent, LucideArrowLeft, LucideArrowRight],
   templateUrl: './gestion-peliculas.html',
   styleUrl: './gestion-peliculas.scss',
 })
