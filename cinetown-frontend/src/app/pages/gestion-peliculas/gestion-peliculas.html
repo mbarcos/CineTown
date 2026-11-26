@@ -95,7 +95,7 @@
 
   <section class="listado vidrio-panel" aria-label="Catálogo de películas">
     @let resultados = peliculas();
-    <div class="barra-herramientas flex flex-wrap items-end justify-between gap-x-6 gap-y-2 py-4 px-[clamp(0.875rem,2vw,1.5rem)]">
+    <div class="barra-herramientas flex flex-wrap items-end justify-between gap-x-6 gap-y-1 px-[clamp(0.875rem,2vw,1.5rem)]">
       <div class="controles-catalogo">
         <label class="buscador grid min-w-0 gap-1.5 text-14 font-[550]">
           <span>Buscar películas</span>
@@ -135,7 +135,7 @@
             (click)="filtroCartelera.set(estado.valor); irAPagina(0)">{{ estado.nombre }}</button>
         }
       </div>
-      <div class="resumen-catalogo flex items-center flex-wrap gap-x-4 [@media(width>50rem)]:min-h-11">
+      <div class="resumen-catalogo flex items-center flex-wrap gap-x-4">
         @if ((!cargando() || peliculas().length > 0) && (resultados.length || !mensajeError())) {
           <p class="contador text-14 tabular-nums whitespace-nowrap" role="status">{{ total() }} {{ total() === 1 ? 'película' : 'películas' }}</p>
         }
@@ -153,7 +153,7 @@
         <p class="estado border-t border-(--divisor) py-4 px-[clamp(0.875rem,2vw,1.5rem)]">{{ hayFiltros() ? 'No se encontraron películas con estos filtros.' : 'El catálogo está vacío.' }}</p>
       }
     } @else {
-      <div class="tabla-scroll overflow-auto overscroll-y-contain [scrollbar-gutter:stable] scroll-pt-12 focus-visible:-outline-offset-3" role="region" aria-label="Listado de películas" tabindex="0">
+      <div class="tabla-scroll overflow-auto overscroll-y-contain [scrollbar-gutter:stable] scroll-pt-9 focus-visible:-outline-offset-3" role="region" aria-label="Listado de películas" tabindex="0">
         <table class="w-full border-collapse text-start" role="table" aria-label="Películas">
           <thead role="rowgroup">
             <tr role="row">
@@ -190,7 +190,7 @@
       </div>
     }
     @if (totalPaginas() > 1) {
-      <nav class="paginacion flex flex-wrap items-center justify-center gap-3 p-3.5 border-t border-(--divisor) text-texto-secundario text-14 tabular-nums" aria-label="Páginas del catálogo">
+      <nav class="paginacion flex flex-wrap items-center justify-center gap-3 px-3.5 border-t border-(--divisor) text-texto-secundario text-14 tabular-nums" aria-label="Páginas del catálogo">
         <button type="button" class="place-items-center touch-manipulation text-texto enabled:cursor-pointer disabled:opacity-50"
           aria-label="Página anterior" [disabled]="pagina() === 0" (click)="irAPagina(pagina() - 1)">
           <svg lucideArrowLeft class="size-5" aria-hidden="true"></svg>

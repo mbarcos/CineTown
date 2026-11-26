@@ -112,6 +112,20 @@ tbody tr:has(:focus-visible) { background: var(--vidrio-fila); }
   font-weight: 400;
 }
 
+.barra-herramientas {
+  padding-block: 0.625rem;
+}
+
+.paginacion {
+  padding-block: 0.375rem;
+}
+
+.paginacion button {
+  display: grid;
+  min-inline-size: 2.25rem;
+  min-block-size: 2.25rem;
+}
+
 .listado > .error { margin-inline: clamp(0.875rem, 2vw, 1.5rem); }
 
 .contenido-formulario {
@@ -129,6 +143,42 @@ tbody tr:has(:focus-visible) { background: var(--vidrio-fila); }
   .vista-previa { grid-area: 1 / 2 / span 2; }
 }
 
+@media (width > 50rem) {
+  .gestion {
+    padding-block-start: 1rem;
+  }
+
+  .cabecera {
+    margin-block-end: 0.875rem;
+  }
+
+  thead th {
+    padding-block: 0.5rem;
+  }
+
+  tbody th, tbody td {
+    padding-block: 0.25rem;
+  }
+
+  .identidad {
+    line-height: 1.25;
+  }
+}
+
+@media (width > 50rem) and (pointer: fine) {
+  .barra-herramientas .chip,
+  .barra-herramientas .accion-texto,
+  .resumen-catalogo,
+  .acciones .boton,
+  .acciones .accion-texto {
+    min-height: 2.25rem;
+  }
+
+  .acciones .boton {
+    padding-block: 0.375rem;
+  }
+}
+
 @media (width <= 50rem) {
   .controles-catalogo { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .contenido-formulario { grid-template-columns: minmax(0, 1fr); }
@@ -139,7 +189,7 @@ tbody tr:has(:focus-visible) { background: var(--vidrio-fila); }
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto;
     gap: 0.25rem 0.75rem;
-    padding: 0.875rem 0.875rem 0.625rem;
+    padding: 0.625rem 0.875rem 0.375rem;
   }
 
   tbody th, tbody td { padding: 0; }
@@ -151,18 +201,15 @@ tbody tr:has(:focus-visible) { background: var(--vidrio-fila); }
 }
 
 @media (width <= 35rem) {
-  .controles-catalogo { grid-template-columns: minmax(0, 1fr); }
   .campos { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
-.tabla-scroll { max-block-size: 55dvh; }
-
-@media (height >= 32rem) {
+@media (width > 50rem) and (height >= 32rem) {
   .gestion:not(:has(.formulario-panel)) {
     display: flex;
     flex-direction: column;
     block-size: 100%;
-    padding-block-end: 1.25rem;
+    padding-block-end: 0.75rem;
 
     .listado {
       display: flex;
@@ -170,11 +217,10 @@ tbody tr:has(:focus-visible) { background: var(--vidrio-fila); }
       min-block-size: 0;
     }
 
-    .barra-herramientas, .paginacion { flex: none; }
+    .listado > :not(.tabla-scroll) { flex: none; }
 
     .tabla-scroll {
-      min-block-size: min(10rem, 35dvh);
-      max-block-size: none;
+      min-block-size: 6rem;
     }
   }
 }
