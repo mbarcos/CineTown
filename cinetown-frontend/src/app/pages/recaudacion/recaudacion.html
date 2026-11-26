@@ -3,7 +3,7 @@
     <h1>Recaudación por película</h1>
     <label class="selector-pelicula">
       <span>Película</span>
-      <select class="vidrio-campo" [value]="peliculaId() ?? ''" (change)="seleccionarPelicula($event)" [disabled]="cargandoPeliculas() || peliculas().length === 0">
+      <select appSelector [value]="peliculaId() ?? ''" (change)="seleccionarPelicula($event)" [disabled]="cargandoPeliculas() || peliculas().length === 0">
         <option value="" disabled>Selecciona una película</option>
         @for (pelicula of peliculas(); track pelicula.id) {
           <option [value]="pelicula.id">{{ pelicula.titulo }}</option>

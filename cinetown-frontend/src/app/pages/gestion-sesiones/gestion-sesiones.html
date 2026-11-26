@@ -15,7 +15,7 @@
 
       <div class="campo">
         <label for="sesion-pelicula">Película</label>
-        <select id="sesion-pelicula" class="vidrio-campo" [formField]="formulario.peliculaId"
+        <select appSelector id="sesion-pelicula" [formField]="formulario.peliculaId"
           [attr.aria-invalid]="errorPelicula ? 'true' : null"
           [attr.aria-describedby]="errorPelicula ? 'sesion-pelicula-error' : null">
           <option value="" disabled>Selecciona una película</option>
@@ -52,7 +52,7 @@
 
       <div class="campo">
         <label for="sesion-sala">Sala</label>
-        <select id="sesion-sala" class="vidrio-campo" [formField]="formulario.salaId"
+        <select appSelector id="sesion-sala" [formField]="formulario.salaId"
           [attr.aria-invalid]="errorSala ? 'true' : null"
           [attr.aria-describedby]="errorSala ? 'sesion-sala-error' : null">
           <option value="" disabled>Selecciona una sala</option>

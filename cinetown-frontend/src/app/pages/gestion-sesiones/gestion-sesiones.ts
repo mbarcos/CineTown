@@ -8,6 +8,7 @@ import { Sala } from '../../models/sala.model';
 import { SesionGestion } from '../../models/sesion.model';
 import { PeliculaService } from '../../services/peliculaService';
 import { SesionRequest, SesionService } from '../../services/sesionService';
+import { Selector } from '../../components/selector/selector';
 
 interface SesionFormModel {
   peliculaId: string;
@@ -55,7 +56,7 @@ function descomponerFechaHora(valor: string): { fecha: string; hora: string } {
 @Component({
   selector: 'app-gestion-sesiones',
   standalone: true,
-  imports: [FormField, NgTemplateOutlet],
+  imports: [Selector, FormField, NgTemplateOutlet],
   templateUrl: './gestion-sesiones.html',
   styleUrl: './gestion-sesiones.scss',
 })

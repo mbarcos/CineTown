@@ -1,5 +1,6 @@
 import { Component, input, linkedSignal } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { Selector } from '../../../components/selector/selector';
 
 export interface DiaConSesiones {
   fecha: string;
@@ -14,7 +15,7 @@ export interface DiaConSesiones {
 
 @Component({
   selector: 'app-selector-sesiones',
-  imports: [RouterLink],
+  imports: [Selector, RouterLink],
   templateUrl: './selector-sesiones.html',
   styleUrl: './selector-sesiones.scss',
 })

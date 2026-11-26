@@ -17,12 +17,13 @@ import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { catchError, distinctUntilChanged, firstValueFrom, map, of, startWith, switchMap } from 'rxjs';
 import { CompraResponse, CompraService } from '../../services/compraService';
 import { SesionService } from '../../services/sesionService';
+import { EntradaMotion } from '../../shared/entrada-motion';
 
 const MAX_ENTRADAS_POR_COMPRA = 10;
 
 @Component({
   selector: 'app-compra',
-  imports: [FormField, RouterLink, LucideArrowLeft, LucideCalendarDays, LucideCheck, LucideMinus, LucidePlus],
+  imports: [FormField, RouterLink, LucideArrowLeft, LucideCalendarDays, LucideCheck, LucideMinus, LucidePlus, EntradaMotion],
   templateUrl: './compra.html',
   styleUrl: './compra.scss',
 })

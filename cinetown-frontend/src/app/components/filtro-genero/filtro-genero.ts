@@ -1,8 +1,10 @@
 import { Component, computed, input, model } from '@angular/core';
+import { Selector } from '../selector/selector';
 
 @Component({
   selector: 'app-filtro-genero',
   standalone: true,
+  imports: [Selector],
   templateUrl: './filtro-genero.html',
   styleUrl: './filtro-genero.scss',
 })

@@ -1,0 +1,76 @@
+select.selector-cinetown {
+  text-overflow: ellipsis;
+
+  &:enabled { cursor: pointer; }
+
+  option {
+    background-color: var(--vidrio-solido);
+    color: var(--color-texto);
+  }
+
+  option:disabled { color: var(--color-texto-secundario); }
+}
+
+@supports (appearance: base-select) and selector(::picker(select)) {
+  select.selector-cinetown {
+    &,
+    &::picker(select) {
+      appearance: base-select;
+    }
+
+    &::picker(select) {
+      inline-size: anchor-size(inline);
+      min-inline-size: 0;
+      max-inline-size: calc(100vi - 1rem);
+      max-block-size: min(18rem, 50dvb);
+      margin-block: 0.25rem;
+      overflow: auto;
+      overscroll-behavior: contain;
+      scrollbar-width: thin;
+      border: 1px solid var(--linea-superficie);
+      border-radius: 0.75rem;
+      padding: 0.25rem;
+      background-color: var(--vidrio-solido);
+      color: var(--color-texto);
+      box-shadow: 0 8px 24px rgb(0 0 0 / 28%);
+    }
+
+    &::picker-icon {
+      flex: none;
+      margin-inline-start: auto;
+      color: var(--color-texto-secundario);
+    }
+
+    option {
+      min-block-size: 2.75rem;
+      border-radius: 0.5rem;
+      padding: 0.5rem 0.625rem;
+      white-space: normal;
+      overflow-wrap: anywhere;
+      line-height: 1.35;
+    }
+
+    option:enabled { cursor: pointer; }
+
+    option:checked {
+      background-color: var(--vidrio-control-fondo);
+      font-weight: 600;
+    }
+
+    option:focus-visible {
+      outline: 2px solid var(--color-info);
+      outline-offset: -2px;
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+      option:hover:not(:disabled) {
+        background-color: var(--vidrio-control-hover);
+      }
+    }
+
+    option::checkmark {
+      order: 1;
+      margin-inline-start: auto;
+    }
+  }
+}

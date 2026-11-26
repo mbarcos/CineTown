@@ -45,7 +45,7 @@
               </div>
               <div class="campo grid min-w-0 gap-1.5 text-14 font-[550]">
                 <label for="pelicula-clasificacion">Clasificación</label>
-                <select id="pelicula-clasificacion" class="vidrio-campo w-full" formControlName="clasificacion" required>
+                <select appSelector id="pelicula-clasificacion" class="w-full" formControlName="clasificacion" required>
                   <option value="TP">TP</option>
                   <option value="P7">P7</option>
                   <option value="P12">P12</option>
@@ -118,7 +118,7 @@
         <div id="filtros-catalogo" class="filtros-catalogo" role="group" aria-label="Filtros del catálogo">
           <label class="filtro-genero-catalogo">
             <span>Género</span>
-            <select #generoCatalogo class="vidrio-campo w-full" [value]="filtroGenero()" (change)="filtroGenero.set(generoCatalogo.value); irAPagina(0)">
+            <select appSelector #generoCatalogo class="w-full" [value]="filtroGenero()" (change)="filtroGenero.set(generoCatalogo.value); irAPagina(0)">
               <option value="">Todos los géneros</option>
               @for (genero of generos(); track genero) {
                 <option [value]="genero">{{ genero }}</option>
@@ -127,7 +127,7 @@
           </label>
           <label>
             <span>Clasificación</span>
-            <select #edad class="vidrio-campo w-full" [value]="clasificacion()" (change)="clasificacion.set(edad.value); irAPagina(0)">
+            <select appSelector #edad class="w-full" [value]="clasificacion()" (change)="clasificacion.set(edad.value); irAPagina(0)">
               <option value="">Cualquiera</option>
               @for (valor of ['TP', 'P7', 'P12', 'P16', 'P18']; track valor) {
                 <option [value]="valor">{{ valor }}</option>
@@ -136,7 +136,7 @@
           </label>
           <label>
             <span>Duración máxima</span>
-            <select #duracion class="vidrio-campo w-full" [value]="duracionMax()" (change)="duracionMax.set(duracion.value); irAPagina(0)">
+            <select appSelector #duracion class="w-full" [value]="duracionMax()" (change)="duracionMax.set(duracion.value); irAPagina(0)">
               <option value="">Sin límite</option>
               @for (minutos of [90, 120, 150]; track minutos) {
                 <option [value]="minutos">{{ minutos }} min</option>

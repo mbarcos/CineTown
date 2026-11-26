@@ -7,6 +7,7 @@ import { Clasificacion } from '../../models/pelicula-detalle.model';
 import { PeliculaService } from '../../services/peliculaService';
 import { SesionService } from '../../services/sesionService';
 import { SesionConAsientos } from '../../models/sesion.model';
+import { EntradaMotion } from '../../shared/entrada-motion';
 import { obtenerFondoPoster } from '../../shared/utils/pelicula-poster';
 
 import { SelectorSesiones, type DiaConSesiones } from './selector-sesiones/selector-sesiones';
@@ -20,7 +21,7 @@ interface SesionPresentacion extends SesionConAsientos {
 @Component({
   selector: 'app-pelicula-detalle',
   standalone: true,
-  imports: [RouterLink, SelectorSesiones],
+  imports: [RouterLink, SelectorSesiones, EntradaMotion],
   templateUrl: './pelicula-detalle.html',
   styleUrl: './pelicula-detalle.scss',
 })

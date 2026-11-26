@@ -2,7 +2,7 @@
   <a class="volver" routerLink="/">Volver a la cartelera</a>
 
   @if (pelicula(); as p) {
-    <div class="detalle">
+    <div class="detalle" appEntradaMotion>
       <div class="poster" [style.background]="fondoPoster(p.id)" aria-hidden="true">
         @if (p.cartelUrl && p.cartelUrl !== cartelNoDisponible()) {
           <img

@@ -6,11 +6,13 @@ import { catchError, finalize, map, Observable, of, Subscription, switchMap, tim
 import { PeliculaCardComponent } from '../../components/pelicula-card/pelicula-card';
 import { PeliculaResponse } from '../../models/pelicula-detalle.model';
 import { BusquedaCartel, PeliculaRequest, PeliculaService } from '../../services/peliculaService';
+import { Selector } from '../../components/selector/selector';
 
 @Component({
   selector: 'app-gestion-peliculas',
   standalone: true,
   imports: [
+    Selector,
     ReactiveFormsModule, PeliculaCardComponent,
     LucideArrowLeft, LucideArrowRight, LucidePencil, LucidePlus, LucideSearch, LucideSlidersHorizontal,
   ],

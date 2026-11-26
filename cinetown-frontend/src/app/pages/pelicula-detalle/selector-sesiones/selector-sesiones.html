@@ -21,7 +21,7 @@
 
   <label class="filtro-compacto">
     <span>Fecha</span>
-    <select #selectorFecha class="vidrio-campo" (change)="diaSeleccionado.set(dias()[selectorFecha.selectedIndex])">
+    <select appSelector #selectorFecha (change)="diaSeleccionado.set(dias()[selectorFecha.selectedIndex])">
       @for (dia of dias(); track dia.fecha) {
         <option [value]="dia.fecha" [selected]="diaSeleccionado() === dia">
           {{ diaCorto(dia.fecha) }} {{ fechaCorta(dia.fecha) }} {{ dia.fecha.slice(0, 4) }}

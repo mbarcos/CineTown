@@ -4,11 +4,12 @@ import { PeliculaService } from '../../services/peliculaService';
 import { TitularComponent } from '../../components/titular/titular';
 import { PeliculaCardComponent } from '../../components/pelicula-card/pelicula-card';
 import { FiltroGeneroComponent } from '../../components/filtro-genero/filtro-genero';
+import { EntradaMotion } from '../../shared/entrada-motion';
 
 @Component({
   selector: 'app-landing',
   standalone: true,
-  imports: [TitularComponent, PeliculaCardComponent, FiltroGeneroComponent],
+  imports: [TitularComponent, PeliculaCardComponent, FiltroGeneroComponent, EntradaMotion],
   templateUrl: './landing.html',
   styleUrl: './landing.scss',
 })

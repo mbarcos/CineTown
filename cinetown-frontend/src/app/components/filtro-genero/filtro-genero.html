@@ -13,7 +13,7 @@
 
 <label class="filtro-compacto filtro-genero_compacto">
   <span>Género</span>
-  <select #selectorGenero class="vidrio-campo" (change)="generoSeleccionado.set(selectorGenero.value || null)">
+  <select appSelector #selectorGenero (change)="generoSeleccionado.set(selectorGenero.value || null)">
     @for (genero of opciones(); track genero) {
       <option [value]="genero ?? ''" [selected]="generoSeleccionado() === genero">
         {{ genero ?? 'Todos los géneros' }}

@@ -3,10 +3,12 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import { PeliculaResponse } from '../../models/pelicula-detalle.model';
 import { PeliculaService, RecaudacionPelicula } from '../../services/peliculaService';
+import { Selector } from '../../components/selector/selector';
 
 @Component({
   selector: 'app-recaudacion',
   standalone: true,
+  imports: [Selector],
   templateUrl: './recaudacion.html',
   styleUrl: './recaudacion.scss',
 })

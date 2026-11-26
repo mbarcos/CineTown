@@ -35,7 +35,7 @@
         </button>
       </div>
     } @else if (peliculasFiltradas().length > 0) {
-      <ul class="cartelera_lista" aria-label="Películas">
+      <ul class="cartelera_lista" aria-label="Películas" appEntradaMotion>
         @for (pelicula of peliculasFiltradas(); track pelicula.id) {
           <li><app-pelicula-card [pelicula]="pelicula" /></li>
         }
