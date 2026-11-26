@@ -136,15 +136,15 @@ h2 {
   padding: 0.875rem 1rem;
 }
 
-.confirmacion-acciones, .paginacion {
+.confirmacion-acciones {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
+  margin-block: 0.25rem;
 }
 
 .confirmacion > p:not(:empty) { margin-block: 0.375rem; }
 .confirmacion .texto-error { flex-basis: 100%; }
-.confirmacion-acciones { margin-block: 0.25rem; }
 
 .estado { padding: 1.25rem; }
 .estado > p { margin-block-start: 0.375rem; }
@@ -152,10 +152,8 @@ h2 {
 .aviso-carga button { margin-block-start: 0.5rem; }
 
 .pie-historial {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
   align-items: center;
-  justify-content: space-between;
   gap: 0.75rem;
   flex: none;
   border-block-start: 1px solid var(--divisor);
@@ -164,8 +162,11 @@ h2 {
   font-variant-numeric: tabular-nums;
 }
 
-.paginacion { align-items: center; }
-.paginacion span { margin-inline-end: 0.375rem; }
+@media (width > 32rem) {
+  .pie-historial:has(.paginacion) {
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  }
+}
 
 @media (width <= 52rem) {
   .columnas { display: none; }
