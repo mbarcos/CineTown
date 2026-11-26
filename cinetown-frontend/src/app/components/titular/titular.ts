@@ -119,10 +119,6 @@ export class TitularComponent {
     this.reiniciarTemporizador();
   }
 
-  protected alternarPausa(): void {
-    this.pausaManual.update((estado) => !estado);
-  }
-
   protected alEntrarRaton(): void {
     this.enHover.set(true);
   }

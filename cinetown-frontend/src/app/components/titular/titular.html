@@ -3,21 +3,6 @@
     <h1 id="titulo-peliculas" class="titular_titulo" tabindex="-1">
       {{ titulo() }}
     </h1>
-
-    @if (rotacionDisponible() && peliculasValidas().length > 1) {
-        <button
-          type="button"
-          class="titular__btn-control vidrio-control"
-          (click)="alternarPausa()"
-          [attr.aria-label]="
-            pausaManual()
-              ? 'Reanudar cambio automático del carrusel'
-              : 'Pausar cambio automático del carrusel'
-          "
-        >
-          {{ pausaManual() ? 'Reanudar' : 'Pausar' }}
-        </button>
-    }
   </div>
 
   @if (peliculasValidas().length > 0) {
