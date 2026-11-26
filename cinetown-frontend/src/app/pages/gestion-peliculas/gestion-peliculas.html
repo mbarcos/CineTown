@@ -19,7 +19,7 @@
           <div class="campos grid items-start">
             <div class="campo campo-ancho grid min-w-0 gap-1.5 text-14 font-[550] col-span-full">
               <label for="pelicula-titulo">Título</label>
-              <input id="pelicula-titulo" class="vidrio-campo w-full min-w-0 min-h-11 px-3 py-2 text-texto text-16 font-normal" formControlName="titulo" required autocomplete="off"
+              <input id="pelicula-titulo" class="vidrio-campo w-full" formControlName="titulo" required autocomplete="off"
                 [attr.aria-invalid]="tituloInvalido || null" [attr.aria-describedby]="tituloInvalido ? 'error-titulo' : null" />
               @if (tituloInvalido) {
                 <p id="error-titulo" class="error-campo">Introduce un título de hasta 255 caracteres.</p>
@@ -27,7 +27,7 @@
             </div>
             <div class="campo grid min-w-0 gap-1.5 text-14 font-[550]">
               <label for="pelicula-duracion">Duración (min)</label>
-              <input id="pelicula-duracion" class="vidrio-campo w-full min-w-0 min-h-11 px-3 py-2 text-texto text-16 font-normal" type="number" formControlName="duracion" required min="1" max="300"
+              <input id="pelicula-duracion" class="vidrio-campo w-full" type="number" formControlName="duracion" required min="1" max="300"
                 [attr.aria-invalid]="duracionInvalida || null" [attr.aria-describedby]="duracionInvalida ? 'error-duracion' : null" />
               @if (duracionInvalida) {
                 <p id="error-duracion" class="error-campo">Introduce una duración de 1 a 300 minutos.</p>
@@ -35,7 +35,7 @@
             </div>
             <div class="campo grid min-w-0 gap-1.5 text-14 font-[550]">
               <label for="pelicula-anio">Año</label>
-              <input id="pelicula-anio" class="vidrio-campo w-full min-w-0 min-h-11 px-3 py-2 text-texto text-16 font-normal" type="number" formControlName="anio" required min="1888" max="2100"
+              <input id="pelicula-anio" class="vidrio-campo w-full" type="number" formControlName="anio" required min="1888" max="2100"
                 [attr.aria-invalid]="anioInvalido || null" [attr.aria-describedby]="anioInvalido ? 'error-anio' : null" />
               @if (anioInvalido) {
                 <p id="error-anio" class="error-campo">Introduce un año entre 1888 y 2100.</p>
@@ -43,7 +43,7 @@
             </div>
             <div class="campo grid min-w-0 gap-1.5 text-14 font-[550]">
               <label for="pelicula-clasificacion">Clasificación</label>
-              <select id="pelicula-clasificacion" class="vidrio-campo w-full min-w-0 min-h-11 px-3 py-2 text-texto text-16 font-normal" formControlName="clasificacion" required>
+              <select id="pelicula-clasificacion" class="vidrio-campo w-full" formControlName="clasificacion" required>
                 <option value="TP">TP</option>
                 <option value="P7">P7</option>
                 <option value="P12">P12</option>
@@ -53,7 +53,7 @@
             </div>
             <div class="campo campo-ancho grid min-w-0 gap-1.5 text-14 font-[550] col-span-full">
               <label for="pelicula-sinopsis">Sinopsis <span class="opcional font-normal">(opcional)</span></label>
-              <textarea id="pelicula-sinopsis" class="resize-y vidrio-campo w-full min-w-0 min-h-11 px-3 py-2 text-texto text-16 font-normal" formControlName="sinopsis" rows="3"></textarea>
+              <textarea id="pelicula-sinopsis" class="resize-y vidrio-campo w-full" formControlName="sinopsis" rows="3"></textarea>
             </div>
           </div>
           <fieldset class="generos min-w-0" [attr.aria-describedby]="generosInvalidos ? 'error-generos' : null">
@@ -63,7 +63,7 @@
               <div class="opciones-genero grid grid-cols-[repeat(auto-fit,minmax(min(100%,8rem),1fr))] gap-x-3 my-1.5">
                 @for (genero of generos(); track genero) {
                   <label class="genero-opcion inline-flex items-center gap-2 min-h-11 text-14 wrap-anywhere cursor-pointer">
-                    <input class="flex-none size-4.5 accent-primario" type="checkbox" [checked]="controles.generos.value.includes(genero)"
+                    <input class="flex-none size-4.5" type="checkbox" [checked]="controles.generos.value.includes(genero)"
                       (change)="alternarGenero(genero, $event)" />
                     <span>{{ genero }}</span>
                   </label>
@@ -99,11 +99,11 @@
       <div class="controles-catalogo">
         <label class="buscador grid min-w-0 gap-1.5 text-14 font-[550]">
           <span>Buscar películas</span>
-          <input #buscador class="vidrio-campo w-full min-w-0 min-h-11 px-3 py-2 text-texto text-16 font-normal" type="search" placeholder="Título o género" [value]="busqueda()" (input)="actualizarBusqueda($event)" />
+          <input #buscador class="vidrio-campo w-full" type="search" placeholder="Título o género" [value]="busqueda()" (input)="actualizarBusqueda($event)" />
         </label>
-        <label class="campo grid min-w-0 gap-1.5 text-14 font-[550]">
+        <label class="campo filtro-genero-catalogo grid min-w-0 gap-1.5 text-14 font-[550]">
           <span>Género</span>
-          <select #generoCatalogo class="vidrio-campo w-full min-w-0 min-h-11 px-3 py-2 text-texto text-16 font-normal" [value]="filtroGenero()" (change)="filtroGenero.set(generoCatalogo.value); irAPagina(0)">
+          <select #generoCatalogo class="vidrio-campo w-full" [value]="filtroGenero()" (change)="filtroGenero.set(generoCatalogo.value); irAPagina(0)">
             <option value="">Todos los géneros</option>
             @for (genero of generos(); track genero) {
               <option [value]="genero">{{ genero }}</option>
@@ -112,7 +112,7 @@
         </label>
         <label class="campo grid min-w-0 gap-1.5 text-14 font-[550]">
           <span>Clasificación</span>
-          <select #edad class="vidrio-campo w-full min-w-0 min-h-11 px-3 py-2 text-texto text-16 font-normal" [value]="clasificacion()" (change)="clasificacion.set(edad.value); irAPagina(0)">
+          <select #edad class="vidrio-campo w-full" [value]="clasificacion()" (change)="clasificacion.set(edad.value); irAPagina(0)">
             <option value="">Cualquiera</option>
             @for (valor of ['TP', 'P7', 'P12', 'P16', 'P18']; track valor) {
               <option [value]="valor">{{ valor }}</option>
@@ -121,7 +121,7 @@
         </label>
         <label class="campo grid min-w-0 gap-1.5 text-14 font-[550]">
           <span>Duración máxima</span>
-          <select #duracion class="vidrio-campo w-full min-w-0 min-h-11 px-3 py-2 text-texto text-16 font-normal" [value]="duracionMax()" (change)="duracionMax.set(duracion.value); irAPagina(0)">
+          <select #duracion class="vidrio-campo w-full" [value]="duracionMax()" (change)="duracionMax.set(duracion.value); irAPagina(0)">
             <option value="">Sin límite</option>
             @for (minutos of [90, 120, 150]; track minutos) {
               <option [value]="minutos">{{ minutos }} min</option>

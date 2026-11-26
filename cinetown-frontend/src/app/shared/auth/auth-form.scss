@@ -26,13 +26,7 @@
 }
 
 .form-group input {
-  @apply w-full text-texto text-16 px-4 py-2.5;
-  min-block-size: 2.75rem;
-}
-
-/* Campo inválido y tocado: Angular añade ng-invalid y ng-touched */
-.form-group input.ng-invalid.ng-touched {
-  --vidrio-borde: #e59099;
+  inline-size: 100%;
 }
 
 .form-group small {

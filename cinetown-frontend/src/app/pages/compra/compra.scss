@@ -99,10 +99,8 @@
 }
 
 input {
-  width: 100%;
-  min-height: 3rem;
-  margin-top: 0.5rem;
-  padding: 0.625rem 0.75rem;
+  inline-size: 100%;
+  margin-block-start: 0.5rem;
 }
 
 .desglose,

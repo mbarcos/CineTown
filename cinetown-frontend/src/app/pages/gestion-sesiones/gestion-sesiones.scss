@@ -88,17 +88,14 @@ label, .columnas {
   font-weight: 550;
 }
 
-input, select, .boton {
+.boton {
   min-height: 2.75rem;
   font-size: var(--text-16);
   line-height: 1.4;
 }
 
 input, select {
-  width: 100%;
-  min-width: 0;
-  padding: 0.5rem 0.625rem;
-  color: var(--color-texto);
+  inline-size: 100%;
 }
 
 .campo-precio input { max-width: 9rem; }

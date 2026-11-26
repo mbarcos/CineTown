@@ -1,8 +1,8 @@
-<div class="filtro-genero" role="group" aria-label="Filtrar películas por género">
+<div class="filtro-genero filtro-opciones" role="group" aria-label="Filtrar películas por género">
   @for (genero of opciones(); track genero) {
     <button
       type="button"
-      class="filtro-genero_opcion vidrio-control"
+      class="chip-filtro vidrio-control"
       [attr.aria-pressed]="generoSeleccionado() === genero"
       (click)="generoSeleccionado.set(genero)"
     >
@@ -11,7 +11,7 @@
   }
 </div>
 
-<label class="filtro-genero_compacto">
+<label class="filtro-compacto filtro-genero_compacto">
   <span>Género</span>
   <select #selectorGenero class="vidrio-campo" (change)="generoSeleccionado.set(selectorGenero.value || null)">
     @for (genero of opciones(); track genero) {

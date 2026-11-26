@@ -51,7 +51,6 @@ export class SesionesPelicula {
   readonly manana = this.sumarDias(this.hoy, 1);
   readonly cargando = signal(true);
   readonly error = signal(false);
-  readonly sesionSeleccionadaId = signal<number | null>(null);
   private readonly reintento = signal(0);
 
   readonly pelicula = toSignal(
@@ -73,7 +72,6 @@ export class SesionesPelicula {
       toObservable(this.reintento),
     ]).pipe(
       tap(() => {
-        this.sesionSeleccionadaId.set(null);
         this.cargando.set(true);
         this.error.set(false);
       }),
@@ -103,10 +101,6 @@ export class SesionesPelicula {
     })),
   );
 
-  readonly sesionSeleccionada = computed(
-    () => this.sesionesPresentacion().find((sesion) => sesion.id === this.sesionSeleccionadaId()) ?? null,
-  );
-
   readonly fechaLegible = computed(() => {
     const fecha = this.fechaSeleccionada();
     const legible = this.fechaLargaFormatter.format(new Date(`${fecha}T00:00:00Z`));
@@ -125,15 +119,6 @@ export class SesionesPelicula {
       queryParams: { fecha },
       queryParamsHandling: 'merge',
     });
-  }
-
-  seleccionarSesion(id: number): void {
-    this.sesionSeleccionadaId.set(id);
-  }
-
-  continuarCompra(): void {
-    const sesion = this.sesionSeleccionada();
-    if (sesion) void this.router.navigate(['/sesiones', sesion.id]);
   }
 
   recargarSesiones(): void {

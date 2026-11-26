@@ -1,127 +1,18 @@
 :host {
-  display: block;
-}
-
-.dias {
-  min-inline-size: 0;
-  margin: 0;
-  border: 0;
-  padding: 0;
-}
-
-legend {
-  margin-bottom: 10px;
-  color: var(--color-texto-secundario);
-  font-size: 14px;
-}
-
-.dias_opciones {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
+  display: grid;
+  gap: 0.75rem;
 }
 
 .dia {
-  cursor: pointer;
-  touch-action: manipulation;
+  position: relative;
 }
 
-.dia_cara {
-  display: inline-flex;
-  min-height: 44px;
-  align-items: center;
-  gap: 4px;
-  border-radius: 9999px;
-  padding: 8px 12px;
-  color: #dfd3e3;
-  font-size: 14px;
-  line-height: 1.25;
-
-  time {
-    white-space: nowrap;
-  }
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .dia:hover .dia_cara {
-    color: var(--color-texto);
-  }
-}
-
-.dia input:checked + .dia_cara {
-  color: var(--color-texto);
-  font-weight: 600;
-}
-
-.dia input:focus-visible + .dia_cara {
-  outline: 2px solid var(--color-info);
-  outline-offset: 3px;
-}
-
-.dia:active .dia_cara {
-  background-color: var(--vidrio-activo, var(--vidrio-control-activo));
-}
-
-.horarios {
-  margin-top: 16px;
-  border-top: 1px solid rgb(255 255 255 / 16%);
-  padding-top: 16px;
-
-  h3 {
-    margin: 0 0 12px;
-    font-size: 16px;
-    font-weight: 600;
-  }
-}
-
-.horarios_opciones {
-  display: grid;
-}
-
-.horario {
-  display: flex;
-  min-height: 44px;
-  max-width: 100%;
-  flex-wrap: wrap;
-  align-items: baseline;
-  align-content: center;
-  gap: 4px 12px;
-  padding-block: 0.5rem;
-  color: var(--color-texto);
-  text-decoration: none;
-  touch-action: manipulation;
-
-  & + & {
-    border-block-start: 1px solid var(--linea-superficie);
-  }
-
-  time {
-    font-size: 20px;
-    font-weight: 600;
-    font-variant-numeric: tabular-nums;
-  }
-
-  @media (hover: hover) and (pointer: fine) {
-    &:hover .horario_accion {
-      color: var(--color-texto);
-    }
-  }
-
-  &:focus-visible .horario_accion,
-  &:active .horario_accion {
-    color: var(--color-texto);
-  }
-}
-
-.horario_precio {
+.horarios_fecha {
+  margin-block-end: 0.375rem;
   color: var(--color-texto-secundario);
-  font-size: 14px;
-  white-space: nowrap;
+  font-size: var(--text-14);
 }
 
-.horario_accion {
-  margin-inline-start: auto;
-  color: var(--color-texto-secundario);
-  font-size: 14px;
-  text-decoration: underline;
+.horarios li {
+  border-block-start: 1px solid var(--linea-superficie);
 }

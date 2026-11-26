@@ -1,6 +1,6 @@
-<fieldset class="dias">
-  <legend>Elige un día</legend>
-  <div class="dias_opciones">
+@if (dias().length > 1) {
+  <fieldset class="filtro-opciones">
+    <legend class="sr-only">Fecha de la sesión</legend>
     @for (dia of dias(); track dia.fecha) {
       <label class="dia">
         <input
@@ -11,30 +11,45 @@
           [attr.aria-label]="dia.etiqueta"
           (change)="diaSeleccionado.set(dia)"
         />
-        <span class="dia_cara vidrio-control" [class.vidrio-seleccionado]="diaSeleccionado() === dia">
-          <span class="dia_semana">{{ diaCorto(dia.fecha) }}</span>
+        <span class="chip-filtro vidrio-control">
+          <span>{{ diaCorto(dia.fecha) }}</span>
           <time [attr.datetime]="dia.fecha">{{ fechaCorta(dia.fecha) }}</time>
         </span>
       </label>
     }
-  </div>
-</fieldset>
+  </fieldset>
+
+  <label class="filtro-compacto">
+    <span>Fecha</span>
+    <select #selectorFecha class="vidrio-campo" (change)="diaSeleccionado.set(dias()[selectorFecha.selectedIndex])">
+      @for (dia of dias(); track dia.fecha) {
+        <option [value]="dia.fecha" [selected]="diaSeleccionado() === dia">
+          {{ diaCorto(dia.fecha) }} {{ fechaCorta(dia.fecha) }} {{ dia.fecha.slice(0, 4) }}
+        </option>
+      }
+    </select>
+  </label>
+}
 
 @if (diaSeleccionado(); as dia) {
   <div class="horarios">
-    <h3 aria-live="polite">{{ dia.etiqueta }}</h3>
-    <div class="horarios_opciones">
+    @if (dias().length === 1) {
+      <p class="horarios_fecha">{{ dia.etiqueta }}</p>
+    }
+    <ul aria-label="Horarios">
       @for (sesion of dia.sesiones; track sesion.id) {
-        <a
-          class="horario"
-          [routerLink]="['/sesiones', sesion.id]"
-          [attr.aria-label]="'Elegir asientos: ' + dia.etiqueta + ' a las ' + sesion.horaLegible + ', ' + sesion.precioLegible"
-        >
-          <time [attr.datetime]="sesion.fechaHoraInicio">{{ sesion.horaLegible }}</time>
-          <span class="horario_precio">{{ sesion.precioLegible }}</span>
-          <span class="horario_accion">Elegir asientos</span>
-        </a>
+        <li>
+          <a
+            class="horario fila-horario"
+            [routerLink]="['/sesiones', sesion.id]"
+            [attr.aria-label]="'Comprar entradas: ' + dia.etiqueta + ' a las ' + sesion.horaLegible + ', ' + sesion.precioLegible"
+          >
+            <time [attr.datetime]="sesion.fechaHoraInicio">{{ sesion.horaLegible }}</time>
+            <span class="fila-horario_precio">{{ sesion.precioLegible }}</span>
+            <span class="fila-horario_accion">Comprar entradas</span>
+          </a>
+        </li>
       }
-    </div>
+    </ul>
   </div>
 }

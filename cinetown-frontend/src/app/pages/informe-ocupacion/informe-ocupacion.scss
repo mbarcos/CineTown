@@ -32,12 +32,7 @@ h1 {
 }
 
 input {
-  min-inline-size: 0;
   inline-size: 100%;
-  min-block-size: 2.75rem;
-  padding: 0.5rem 0.75rem;
-  color: var(--color-texto);
-  font-size: var(--text-16);
   font-variant-numeric: tabular-nums;
 }
 

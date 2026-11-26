@@ -67,6 +67,9 @@
     --vidrio-control-hover: #3c3343;
     --vidrio-control-activo: #47394a;
     --vidrio-campo-fondo: #141119;
+    --vidrio-campo-foco: #221d24;
+    --vidrio-campo-borde: #817586;
+    --vidrio-campo-desenfoque: none;
     --vidrio-franja: #27212c;
     --vidrio-fila: #2b2531;
     --vidrio-primario-fondo: #484248;
@@ -93,6 +96,8 @@
         --vidrio-primario-hover: rgb(248 239 242 / 22%);
         --vidrio-primario-activo: rgb(248 239 242 / 12%);
         --vidrio-campo-fondo: rgb(11 9 12 / 44%);
+        --vidrio-campo-foco: rgb(43 34 43 / 68%);
+        --vidrio-campo-desenfoque: blur(8px) saturate(120%);
         --vidrio-franja: rgb(246 231 233 / 6%);
         --vidrio-fila: rgb(246 231 233 / 5%);
         --vidrio-seleccion-fondo: rgb(166 47 74 / 42%);
@@ -211,6 +216,7 @@ app-root:has(> :is(app-login, app-registro)) {
   }
 
   .vidrio-panel:modal {
+    --vidrio-campo-desenfoque: none;
     background-color: var(--vidrio-modal-fondo);
     -webkit-backdrop-filter: var(--vidrio-desenfoque);
     backdrop-filter: var(--vidrio-desenfoque);
@@ -230,13 +236,45 @@ app-root:has(> :is(app-login, app-registro)) {
 
   .vidrio-campo {
     --vidrio-relleno: var(--vidrio-campo-fondo);
-    --vidrio-borde: #817586;
-    box-shadow: inset 0 2px 4px rgb(0 0 0 / 18%);
+    --vidrio-borde: var(--vidrio-campo-borde);
+    min-inline-size: 0;
+    max-inline-size: 100%;
+    min-block-size: 3rem;
+    border-radius: 0.75rem;
+    padding: 0.625rem 0.875rem;
+    background-image: linear-gradient(180deg, rgb(246 231 233 / 6%), transparent);
+    box-shadow: inset 0 1px rgb(246 231 233 / 9%), inset 0 -1px rgb(0 0 0 / 15%);
+    -webkit-backdrop-filter: var(--vidrio-campo-desenfoque);
+    backdrop-filter: var(--vidrio-campo-desenfoque);
+    color: var(--color-texto);
     caret-color: var(--color-texto);
+    font-size: var(--text-16);
+    font-weight: 400;
+    line-height: 1.4;
   }
 
   .vidrio-campo::placeholder {
-    color: #b7adbf;
+    color: var(--color-texto-secundario);
+    opacity: 1;
+  }
+
+  select.vidrio-campo {
+    padding-inline: 0.625rem;
+  }
+
+  .vidrio-campo:focus {
+    --vidrio-relleno: var(--vidrio-campo-foco);
+    --vidrio-borde: var(--color-info);
+  }
+
+  .vidrio-campo:disabled {
+    --vidrio-borde: var(--linea-superficie);
+    color: var(--color-texto-secundario);
+    cursor: not-allowed;
+  }
+
+  :where(input[type='checkbox'], input[type='radio']) {
+    accent-color: var(--vidrio-rojo-borde);
   }
 
   :is(.vidrio-primario, .btn-primary) {
@@ -256,14 +294,75 @@ app-root:has(> :is(app-login, app-registro)) {
     --vidrio-borde: var(--vidrio-rojo-borde);
   }
 
+  .filtro-opciones {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+  }
+
+  .filtro-compacto {
+    display: none;
+  }
+
+  .chip-filtro {
+    --vidrio-relleno: transparent;
+    --vidrio-borde: transparent;
+    display: inline-flex;
+    min-inline-size: 2.75rem;
+    min-block-size: 2.75rem;
+    align-items: center;
+    justify-content: center;
+    gap: 0.25rem;
+    border-radius: 999px;
+    padding: 0.5rem 0.75rem;
+    color: var(--color-texto-secundario);
+    font-size: var(--text-14);
+    line-height: 1.25;
+    cursor: pointer;
+    touch-action: manipulation;
+    transition: none;
+  }
+
+  .chip-filtro:is([aria-pressed='true'], input:checked + .chip-filtro) {
+    --vidrio-relleno: var(--color-texto);
+    --vidrio-hover: #e2dcdd;
+    --vidrio-activo: #cfc5c7;
+    --vidrio-borde: transparent;
+    color: var(--color-fondo);
+    font-weight: 600;
+  }
+
+  input:focus-visible + .chip-filtro {
+    outline: 2px solid var(--color-info);
+    outline-offset: 3px;
+  }
+
+  @media (width <= 44rem) {
+    .filtro-opciones {
+      display: none;
+    }
+
+    .filtro-compacto {
+      display: flex;
+      inline-size: fit-content;
+      max-inline-size: 100%;
+      align-items: center;
+      gap: 0.625rem;
+      color: var(--color-texto-secundario);
+      font-size: var(--text-14);
+
+      > span { flex: none; }
+    }
+  }
+
   @media (hover: hover) and (pointer: fine) {
     :is(.vidrio-control, .btn-primary, .btn-secondary):hover:not(:disabled, [aria-disabled='true']) {
       background-color: var(--vidrio-hover, var(--vidrio-control-hover));
       border-color: var(--vidrio-borde, rgb(246 231 233 / 48%));
     }
 
-    .vidrio-campo:hover:not(:disabled, [aria-invalid='true'], :focus) {
-      border-color: #a99aaf;
+    .vidrio-campo:hover:not(:disabled, :focus) {
+      --vidrio-borde: #a99aaf;
     }
   }
 
@@ -276,8 +375,70 @@ app-root:has(> :is(app-login, app-registro)) {
     cursor: not-allowed;
   }
 
-  .vidrio-campo[aria-invalid='true'] {
+  .vidrio-campo:is([aria-invalid='true'], .ng-invalid.ng-touched):not(:disabled) {
     --vidrio-borde: #e59099;
+  }
+
+  .fila-horario {
+    display: flex;
+    min-block-size: 2.75rem;
+    flex-wrap: wrap;
+    align-items: baseline;
+    align-content: center;
+    gap: 0.25rem 0.75rem;
+    border-radius: 0.5rem;
+    padding: 0.5rem 0.625rem;
+    cursor: pointer;
+    touch-action: manipulation;
+
+    @media (prefers-reduced-motion: no-preference) {
+      transition: background-color 120ms ease-out;
+    }
+
+    time {
+      font-size: var(--text-18);
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+    }
+
+    &:is(:focus-visible, :active) {
+      background-color: var(--vidrio-control-hover);
+      transition: none;
+
+      .fila-horario_accion {
+        color: var(--color-texto);
+      }
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+      &:hover {
+        background-color: var(--vidrio-control-hover);
+        transition: none;
+
+        .fila-horario_accion {
+          color: var(--color-texto);
+        }
+      }
+    }
+
+    &:active {
+      background-color: var(--vidrio-control-activo);
+    }
+  }
+
+  .fila-horario_precio,
+  .fila-horario_accion {
+    color: var(--color-texto-secundario);
+    font-size: var(--text-14);
+  }
+
+  .fila-horario_precio {
+    white-space: nowrap;
+  }
+
+  .fila-horario_accion {
+    margin-inline-start: auto;
+    text-decoration: underline;
   }
 
   /* Caja de estado de error */
@@ -313,6 +474,10 @@ app-root:has(> :is(app-login, app-registro)) {
     --vidrio-primario-fondo: #413d41;
     --vidrio-primario-hover: #524c52;
     --vidrio-primario-activo: #332f33;
+    --vidrio-campo-fondo: var(--color-fondo);
+    --vidrio-campo-foco: var(--vidrio-solido);
+    --vidrio-campo-borde: #b7adbf;
+    --vidrio-campo-desenfoque: none;
     --vidrio-desenfoque: none;
   }
 }
