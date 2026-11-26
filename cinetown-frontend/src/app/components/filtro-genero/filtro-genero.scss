@@ -1,5 +1,22 @@
 .filtro-genero {
   justify-content: center;
+
+  .chip-filtro {
+    font-weight: 600;
+
+    @media (prefers-reduced-motion: no-preference) {
+      transition: transform 160ms cubic-bezier(0.22, 1, 0.36, 1);
+
+      &[aria-pressed='true'] {
+        transform: translateY(-3px);
+      }
+
+      &:active {
+        transform: scale(0.97);
+        transition-duration: 0s;
+      }
+    }
+  }
 }
 
 .filtro-genero_compacto {
