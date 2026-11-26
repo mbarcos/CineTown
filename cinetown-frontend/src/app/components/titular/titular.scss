@@ -167,8 +167,14 @@
   background: var(--color-primario);
   color: var(--color-texto);
 
-  &:is(:hover, :active) {
-    background: var(--color-primario-hover);
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      background: var(--color-primario-hover);
+    }
+  }
+
+  &:active {
+    background: var(--color-primario-activo);
   }
 }
 
@@ -234,7 +240,7 @@
 
   &[aria-current]::before {
     inline-size: 1rem;
-    border-color: var(--color-texto);
-    background: var(--color-texto);
+    border-color: var(--color-acento-suave);
+    background: var(--color-acento-suave);
   }
 }

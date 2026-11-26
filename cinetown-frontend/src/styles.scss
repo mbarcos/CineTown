@@ -15,22 +15,24 @@
   font-display: swap;
 }
 
-@theme {
+@theme static {
   /* --- Color · roles semánticos -------------------------------------- */
-  --color-fondo: #100f11;
-  --color-superficie: #191719;
-  --color-superficie-2: #242124;
+  --color-fondo: #17121a;
+  --color-superficie: #231a25;
+  --color-superficie-2: #2f2433;
 
-  --color-primario: #8a0009;
-  --color-primario-hover: #a5000b;
+  --color-primario: #992741;
+  --color-primario-hover: #ad3049;
+  --color-primario-activo: #822038;
+  --color-acento-suave: #f2aeba;
 
-  --color-texto: #f5f1f0;
-  --color-texto-secundario: #bab0b2;
+  --color-texto: #fff4f1;
+  --color-texto-secundario: #d8bec9;
 
   --color-exito: #35C759;
   --color-aviso: #F5C451;
-  --color-error: #D9363E;
-  --color-info: #4C8DFF;
+  --color-error: #fa8998;
+  --color-info: #92b8ff;
 
   /* --- Tipografía ------------------------------------------------------ */
   --font-sans: "Source Sans 3", system-ui, "Segoe UI", sans-serif;
@@ -52,60 +54,54 @@
   html {
     color-scheme: dark;
     scroll-behavior: smooth;
-    scrollbar-color: #665b60 var(--color-fondo);
+    scrollbar-color: #896879 var(--color-fondo);
   }
 
   :root {
     --ancho-pagina: min(82rem, calc(100% - 2 * clamp(1rem, 4vw, 4rem)));
-    --linea-superficie: rgb(245 231 233 / 14%);
-    --vidrio-luz: radial-gradient(ellipse at 22% 0%, #281b1e, transparent 67%);
-    --vidrio-solido: #201c20;
+    --linea-superficie: rgb(251 218 232 / 17%);
+    --vidrio-luz: radial-gradient(ellipse at 22% 0%, #391e2b, #24192a 42%, transparent 72%);
+    --vidrio-solido: #271d29;
     --vidrio-panel-fondo: var(--vidrio-solido);
-    --vidrio-modal-fondo: #211c27;
-    --vidrio-superficie-fondo: #282330;
-    --vidrio-control-fondo: #302936;
-    --vidrio-control-hover: #3c3343;
-    --vidrio-control-activo: #47394a;
-    --vidrio-campo-fondo: #141119;
-    --vidrio-campo-foco: #221d24;
-    --vidrio-campo-borde: rgb(246 231 233 / 27%);
+    --vidrio-modal-fondo: #2b1e30;
+    --vidrio-superficie-fondo: #302431;
+    --vidrio-control-fondo: #352739;
+    --vidrio-control-hover: #423045;
+    --vidrio-control-activo: #4e374f;
+    --vidrio-campo-fondo: #1c141e;
+    --vidrio-campo-foco: #2e2131;
+    --vidrio-campo-borde: rgb(251 218 232 / 48%);
     --vidrio-campo-desenfoque: none;
     --vidrio-campo-reflejo: none;
-    --vidrio-franja: #27212c;
-    --vidrio-fila: #2b2531;
-    --vidrio-primario-fondo: #484248;
-    --vidrio-primario-hover: #544e54;
-    --vidrio-primario-activo: #393439;
-    --vidrio-rojo-borde: #da7987;
-    --vidrio-seleccion-fondo: #542632;
-    --vidrio-seleccion-hover: #66303e;
-    --vidrio-seleccion-activo: #703542;
-    --vidrio-navegacion-fondo: #262024;
+    --vidrio-franja: #302431;
+    --vidrio-fila: #332637;
+    --vidrio-rojo-borde: #dc869a;
+    --vidrio-seleccion-fondo: #5e2b41;
+    --vidrio-seleccion-hover: #70344c;
+    --vidrio-seleccion-activo: #7d3952;
+    --vidrio-navegacion-fondo: #2b1f2c;
     --vidrio-desenfoque: none;
   }
 
   @supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
     @media not (prefers-reduced-transparency: reduce) {
       :root {
-        --vidrio-panel-fondo: rgb(34 29 33 / 72%);
-        --vidrio-modal-fondo: rgb(27 24 29 / 86%);
-        --vidrio-superficie-fondo: rgb(246 231 233 / 7%);
-        --vidrio-control-fondo: rgb(246 231 233 / 7%);
-        --vidrio-control-hover: rgb(246 231 233 / 13%);
-        --vidrio-control-activo: rgb(246 231 233 / 19%);
-        --vidrio-primario-fondo: rgb(248 239 242 / 16%);
-        --vidrio-primario-hover: rgb(248 239 242 / 22%);
-        --vidrio-primario-activo: rgb(248 239 242 / 12%);
-        --vidrio-campo-fondo: rgb(246 231 233 / 9%);
-        --vidrio-campo-foco: rgb(246 231 233 / 15%);
+        --vidrio-panel-fondo: rgb(42 29 44 / 82%);
+        --vidrio-modal-fondo: rgb(41 28 46 / 90%);
+        --vidrio-superficie-fondo: rgb(251 218 232 / 8%);
+        --vidrio-control-fondo: rgb(251 218 232 / 9%);
+        --vidrio-control-hover: rgb(251 218 232 / 15%);
+        --vidrio-control-activo: rgb(251 218 232 / 21%);
+        --vidrio-campo-fondo: rgb(251 218 232 / 10%);
+        --vidrio-campo-foco: rgb(251 218 232 / 16%);
         --vidrio-campo-desenfoque: blur(8px) saturate(120%);
-        --vidrio-campo-reflejo: linear-gradient(165deg, rgb(246 231 233 / 8%), transparent 65%);
-        --vidrio-franja: rgb(246 231 233 / 6%);
-        --vidrio-fila: rgb(246 231 233 / 5%);
-        --vidrio-seleccion-fondo: rgb(166 47 74 / 42%);
-        --vidrio-seleccion-hover: rgb(177 55 81 / 52%);
-        --vidrio-seleccion-activo: rgb(177 55 81 / 62%);
-        --vidrio-navegacion-fondo: rgb(32 28 32 / 83%);
+        --vidrio-campo-reflejo: linear-gradient(165deg, rgb(251 218 232 / 8%), transparent 65%);
+        --vidrio-franja: rgb(251 218 232 / 7%);
+        --vidrio-fila: rgb(251 218 232 / 6%);
+        --vidrio-seleccion-fondo: rgb(176 59 93 / 45%);
+        --vidrio-seleccion-hover: rgb(187 66 101 / 55%);
+        --vidrio-seleccion-activo: rgb(187 66 101 / 65%);
+        --vidrio-navegacion-fondo: rgb(43 30 44 / 88%);
         --vidrio-desenfoque: blur(22px) saturate(135%);
       }
     }
@@ -280,10 +276,10 @@ app-root:has(> :is(app-login, app-registro)) {
   }
 
   :is(.vidrio-primario, .btn-primary) {
-    --vidrio-relleno: var(--vidrio-primario-fondo);
-    --vidrio-hover: var(--vidrio-primario-hover);
-    --vidrio-activo: var(--vidrio-primario-activo);
-    --vidrio-borde: rgb(248 239 242 / 42%);
+    --vidrio-relleno: var(--color-primario);
+    --vidrio-hover: var(--color-primario-hover);
+    --vidrio-activo: var(--color-primario-activo);
+    --vidrio-borde: var(--vidrio-rojo-borde);
     box-shadow: inset 0 1px rgb(255 255 255 / 16%);
     -webkit-backdrop-filter: var(--vidrio-desenfoque);
     backdrop-filter: var(--vidrio-desenfoque);
@@ -326,9 +322,9 @@ app-root:has(> :is(app-login, app-registro)) {
   }
 
   .chip-filtro:is([aria-pressed='true'], input:checked + .chip-filtro) {
-    --vidrio-relleno: var(--color-texto);
-    --vidrio-hover: #e2dcdd;
-    --vidrio-activo: #cfc5c7;
+    --vidrio-relleno: var(--color-acento-suave);
+    --vidrio-hover: #fac0cb;
+    --vidrio-activo: #e798a9;
     --vidrio-borde: transparent;
     color: var(--color-fondo);
     font-weight: 600;
@@ -378,7 +374,7 @@ app-root:has(> :is(app-login, app-registro)) {
   }
 
   .vidrio-campo:is([aria-invalid='true'], .ng-invalid.ng-touched):not(:disabled) {
-    --vidrio-borde: #e59099;
+    --vidrio-borde: var(--color-error);
   }
 
   .fila-horario {
@@ -446,7 +442,7 @@ app-root:has(> :is(app-login, app-registro)) {
   /* Caja de estado de error */
   .alert-error {
     @apply bg-superficie text-texto rounded-md p-4;
-    border: 1px solid rgb(217 54 62 / 42%);
+    border: 1px solid color-mix(in srgb, var(--color-error) 55%, transparent);
 
     .alert-error-title {
       @apply font-semibold text-16;
@@ -458,7 +454,7 @@ app-root:has(> :is(app-login, app-registro)) {
 
   /* Estado "seleccionado" reutilizable sobre cualquier botón/badge */
   .is-selected {
-    @apply bg-error text-texto;
+    @apply bg-error text-fondo;
   }
 
   /* Estado "loading" — deja el contenido en opacidad reducida */
@@ -469,16 +465,13 @@ app-root:has(> :is(app-login, app-registro)) {
 
 @media (prefers-contrast: more) {
   :root {
-    --linea-superficie: #a1969a;
+    --linea-superficie: #ba9eaf;
     --vidrio-navegacion-fondo: var(--vidrio-solido);
     --vidrio-panel-fondo: var(--vidrio-solido);
     --vidrio-modal-fondo: var(--vidrio-solido);
-    --vidrio-primario-fondo: #413d41;
-    --vidrio-primario-hover: #524c52;
-    --vidrio-primario-activo: #332f33;
     --vidrio-campo-fondo: var(--color-fondo);
     --vidrio-campo-foco: var(--vidrio-solido);
-    --vidrio-campo-borde: #b7adbf;
+    --vidrio-campo-borde: #cab1c4;
     --vidrio-campo-desenfoque: none;
     --vidrio-campo-reflejo: none;
     --vidrio-desenfoque: none;
